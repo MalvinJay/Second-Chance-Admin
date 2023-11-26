@@ -11,7 +11,7 @@ const Home = () => {
       </p>
       <ul>
         <li>
-          <Link to="/homepage">Homepage</Link>
+          <Link to="/">Homepage</Link>
         </li>
         <li>
           <Link to="/addupcomingshows">AddUpcomingShows</Link>

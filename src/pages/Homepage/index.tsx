@@ -17,8 +17,8 @@ const HomepagePage: React.FC = () => {
   const sideBarMenu: SideBarMenuType = [
     {
       label: "Home",
-      href: "/homepage",
-      active: window.location.pathname === "/homepage",
+      href: "/",
+      active: window.location.pathname === "/",
     },
     {
       label: "About Us",

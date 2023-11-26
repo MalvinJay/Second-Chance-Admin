@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "pages/Home";
 import NotFound from "pages/NotFound";
 const AddPreviousShows = React.lazy(() => import("pages/AddPreviousShows"));
 const ContactUs = React.lazy(() => import("pages/ContactUs"));
