@@ -164,6 +164,38 @@ ul li a{
 .common-column-list li{
   width: 100%;
 }
+li.active-menu {
+  border-radius: 0px 6px 6px 0px;
+  background: rgba(255, 255, 255, 0.10);
+  padding: 0px 18px;
+}
+li.ps-menuitem-root a.ps-menu-button {
+  text-align: left !important;
+  width: 100% !important;
+  display: block;
+  padding-left: 24px;
+}
+li.active-menu a.ps-menu-button {
+  /* border: 5px solid; */
+  /* border-image: linear-gradient(101deg, #FD1FF6 -3.34%, #C604C0 107.05%) 1; */
+  /* border-width: 0 5px 0 0; */
+  /* border-radius: 50px; */
+  color: #FFF;
+  padding: 14px 0;
+}
+
+li.active-menu .ps-menu-button::before {
+  content: url("../assets/images/current-route.svg");
+  position: absolute;
+  left: 0;
+  top: 8px;
+}
+.active-pipe {
+  width: 3px;
+  height: 22px;
+  border-radius: 15px;
+  background: var(--primary-pink-gradient, linear-gradient(101deg, #FD1FF6 -3.34%, #C604C0 107.05%));
+}
 
 /* scroll */
 ::-webkit-scrollbar {
