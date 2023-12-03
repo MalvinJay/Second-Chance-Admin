@@ -1,10 +1,17 @@
-import { Button, Img, Input, Line, List, Text } from "components";
+"use client";
+
+import { Fragment, useState } from "react";
+import { Dialog, Transition } from "@headlessui/react";
+
+import { Button, Img, Input, List, Text } from "components";
 import Layout from "components/Layout/Layout";
 import CustomTable from "components/Shared/Table/CustomTable";
 import { Checkbox } from "../../components/Shared/Checkbox";
 import SliderItem from "components/Shared/Slider/SliderItem";
 import AddArticle from "components/RoyalNews/AddArticle";
 import ArticleItem from "components/RoyalNews/ArticleItem";
+import AddEditShow from "components/AddEditShow/AddEditShow";
+import MyModal from "components/Shared/Modal/Modal";
 
 // Upcoming shows
 const upcomingColumns = [
@@ -209,9 +216,11 @@ const testimonies = [
 ];
 
 const HomepagePage: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <Layout title="Home">
-      <div className="flex flex-col gap-8 items-center justify-start w-[96%] md:w-full">
+      <div className="flex flex-col gap-8 items-center justify-start w-full px-6">
         <div className="bg-white-A700 border border-gray-900_19 border-solid flex flex-col items-center justify-start p-[18px] rounded-[10px] w-full">
           <div className="grid grid-cols-2 w-full gap-6">
             <div className="flex sm:flex-1 flex-col gap-4 items-start justify-start md:mt-0 w-full">
@@ -301,6 +310,7 @@ const HomepagePage: React.FC = () => {
               <Button
                 className="cursor-pointer font-semibold min-w-[129px] text-center text-sm"
                 color="deep_purple_A200_19"
+                onClick={() => setIsOpen(true)}
               >
                 + Add Show
               </Button>
@@ -414,6 +424,16 @@ const HomepagePage: React.FC = () => {
           />
         </div>
       </div>
+
+      {isOpen && (
+        <MyModal
+          style="w-full max-w-5xl"
+          isOpen={isOpen}
+          closeModal={(val) => setIsOpen(false)}
+        >
+          <AddEditShow handleClose={() => setIsOpen(false)} />
+        </MyModal>
+      )}
     </Layout>
   );
 };

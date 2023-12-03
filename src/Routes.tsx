@@ -13,7 +13,6 @@ const AddVOGLiveSeries = React.lazy(() => import("pages/AddVOGLiveSeries"));
 const VOGLiveSeries = React.lazy(() => import("pages/VOGLiveSeries"));
 const AddNewMember = React.lazy(() => import("pages/AddNewMember"));
 const Aboutus = React.lazy(() => import("pages/Aboutus"));
-const AddUpcomingShows = React.lazy(() => import("pages/AddUpcomingShows"));
 const Homepage = React.lazy(() => import("pages/Homepage"));
 
 const ProjectRoutes = () => {
@@ -55,7 +54,6 @@ const ProjectRoutes = () => {
           <Route path="/royal-news" element={<RoyalNews />} />
           <Route path="/contact-us" element={<ContactUs />} />
 
-          <Route path="/addupcomingshows" element={<AddUpcomingShows />} />
           <Route path="/addnewmember" element={<AddNewMember />} />
           <Route path="/addvogliveseries" element={<AddVOGLiveSeries />} />
           <Route path="/addtvshows" element={<AddTVShows />} />
