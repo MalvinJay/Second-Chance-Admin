@@ -1,7 +1,6 @@
 "use client";
 
-import { Fragment, useState } from "react";
-import { Dialog, Transition } from "@headlessui/react";
+import { useState } from "react";
 
 import { Button, Img, Input, List, Text } from "components";
 import Layout from "components/Layout/Layout";
@@ -431,7 +430,10 @@ const HomepagePage: React.FC = () => {
           isOpen={isOpen}
           closeModal={(val) => setIsOpen(false)}
         >
-          <AddEditShow handleClose={() => setIsOpen(false)} />
+          <AddEditShow
+            title="Add Upcoming Shows"
+            handleClose={() => setIsOpen(false)}
+          />
         </MyModal>
       )}
     </Layout>

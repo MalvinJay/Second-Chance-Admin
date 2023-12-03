@@ -5,13 +5,15 @@ import { Input } from "components/Input";
 import { Text } from "components/Text";
 
 interface IAddEditShowProps {
+  type?: string;
   handleClose: () => void;
+  title: string;
 }
 
 const AddEditShow = (props: IAddEditShowProps) => {
-  const { handleClose } = props;
+  const { title, type, handleClose } = props;
   return (
-    <div className="bg-gray-500 flex flex-col font-plusjakartasans items-center justify-end mx-auto w-full">
+    <div className="flex flex-col font-plusjakartasans items-center justify-end mx-auto w-full">
       <div className="bg-white-A700 flex flex-col items-center justify-end p-6 md:px-5 rounded-[10px] shadow-bs w-full">
         <div className="grid grid-cols-1 gap-8 w-full">
           <div className="flex flex-row sm:gap-10 items-end justify-between w-full">
@@ -19,7 +21,7 @@ const AddEditShow = (props: IAddEditShowProps) => {
               className="mb-1 mt-3 text-2xl md:text-[22px] text-gray-900 sm:text-xl"
               size="txtPlusJakartaSansRomanBold24"
             >
-              Add Upcoming Shows
+              {title}
             </Text>
             <Button
               className="border border-gray-900_19 border-solid flex h-12 items-center justify-center w-12"
@@ -113,6 +115,67 @@ const AddEditShow = (props: IAddEditShowProps) => {
               />
             </div>
           </div>
+
+          {type === "vog" && (
+            <div className="flex flex-col gap-4 items-start justify-start mt-8 w-auto md:w-full">
+              <Text
+                className="text-blue_gray-900 text-xl w-auto"
+                size="txtPlusJakartaSansRomanSemiBold20"
+              >
+                Add Social Networks
+              </Text>
+              <div className="flex md:flex-col flex-row gap-5 items-start justify-start w-auto md:w-full">
+                <Button
+                  className="cursor-pointer flex items-center justify-center min-w-[213px]"
+                  leftIcon={
+                    <Img
+                      className="h-6 mr-2.5"
+                      src="images/img_frame.svg"
+                      alt="Frame"
+                    />
+                  }
+                  color="blue_A200"
+                  size="2xl"
+                >
+                  <div className="font-semibold text-left text-sm">
+                    Connect Facebook
+                  </div>
+                </Button>
+                <Button
+                  className="cursor-pointer flex items-center justify-center min-w-[212px]"
+                  leftIcon={
+                    <Img
+                      className="h-6 mr-2.5"
+                      src="images/img_info.svg"
+                      alt="info"
+                    />
+                  }
+                  color="red_300"
+                  size="2xl"
+                >
+                  <div className="font-semibold text-left text-sm">
+                    Connect Instagram
+                  </div>
+                </Button>
+                <Button
+                  className="cursor-pointer flex items-center justify-center min-w-[201px]"
+                  leftIcon={
+                    <Img
+                      className="h-6 mr-2.5"
+                      src="images/img_user.svg"
+                      alt="user"
+                    />
+                  }
+                  color="blue_400"
+                  size="2xl"
+                >
+                  <div className="font-semibold text-left text-sm">
+                    Connect LinkedIn
+                  </div>
+                </Button>
+              </div>
+            </div>
+          )}
 
           <div className="flex flex-col gap-5 items-start justify-start w-full">
             <Text
