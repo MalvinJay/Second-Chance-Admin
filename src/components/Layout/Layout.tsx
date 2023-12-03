@@ -1,6 +1,7 @@
 import React from "react";
 import { Menu, MenuItem, Sidebar } from "react-pro-sidebar";
 import { Link } from "react-router-dom";
+import "./Layout.css";
 
 import { Img, Text } from "components";
 import { sideBarMenu } from "contants";
@@ -15,7 +16,7 @@ const Layout = ({
   return (
     <div className="bg-gray-50 flex flex-col font-plusjakartasans items-center justify-start mx-auto w-full">
       <div className="flex md:flex-col flex-row md:gap-5 items-start justify-evenly w-full">
-        <Sidebar className="!sticky !min-w-[193px] !w-[193px] bg-gray-900 flex h-screen md:hidden overflow-hidden justify-start md:px-5 top-[0]">
+        <Sidebar className="side-bar !sticky bg-gray-900 h-screen sm:hidden flex overflow-hidden justify-start md:px-5 top-[0]">
           <Img
             className="h-[46px] md:h-auto ml-8 md:ml-[0] mr-[93px] mt-[23px] object-cover w-[36%]"
             src="images/img_img60591.png"
@@ -73,7 +74,7 @@ const Layout = ({
           </Menu>
         </Sidebar>
 
-        <div className="flex flex-1 flex-col gap-6 items-center justify-start md:px-5 w-full pb-20">
+        <div className="flex flex-1 flex-col gap-6 items-center justify-start md:px-5 w-0 pb-20">
           <div className="bg-white-A700 flex flex-row md:gap-10 items-center justify-between p-6 sm:px-5 w-full">
             <Text
               className="text-[22px] text-gray-900 sm:text-lg md:text-xl"
