@@ -24,11 +24,10 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
       placeholder = "",
       children,
       onChange,
-
       errors,
       ...restProps
     },
-    ref,
+    ref
   ) => {
     const handleChange: React.ChangeEventHandler<HTMLTextAreaElement> = (e) => {
       if (onChange) onChange(e?.target?.value);
@@ -49,7 +48,7 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
         {children}
       </>
     );
-  },
+  }
 );
 
 export { TextArea };

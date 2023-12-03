@@ -1,67 +1,157 @@
-import { Button, Img, Input, List, Text, TextArea } from "components";
+import { useState } from "react";
+import { Button, Img, Input, Text, TextArea } from "components";
 import Layout from "components/Layout/Layout";
+import { Checkbox } from "components/Shared/Checkbox";
+import CustomTable from "components/Shared/Table/CustomTable";
+import MyModal from "components/Shared/Modal/Modal";
+import AddEditMember from "components/AddEditMember/AddEditMember";
+
+// Upcoming shows
+const membersColumns = [
+  {
+    label: "Member Name",
+    renderCell: (item) => item.name,
+    select: {
+      renderHeaderCellSelect: () => (
+        <Checkbox
+        // checked={select.state.all}
+        // indeterminate={!select.state.all && !select.state.none}
+        // onChange={select.fns.onToggleAll}
+        />
+      ),
+      renderCellSelect: (item) => (
+        <Checkbox
+        // checked={select.state.ids.includes(item.id)}
+        // onChange={() => select.fns.onToggleById(item.id)}
+        />
+      ),
+    },
+  },
+  { label: "Designation", renderCell: (item) => item.host },
+  { label: "Social Networks", renderCell: (item) => item.socials },
+  { label: "Actions", renderCell: (item) => item.actions },
+];
+const membersList = [
+  {
+    name: (
+      <div className="flex gap-4 items-center">
+        <Img
+          className="h-[37px] md:h-auto object-cover rounded-md w-[43px]"
+          src="images/img_rectangle2161_37x43.png"
+          alt="rectangle2161"
+        />
+        <span>Christopher Nolan</span>
+      </div>
+    ),
+    designation: (
+      <div>
+        <span>CEO, Second Chances TV</span>
+      </div>
+    ),
+    social: (
+      <div className="flex items-center gap-2">
+        <img src="images/img_frame899.svg" />
+      </div>
+    ),
+    actions: (
+      <div className="flex items-center gap-2">
+        <img src="images/img_grid.svg" alt="" />
+      </div>
+    ),
+  },
+  {
+    name: (
+      <div className="flex gap-4 items-center">
+        <Img
+          className="h-[37px] md:h-auto object-cover rounded-md w-[43px]"
+          src="images/img_rectangle2161_37x43.png"
+          alt="rectangle2161"
+        />
+        <span>Christopher Nolan</span>
+      </div>
+    ),
+    designation: "CEO, Second Chances TV",
+    social: (
+      <div className="flex items-center gap-2">
+        <img src="images/img_frame899.svg" />
+      </div>
+    ),
+    actions: (
+      <div className="flex items-center gap-2">
+        <img src="images/img_grid.svg" alt="" />
+      </div>
+    ),
+  },
+];
 
 const AboutusPage: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <Layout title="About Us">
       <div className="flex flex-col gap-6 items-center justify-start w-[96%] md:w-full">
-        <div className="grid grid-cols-2 gap-6 items-center justify-between w-full">
-          <div className="bg-white-A700 border border-gray-900_19 border-solid flex md:flex-1 flex-col items-start justify-end p-4 rounded-[10px] w-full">
+        <div className="grid grid-cols-2 gap-6 items-stretch justify-between w-full h-full">
+          <div className="grid grid-cols-1 bg-white-A700 border border-gray-900_19 border-solid p-5 rounded-[10px] w-full h-full">
             <Text
-              className="md:ml-[0] ml-[7px] mt-0.5 text-[22px] text-center text-gray-900 sm:text-lg md:text-xl"
+              className="text-[22px] text-left text-gray-900 sm:text-lg md:text-xl"
               size="txtPlusJakartaSansRomanBold22"
             >
               Header Sections Content
             </Text>
-            <div className="flex flex-col items-start justify-start ml-2 md:ml-[0] mt-[29px] w-auto sm:w-full">
-              <div className="flex flex-col gap-3 items-start justify-start w-auto sm:w-full">
+
+            <div>
+              <div className="flex flex-col items-start justify-start mt-[29px] w-full">
+                <div className="flex flex-col gap-3 items-start justify-start w-full">
+                  <Text
+                    className="text-base text-gray-900_7f w-auto"
+                    size="txtPlusJakartaSansRomanMedium16"
+                  >
+                    Header Text
+                  </Text>
+                  <Input
+                    name="groupFour"
+                    placeholder="Write the header content here"
+                    className="p-0 placeholder:text-gray-900_7f text-left text-xs w-full"
+                    wrapClassName="border border-gray-900_19 border-solid w-full"
+                    color="gray_50"
+                    size="sm"
+                  ></Input>
+                </div>
+              </div>
+              <div className="flex flex-col gap-3 items-start justify-start mt-5 w-full">
                 <Text
                   className="text-base text-gray-900_7f w-auto"
                   size="txtPlusJakartaSansRomanMedium16"
                 >
-                  Header Text
+                  Sub-header Text
                 </Text>
-                <Input
-                  name="groupFour"
-                  placeholder="Write the header content here"
-                  className="p-0 placeholder:text-gray-900_7f text-left text-xs w-full"
-                  wrapClassName="border border-gray-900_19 border-solid w-full"
-                  color="gray_50"
-                  size="sm"
-                ></Input>
+                <TextArea
+                  className="bg-gray-50 border border-gray-900_19 border-solid pb-[35px] pl-4 sm:pr-5 pr-[35px] pt-[18px] rounded-md placeholder:text-gray-900_7f text-gray-900_7f text-left text-xs w-full"
+                  name="groupFour_One"
+                  placeholder="Write the sub-header content here"
+                  rows={4}
+                ></TextArea>
+              </div>
+              <div className="flex gap-3.5 justify-end mt-5 w-full">
+                <Button
+                  className="cursor-pointer font-semibold min-w-[96px] text-center text-sm"
+                  color="blue_gray_900_19"
+                  size="xl"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="cursor-pointer font-semibold text-center text-sm w-[119px]"
+                  size="xl"
+                  variant="gradient"
+                  color="purple_A200_purple_500"
+                >
+                  Save
+                </Button>
               </div>
             </div>
-            <div className="flex flex-col gap-3 items-start justify-start ml-2 md:ml-[0] mt-5 w-auto sm:w-full">
-              <Text
-                className="text-base text-gray-900_7f w-auto"
-                size="txtPlusJakartaSansRomanMedium16"
-              >
-                Sub-header Text
-              </Text>
-              <TextArea
-                className="bg-gray-50 border border-gray-900_19 border-solid pb-[35px] pl-4 sm:pr-5 pr-[35px] pt-[18px] rounded-md placeholder:text-gray-900_7f text-gray-900_7f text-left text-xs w-full"
-                name="groupFour_One"
-                placeholder="Write the sub-header content here"
-              ></TextArea>
-            </div>
-            <div className="flex flex-row gap-3.5 items-start justify-start md:ml-[0] ml-[287px] mt-5 w-auto">
-              <Button
-                className="cursor-pointer font-semibold min-w-[96px] text-center text-sm"
-                color="blue_gray_900_19"
-                size="xl"
-              >
-                Cancel
-              </Button>
-              <Button
-                className="cursor-pointer font-semibold text-center text-sm w-[119px]"
-                size="xl"
-                variant="gradient"
-                color="purple_A200_purple_500"
-              >
-                Save
-              </Button>
-            </div>
           </div>
+
           <div className="bg-white-A700 border border-gray-900_19 border-solid flex md:flex-1 flex-col gap-[26px] items-start justify-end p-5 rounded-[10px] w-full">
             <Text
               className="text-[22px] text-gray-900 sm:text-lg md:text-xl"
@@ -195,216 +285,25 @@ const AboutusPage: React.FC = () => {
             <Button
               className="cursor-pointer font-semibold text-center text-sm w-[180px]"
               color="deep_purple_A200_19"
+              onClick={() => setIsOpen(true)}
             >
               + Add New Member
             </Button>
           </div>
-          <div className="bg-gray-50 border border-gray-900_19 border-solid flex md:flex-col flex-row md:gap-5 items-center justify-start p-3 rounded-md w-[99%] md:w-full">
-            <Img
-              className="h-6 ml-1 md:ml-[0] w-6"
-              src="images/img_thumbsup.svg"
-              alt="thumbsup"
-            />
-            <Text
-              className="ml-4 md:ml-[0] text-blue_gray-900_87 text-xs"
-              size="txtPlusJakartaSansRomanRegular12"
-            >
-              Members Name
-            </Text>
-            <Text
-              className="md:ml-[0] ml-[299px] text-blue_gray-900_87 text-xs"
-              size="txtPlusJakartaSansRomanRegular12"
-            >
-              Designation
-            </Text>
-            <Text
-              className="md:ml-[0] ml-[299px] text-blue_gray-900_87 text-xs"
-              size="txtPlusJakartaSansRomanRegular12"
-            >
-              Social Networks
-            </Text>
-            <Text
-              className="md:ml-[0] ml-[125px] text-blue_gray-900_87 text-xs"
-              size="txtPlusJakartaSansRomanRegular12"
-            >
-              Actions
-            </Text>
-          </div>
-          <List
-            className="flex flex-col items-start w-auto"
-            orientation="vertical"
-          >
-            <div className="border-b border-black-900_19 border-solid flex flex-col items-start justify-start max-w-[1144px] my-0 pl-4 pr-2.5 py-5 w-full">
-              <div className="flex md:flex-col flex-row md:gap-10 gap-[104px] items-center justify-between w-auto md:w-full">
-                <div className="flex md:flex-col flex-row md:gap-10 gap-[221px] items-center justify-between w-auto md:w-full">
-                  <div className="flex flex-row sm:gap-10 gap-[235px] items-center justify-between w-auto sm:w-full">
-                    <div className="flex flex-row gap-3 items-center justify-start w-auto">
-                      <Img
-                        className="h-6 w-6"
-                        src="images/img_thumbsup.svg"
-                        alt="thumbsup"
-                      />
-                      <Img
-                        className="h-[37px] md:h-auto object-cover rounded-md w-[43px]"
-                        src="images/img_rectangle2161_37x43.png"
-                        alt="rectangle2161"
-                      />
-                      <Text
-                        className="text-blue_gray-900 text-xs w-auto"
-                        size="txtPlusJakartaSansRomanRegular12Bluegray900"
-                      >
-                        Christopher Nolan
-                      </Text>
-                    </div>
-                    <Text
-                      className="text-blue_gray-900 text-xs w-auto"
-                      size="txtPlusJakartaSansRomanRegular12Bluegray900"
-                    >
-                      CEO, Second Chances TV
-                    </Text>
-                  </div>
-                  <Img
-                    className="h-6 w-[102px]"
-                    src="images/img_frame899.svg"
-                    alt="frame899"
-                  />
-                </div>
-                <Img
-                  className="h-6 w-[68px]"
-                  src="images/img_grid.svg"
-                  alt="grid"
-                />
-              </div>
-            </div>
-            <div className="border-b border-black-900_19 border-solid flex flex-col items-start justify-start max-w-[1144px] my-0 pl-4 pr-2.5 py-5 w-full">
-              <div className="flex md:flex-col flex-row md:gap-10 gap-[104px] items-center justify-between w-auto md:w-full">
-                <div className="flex md:flex-col flex-row md:gap-10 gap-[221px] items-center justify-between w-auto md:w-full">
-                  <div className="flex flex-row sm:gap-10 gap-[235px] items-center justify-between w-auto sm:w-full">
-                    <div className="flex flex-row gap-3 items-center justify-start w-auto">
-                      <Img
-                        className="h-6 w-6"
-                        src="images/img_thumbsup.svg"
-                        alt="thumbsup"
-                      />
-                      <Img
-                        className="h-[37px] md:h-auto object-cover rounded-md w-[43px]"
-                        src="images/img_rectangle2161_37x43.png"
-                        alt="rectangle2161"
-                      />
-                      <Text
-                        className="text-blue_gray-900 text-xs w-auto"
-                        size="txtPlusJakartaSansRomanRegular12Bluegray900"
-                      >
-                        Christopher Nolan
-                      </Text>
-                    </div>
-                    <Text
-                      className="text-blue_gray-900 text-xs w-auto"
-                      size="txtPlusJakartaSansRomanRegular12Bluegray900"
-                    >
-                      CEO, Second Chances TV
-                    </Text>
-                  </div>
-                  <Img
-                    className="h-6 w-[102px]"
-                    src="images/img_frame899.svg"
-                    alt="frame899"
-                  />
-                </div>
-                <Img
-                  className="h-6 w-[68px]"
-                  src="images/img_grid.svg"
-                  alt="grid"
-                />
-              </div>
-            </div>
-            <div className="border-b border-black-900_19 border-solid flex flex-col items-start justify-start max-w-[1144px] my-0 pl-4 pr-2.5 py-5 w-full">
-              <div className="flex md:flex-col flex-row md:gap-10 gap-[104px] items-center justify-between w-auto md:w-full">
-                <div className="flex md:flex-col flex-row md:gap-10 gap-[221px] items-center justify-between w-auto md:w-full">
-                  <div className="flex flex-row sm:gap-10 gap-[235px] items-center justify-between w-auto sm:w-full">
-                    <div className="flex flex-row gap-3 items-center justify-start w-auto">
-                      <Img
-                        className="h-6 w-6"
-                        src="images/img_thumbsup.svg"
-                        alt="thumbsup"
-                      />
-                      <Img
-                        className="h-[37px] md:h-auto object-cover rounded-md w-[43px]"
-                        src="images/img_rectangle2161_37x43.png"
-                        alt="rectangle2161"
-                      />
-                      <Text
-                        className="text-blue_gray-900 text-xs w-auto"
-                        size="txtPlusJakartaSansRomanRegular12Bluegray900"
-                      >
-                        Christopher Nolan
-                      </Text>
-                    </div>
-                    <Text
-                      className="text-blue_gray-900 text-xs w-auto"
-                      size="txtPlusJakartaSansRomanRegular12Bluegray900"
-                    >
-                      CEO, Second Chances TV
-                    </Text>
-                  </div>
-                  <Img
-                    className="h-6 w-[102px]"
-                    src="images/img_frame899.svg"
-                    alt="frame899"
-                  />
-                </div>
-                <Img
-                  className="h-6 w-[68px]"
-                  src="images/img_grid.svg"
-                  alt="grid"
-                />
-              </div>
-            </div>
-            <div className="flex flex-col items-start justify-start max-w-[1144px] my-0 pl-4 pr-2.5 py-5 w-full">
-              <div className="flex md:flex-col flex-row md:gap-10 gap-[104px] items-center justify-between w-auto md:w-full">
-                <div className="flex md:flex-col flex-row md:gap-10 gap-[221px] items-center justify-between w-auto md:w-full">
-                  <div className="flex flex-row sm:gap-10 gap-[235px] items-center justify-between w-auto sm:w-full">
-                    <div className="flex flex-row gap-3 items-center justify-start w-auto">
-                      <Img
-                        className="h-6 w-6"
-                        src="images/img_thumbsup.svg"
-                        alt="thumbsup"
-                      />
-                      <Img
-                        className="h-[37px] md:h-auto object-cover rounded-md w-[43px]"
-                        src="images/img_rectangle2161_37x43.png"
-                        alt="rectangle2161"
-                      />
-                      <Text
-                        className="text-blue_gray-900 text-xs w-auto"
-                        size="txtPlusJakartaSansRomanRegular12Bluegray900"
-                      >
-                        Christopher Nolan
-                      </Text>
-                    </div>
-                    <Text
-                      className="text-blue_gray-900 text-xs w-auto"
-                      size="txtPlusJakartaSansRomanRegular12Bluegray900"
-                    >
-                      CEO, Second Chances TV
-                    </Text>
-                  </div>
-                  <Img
-                    className="h-6 w-[102px]"
-                    src="images/img_frame899.svg"
-                    alt="frame899"
-                  />
-                </div>
-                <Img
-                  className="h-6 w-[68px]"
-                  src="images/img_grid.svg"
-                  alt="grid"
-                />
-              </div>
-            </div>
-          </List>
+
+          <CustomTable tableHeading={membersColumns} data={membersList} />
         </div>
       </div>
+
+      {isOpen && (
+        <MyModal
+          style="w-full max-w-xl"
+          isOpen={isOpen}
+          closeModal={(val) => setIsOpen(false)}
+        >
+          <AddEditMember handleClose={() => setIsOpen(false)} />
+        </MyModal>
+      )}
     </Layout>
   );
 };
