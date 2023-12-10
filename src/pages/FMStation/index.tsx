@@ -1,7 +1,79 @@
+import { useState } from "react";
 import { Button, Img, List, Text } from "components";
+import { DeleteIcon, EditIcon } from "components/Icons/Icons";
 import Layout from "components/Layout/Layout";
+import MuiTable from "components/Shared/Table/MuiTable";
+import MyModal from "components/Shared/Modal/Modal";
+import AddEditFMStation from "components/AddEditFMStation/AddEditFMStation";
+interface Data {
+  id: number;
+  name: string;
+  hosted_by: string;
+  created_at: string;
+  socials: string;
+  actions: string;
+}
+interface HeadCell {
+  disablePadding: boolean;
+  id: keyof Data;
+  label: string;
+  numeric: boolean;
+}
+
+const fmStations = Array(20).fill({
+  id: Math.floor(Math.random() * 10 + 1),
+  channel_name: "Kumasi",
+  frequency: "88.9 Mhz",
+  available_show: "8",
+  status: "Active",
+  actions: (
+    <div className="flex gap-2 items-center">
+      <Button className="cursor-pointer flex items-center justify-center gap-1">
+        <EditIcon color="#949698" />
+      </Button>
+      <Button className="cursor-pointer flex items-center justify-center gap-1">
+        <DeleteIcon color="#949698" />
+      </Button>
+    </div>
+  ),
+});
+
+const headCells: readonly HeadCell[] = [
+  {
+    id: "channel_name",
+    numeric: false,
+    disablePadding: true,
+    label: "Channel Name",
+  },
+  {
+    id: "frequency",
+    numeric: false,
+    disablePadding: false,
+    label: "Frequency",
+  },
+  {
+    id: "available_show",
+    numeric: false,
+    disablePadding: false,
+    label: "Available Shows (Daily)",
+  },
+  {
+    id: "status",
+    numeric: false,
+    disablePadding: false,
+    label: "Status",
+  },
+  {
+    id: "actions",
+    numeric: false,
+    disablePadding: false,
+    label: "Actions",
+  },
+];
 
 const FMStationPage: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <Layout title="FM Stations">
       <div className="flex flex-col items-center justify-start w-[96%] md:w-full">
@@ -16,321 +88,17 @@ const FMStationPage: React.FC = () => {
             <Button
               className="cursor-pointer font-semibold min-w-[146px] text-center text-sm"
               color="deep_purple_A200_19"
+              onClick={() => setIsOpen(true)}
             >
               + Add Channel
             </Button>
           </div>
         </div>
+
         <div className="bg-white-A700 border border-gray-900_19 border-solid flex flex-col items-center justify-start mt-8 pt-6 sm:px-5 px-6 rounded-[10px] w-full">
-          <div className="bg-gray-50 border border-gray-900_19 border-solid flex md:flex-col flex-row md:gap-5 items-center justify-start p-3 rounded-md w-full">
-            <div className="flex flex-row gap-4 items-start justify-start ml-2 md:ml-[0] w-auto">
-              <Img
-                className="h-6 w-6"
-                src="images/img_thumbsup.svg"
-                alt="thumbsup"
-              />
-              <Text
-                className="text-blue_gray-900_87 text-xs w-auto"
-                size="txtPlusJakartaSansRomanRegular12"
-              >
-                Channel Name
-              </Text>
-            </div>
-            <Text
-              className="md:ml-[0] ml-[200px] text-blue_gray-900_87 text-xs"
-              size="txtPlusJakartaSansRomanRegular12"
-            >
-              Frequency
-            </Text>
-            <Text
-              className="md:ml-[0] ml-[155px] text-blue_gray-900_87 text-xs"
-              size="txtPlusJakartaSansRomanRegular12"
-            >
-              Available Shows (Daily)
-            </Text>
-            <Text
-              className="md:ml-[0] ml-[93px] text-blue_gray-900_87 text-xs"
-              size="txtPlusJakartaSansRomanRegular12"
-            >
-              Status
-            </Text>
-            <Text
-              className="md:ml-[0] ml-[215px] text-blue_gray-900_87 text-xs"
-              size="txtPlusJakartaSansRomanRegular12"
-            >
-              Actions
-            </Text>
-          </div>
-          <List
-            className="flex flex-col items-start w-auto"
-            orientation="vertical"
-          >
-            <div className="border-b border-black-900_19 border-solid flex md:flex-col flex-row md:gap-10 gap-[98px] items-center justify-start max-w-[1144px] my-0 pl-5 md:pr-10 pr-14 sm:pr-5 py-5 w-full">
-              <div className="flex md:flex-1 flex-col items-center justify-start w-auto md:w-full">
-                <div className="flex sm:flex-col flex-row sm:gap-5 items-center justify-start w-auto">
-                  <div className="flex sm:flex-col flex-row sm:gap-5 items-center justify-start w-auto sm:w-full">
-                    <div className="flex flex-row gap-3 items-center justify-start w-auto">
-                      <Img
-                        className="h-6 w-6"
-                        src="images/img_thumbsup.svg"
-                        alt="thumbsup"
-                      />
-                      <Text
-                        className="text-blue_gray-900 text-xs w-auto"
-                        size="txtPlusJakartaSansRomanBold12"
-                      >
-                        Kumasi
-                      </Text>
-                    </div>
-                    <Text
-                      className="text-blue_gray-900 text-xs w-auto"
-                      size="txtPlusJakartaSansRomanRegular12Bluegray900"
-                    >
-                      88.9 Mhz
-                    </Text>
-                  </div>
-                  <Text
-                    className="text-blue_gray-900 text-xs w-auto"
-                    size="txtPlusJakartaSansRomanRegular12Bluegray900"
-                  >
-                    8
-                  </Text>
-                  <Text
-                    className="text-blue_gray-900 text-xs w-auto"
-                    size="txtPlusJakartaSansRomanRegular12Bluegray900"
-                  >
-                    Active
-                  </Text>
-                </div>
-              </div>
-              <Img
-                className="h-6 w-[68px]"
-                src="images/img_grid.svg"
-                alt="grid"
-              />
-            </div>
-            <div className="border-b border-black-900_19 border-solid flex md:flex-col flex-row md:gap-10 gap-[98px] items-center justify-start max-w-[1144px] my-0 pl-5 md:pr-10 pr-14 sm:pr-5 py-5 w-full">
-              <div className="flex md:flex-1 flex-col items-center justify-start w-auto md:w-full">
-                <div className="flex sm:flex-col flex-row sm:gap-5 items-center justify-start w-auto">
-                  <div className="flex sm:flex-col flex-row sm:gap-5 items-center justify-start w-auto sm:w-full">
-                    <div className="flex flex-row gap-3 items-center justify-start w-auto">
-                      <Img
-                        className="h-6 w-6"
-                        src="images/img_thumbsup.svg"
-                        alt="thumbsup"
-                      />
-                      <Text
-                        className="text-blue_gray-900 text-xs w-auto"
-                        size="txtPlusJakartaSansRomanBold12"
-                      >
-                        Kumasi
-                      </Text>
-                    </div>
-                    <Text
-                      className="text-blue_gray-900 text-xs w-auto"
-                      size="txtPlusJakartaSansRomanRegular12Bluegray900"
-                    >
-                      88.9 Mhz
-                    </Text>
-                  </div>
-                  <Text
-                    className="text-blue_gray-900 text-xs w-auto"
-                    size="txtPlusJakartaSansRomanRegular12Bluegray900"
-                  >
-                    9
-                  </Text>
-                  <Text
-                    className="text-blue_gray-900 text-xs w-auto"
-                    size="txtPlusJakartaSansRomanRegular12Bluegray900"
-                  >
-                    Active
-                  </Text>
-                </div>
-              </div>
-              <Img
-                className="h-6 w-[68px]"
-                src="images/img_grid.svg"
-                alt="grid"
-              />
-            </div>
-            <div className="border-b border-black-900_19 border-solid flex md:flex-col flex-row md:gap-10 gap-[98px] items-center justify-start max-w-[1144px] my-0 pl-5 md:pr-10 pr-14 sm:pr-5 py-5 w-full">
-              <div className="flex md:flex-1 flex-col items-center justify-start w-auto md:w-full">
-                <div className="flex md:flex-col flex-row md:gap-5 items-center justify-start w-auto">
-                  <div className="flex sm:flex-col flex-row sm:gap-5 items-center justify-start w-auto sm:w-full">
-                    <div className="flex flex-row gap-3 items-center justify-start w-auto">
-                      <Img
-                        className="h-6 w-6"
-                        src="images/img_thumbsup.svg"
-                        alt="thumbsup"
-                      />
-                      <Text
-                        className="text-blue_gray-900 text-xs w-auto"
-                        size="txtPlusJakartaSansRomanBold12"
-                      >
-                        Kumasi
-                      </Text>
-                    </div>
-                    <Text
-                      className="text-blue_gray-900 text-xs w-auto"
-                      size="txtPlusJakartaSansRomanRegular12Bluegray900"
-                    >
-                      88.9 Mhz
-                    </Text>
-                  </div>
-                  <Text
-                    className="text-blue_gray-900 text-xs w-auto"
-                    size="txtPlusJakartaSansRomanRegular12Bluegray900"
-                  >
-                    -
-                  </Text>
-                  <Text
-                    className="text-blue_gray-900 text-xs w-auto"
-                    size="txtPlusJakartaSansRomanRegular12Bluegray900"
-                  >
-                    Deactivate
-                  </Text>
-                </div>
-              </div>
-              <Img
-                className="h-6 w-[68px]"
-                src="images/img_grid.svg"
-                alt="grid"
-              />
-            </div>
-            <div className="border-b border-black-900_19 border-solid flex md:flex-col flex-row md:gap-10 gap-[98px] items-center justify-start max-w-[1144px] my-0 pl-5 md:pr-10 pr-14 sm:pr-5 py-5 w-full">
-              <div className="flex md:flex-1 flex-col items-center justify-start w-auto md:w-full">
-                <div className="flex sm:flex-col flex-row sm:gap-5 items-center justify-start w-auto">
-                  <div className="flex sm:flex-col flex-row sm:gap-5 items-center justify-start w-auto sm:w-full">
-                    <div className="flex flex-row gap-3 items-center justify-start w-auto">
-                      <Img
-                        className="h-6 w-6"
-                        src="images/img_thumbsup.svg"
-                        alt="thumbsup"
-                      />
-                      <Text
-                        className="text-blue_gray-900 text-xs w-auto"
-                        size="txtPlusJakartaSansRomanBold12"
-                      >
-                        Kumasi
-                      </Text>
-                    </div>
-                    <Text
-                      className="text-blue_gray-900 text-xs w-auto"
-                      size="txtPlusJakartaSansRomanRegular12Bluegray900"
-                    >
-                      88.9 Mhz
-                    </Text>
-                  </div>
-                  <Text
-                    className="text-blue_gray-900 text-xs w-auto"
-                    size="txtPlusJakartaSansRomanRegular12Bluegray900"
-                  >
-                    4
-                  </Text>
-                  <Text
-                    className="text-blue_gray-900 text-xs w-auto"
-                    size="txtPlusJakartaSansRomanRegular12Bluegray900"
-                  >
-                    Active
-                  </Text>
-                </div>
-              </div>
-              <Img
-                className="h-6 w-[68px]"
-                src="images/img_grid.svg"
-                alt="grid"
-              />
-            </div>
-            <div className="border-b border-black-900_19 border-solid flex md:flex-col flex-row md:gap-10 gap-[98px] items-center justify-start max-w-[1144px] my-0 pl-5 md:pr-10 pr-14 sm:pr-5 py-5 w-full">
-              <div className="flex md:flex-1 flex-col items-center justify-start w-auto md:w-full">
-                <div className="flex md:flex-col flex-row md:gap-5 items-center justify-start w-auto">
-                  <div className="flex sm:flex-col flex-row sm:gap-5 items-center justify-start w-auto sm:w-full">
-                    <div className="flex flex-row gap-3 items-center justify-start w-auto">
-                      <Img
-                        className="h-6 w-6"
-                        src="images/img_thumbsup.svg"
-                        alt="thumbsup"
-                      />
-                      <Text
-                        className="text-blue_gray-900 text-xs w-auto"
-                        size="txtPlusJakartaSansRomanBold12"
-                      >
-                        Kumasi
-                      </Text>
-                    </div>
-                    <Text
-                      className="text-blue_gray-900 text-xs w-auto"
-                      size="txtPlusJakartaSansRomanRegular12Bluegray900"
-                    >
-                      88.9 Mhz
-                    </Text>
-                  </div>
-                  <Text
-                    className="text-blue_gray-900 text-xs w-auto"
-                    size="txtPlusJakartaSansRomanRegular12Bluegray900"
-                  >
-                    -
-                  </Text>
-                  <Text
-                    className="text-blue_gray-900 text-xs w-auto"
-                    size="txtPlusJakartaSansRomanRegular12Bluegray900"
-                  >
-                    Deactivate{" "}
-                  </Text>
-                </div>
-              </div>
-              <Img
-                className="h-6 w-[68px]"
-                src="images/img_grid.svg"
-                alt="grid"
-              />
-            </div>
-            <div className="flex md:flex-col flex-row md:gap-10 gap-[98px] items-center justify-start max-w-[1144px] my-0 pl-5 md:pr-10 pr-14 sm:pr-5 py-5 w-full">
-              <div className="flex md:flex-1 flex-col items-center justify-start w-auto md:w-full">
-                <div className="flex md:flex-col flex-row md:gap-5 items-center justify-start w-auto">
-                  <div className="flex sm:flex-col flex-row sm:gap-5 items-center justify-start w-auto sm:w-full">
-                    <div className="flex flex-row gap-3 items-center justify-start w-auto">
-                      <Img
-                        className="h-6 w-6"
-                        src="images/img_thumbsup.svg"
-                        alt="thumbsup"
-                      />
-                      <Text
-                        className="text-blue_gray-900 text-xs w-auto"
-                        size="txtPlusJakartaSansRomanBold12"
-                      >
-                        Kumasi
-                      </Text>
-                    </div>
-                    <Text
-                      className="text-blue_gray-900 text-xs w-auto"
-                      size="txtPlusJakartaSansRomanRegular12Bluegray900"
-                    >
-                      88.9 Mhz
-                    </Text>
-                  </div>
-                  <Text
-                    className="text-blue_gray-900 text-xs w-auto"
-                    size="txtPlusJakartaSansRomanRegular12Bluegray900"
-                  >
-                    -
-                  </Text>
-                  <Text
-                    className="text-blue_gray-900 text-xs w-auto"
-                    size="txtPlusJakartaSansRomanRegular12Bluegray900"
-                  >
-                    Deactivate
-                  </Text>
-                </div>
-              </div>
-              <Img
-                className="h-6 w-[68px]"
-                src="images/img_grid.svg"
-                alt="grid"
-              />
-            </div>
-          </List>
+          <MuiTable tableHeading={headCells} data={fmStations} />
         </div>
+
         <div className="flex sm:flex-col flex-row gap-6 items-start justify-start mt-[308px] w-auto sm:w-full">
           <div className="flex flex-col h-8 md:h-auto items-center justify-start px-3 py-2 rounded-lg w-20">
             <Text
@@ -438,6 +206,16 @@ const FMStationPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {isOpen && (
+        <MyModal
+          style="w-full max-w-xl"
+          isOpen={isOpen}
+          closeModal={(val) => setIsOpen(false)}
+        >
+          <AddEditFMStation handleClose={() => setIsOpen(false)} />
+        </MyModal>
+      )}
     </Layout>
   );
 };

@@ -26,7 +26,7 @@ const vogLiveServiceColumns = [
   { label: "Actions", renderCell: (item) => item.actions },
 ];
 
-const vogliveservices = Array(10).fill({
+const vogliveservices = Array(20).fill({
   id: Math.floor(Math.random() * 10 + 1),
   name: (
     <div className="flex gap-4 items-center">

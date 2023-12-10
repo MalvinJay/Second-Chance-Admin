@@ -19,7 +19,7 @@ import { visuallyHidden } from "@mui/utils";
 import { Img } from "components/Img";
 
 interface ICustomeTable {
-  tableHeading: any;
+  tableHeading?: any;
   data: any[];
   toolbarTitle?: string;
   toolbarActions?: React.ReactNode;
@@ -142,6 +142,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             inputProps={{
               "aria-label": "select all desserts",
             }}
+            sx={{ borderRadius: 4 }}
           />
         </TableCell>
         {headCells.map((headCell: any) => (
@@ -295,26 +296,31 @@ export default function MuiTable(props: ICustomeTable) {
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }} elevation={0}>
-        <EnhancedTableToolbar
-          numSelected={selected.length}
-          toolbarTitle={toolbarTitle}
-          toolbarActions={toolbarActions}
-        />
+        {toolbarTitle && (
+          <EnhancedTableToolbar
+            numSelected={selected.length}
+            toolbarTitle={toolbarTitle}
+            toolbarActions={toolbarActions}
+          />
+        )}
+
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
             size="small"
           >
-            <EnhancedTableHead
-              headCells={tableHeading}
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={data.length}
-            />
+            {tableHeading && (
+              <EnhancedTableHead
+                headCells={tableHeading}
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={handleSelectAllClick}
+                onRequestSort={handleRequestSort}
+                rowCount={data.length}
+              />
+            )}
 
             <TableBody>
               {visibleRows.map((row, index) => {
@@ -339,6 +345,7 @@ export default function MuiTable(props: ICustomeTable) {
                         inputProps={{
                           "aria-labelledby": labelId,
                         }}
+                        sx={{ borderRadius: "4px" }}
                       />
                     </TableCell>
 

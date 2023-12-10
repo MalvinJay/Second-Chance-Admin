@@ -8,10 +8,11 @@ interface IAddEditShowProps {
   type?: string;
   handleClose: () => void;
   title: string;
+  showExtras?: boolean;
 }
 
 const AddEditShow = (props: IAddEditShowProps) => {
-  const { title, type, handleClose } = props;
+  const { title, type, showExtras = false, handleClose } = props;
   return (
     <div className="flex flex-col font-plusjakartasans items-center justify-end mx-auto w-full">
       <div className="bg-white-A700 flex flex-col items-center justify-end p-6 md:px-5 rounded-[10px] shadow-bs w-full">
@@ -116,6 +117,24 @@ const AddEditShow = (props: IAddEditShowProps) => {
             </div>
           </div>
 
+          {showExtras && (
+            <div className="flex sm:flex-1 flex-col gap-4 items-start justify-start w-full">
+              <Text
+                className="text-blue_gray-900 text-xl w-auto"
+                size="txtPlusJakartaSansRomanSemiBold20"
+              >
+                About The Show
+              </Text>
+              <Input
+                name="frame1091"
+                placeholder="Enter about here.."
+                className="p-0 placeholder:text-blue_gray-900_99 text-left text-sm w-full"
+                wrapClassName="border border-gray-900_26 border-solid w-full"
+                type="text"
+              />
+            </div>
+          )}
+
           {type === "vog" && (
             <div className="flex flex-col gap-4 items-start justify-start mt-8 w-auto md:w-full">
               <Text
@@ -174,6 +193,23 @@ const AddEditShow = (props: IAddEditShowProps) => {
                   </div>
                 </Button>
               </div>
+            </div>
+          )}
+
+          {showExtras && (
+            <div className="flex flex-col gap-5 items-start justify-start w-full">
+              <Text
+                className="text-blue_gray-900 text-xl w-auto"
+                size="txtPlusJakartaSansRomanSemiBold20"
+              >
+                Logo Image
+              </Text>
+
+              <BannerUploader
+                icon="images/img_television.svg"
+                title="Upload Logo image"
+                uploadText="Drag and drop or click here to browse files (File format : JPEG, PNG, JPG)"
+              />
             </div>
           )}
 
