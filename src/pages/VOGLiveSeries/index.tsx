@@ -8,6 +8,7 @@ import { Checkbox } from "components/Shared/Checkbox";
 import CustomTable from "components/Shared/Table/CustomTable";
 import MyModal from "components/Shared/Modal/Modal";
 import AddEditShow from "components/AddEditShow/AddEditShow";
+import MuiTable from "components/Shared/Table/MuiTable";
 
 // Previous show
 const vogLiveServiceColumns = [
@@ -26,6 +27,7 @@ const vogLiveServiceColumns = [
 ];
 
 const vogliveservices = Array(10).fill({
+  id: Math.floor(Math.random() * 10 + 1),
   name: (
     <div className="flex gap-4 items-center">
       <Img
@@ -55,29 +57,71 @@ const vogliveservices = Array(10).fill({
   ),
 });
 
+interface Data {
+  id: number;
+  name: string;
+  hosted_by: string;
+  created_at: string;
+  socials: string;
+  actions: string;
+}
+interface HeadCell {
+  disablePadding: boolean;
+  id: keyof Data;
+  label: string;
+  numeric: boolean;
+}
+
 const VOGLiveSeriesPage: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
+  const headCells: readonly HeadCell[] = [
+    {
+      id: "name",
+      numeric: false,
+      disablePadding: true,
+      label: "Show Name",
+    },
+    {
+      id: "hosted_by",
+      numeric: false,
+      disablePadding: false,
+      label: "Hosted By",
+    },
+    {
+      id: "created_at",
+      numeric: false,
+      disablePadding: false,
+      label: "Date and Time",
+    },
+    {
+      id: "socials",
+      numeric: false,
+      disablePadding: false,
+      label: "Social Networks",
+    },
+    {
+      id: "actions",
+      numeric: false,
+      disablePadding: false,
+      label: "Actions",
+    },
+  ];
+
   return (
     <Layout title="VOG Live Services">
-      <div className="bg-white-A700 border border-gray-900_19 border-solid flex flex-col items-center justify-end mt-6 p-5 rounded-[10px] w-[96%] md:w-full">
-        <div className="flex flex-col items-center justify-start mt-1 w-full">
-          <div className="flex gap-5 items-end justify-between w-full pb-5">
-            <Text
-              className="text-[22px] text-gray-900 sm:text-lg md:text-xl"
-              size="txtPlusJakartaSansRomanBold22"
-            >
-              Live Services Listings
-            </Text>
+      <div className="bg-white-A700 border border-gray-900_19 border-solid flex flex-col items-center justify-end p-5 rounded-[10px] w-[96%] md:w-full">
+        <div className="flex flex-col items-center justify-start w-full">
+          {/* <CustomTable
+            tableHeading={vogLiveServiceColumns}
+            data={vogliveservices}
+          /> */}
 
-            <div className="flex item-center gap-4">
-              <div className="bg-gray-900_19 flex flex-col h-10 md:h-auto items-center justify-center px-3 py-2 rounded-md w-auto">
-                <Img
-                  className="h-5 w-5"
-                  src="images/img_thumbsup_blue_gray_900_20x20.svg"
-                  alt="thumbsup"
-                />
-              </div>
+          <MuiTable
+            tableHeading={headCells}
+            data={vogliveservices}
+            toolbarTitle="Live Services Listings"
+            toolbarActions={
               <Button
                 className="cursor-pointer font-semibold text-center text-sm"
                 color="deep_purple_A200_19"
@@ -85,12 +129,7 @@ const VOGLiveSeriesPage: React.FC = () => {
               >
                 + Add New
               </Button>
-            </div>
-          </div>
-
-          <CustomTable
-            tableHeading={vogLiveServiceColumns}
-            data={vogliveservices}
+            }
           />
         </div>
       </div>
