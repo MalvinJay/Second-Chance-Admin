@@ -1,5 +1,44 @@
 import { Button, Img, Text } from "components";
 import Layout from "components/Layout/Layout";
+import RoyalNewsItem from "components/RoyalNews/RoyalNewsItem";
+
+const news = [
+  {
+    banner: "images/img_rectangle50_155x349.png",
+    title: "News Heading will be here",
+    description: "Lorem ipsum dolor sit amet consectetur. Donec egestas ut",
+    comments: "70",
+    views: "12.4k",
+  },
+  {
+    banner: "images/img_rectangle50_155x349.png",
+    title: "News Heading will be here",
+    description: "Lorem ipsum dolor sit amet consectetur. Donec egestas ut",
+    comments: "70",
+    views: "12.4k",
+  },
+  {
+    banner: "images/img_rectangle50_155x349.png",
+    title: "News Heading will be here",
+    description: "Lorem ipsum dolor sit amet consectetur. Donec egestas ut",
+    comments: "70",
+    views: "12.4k",
+  },
+  {
+    banner: "images/img_rectangle50_155x349.png",
+    title: "News Heading will be here",
+    description: "Lorem ipsum dolor sit amet consectetur. Donec egestas ut",
+    comments: "70",
+    views: "12.4k",
+  },
+  {
+    banner: "images/img_rectangle50_155x349.png",
+    title: "News Heading will be here",
+    description: "Lorem ipsum dolor sit amet consectetur. Donec egestas ut",
+    comments: "70",
+    views: "12.4k",
+  },
+];
 
 const RoyalNewsPage: React.FC = () => {
   return (
@@ -21,423 +60,13 @@ const RoyalNewsPage: React.FC = () => {
             </Button>
           </div>
         </div>
+
         <div className="md:gap-5 gap-6 grid sm:grid-cols-1 md:grid-cols-2 grid-cols-3 justify-center min-h-[auto] mt-6 w-full">
-          <div className="bg-white-A700 border border-gray-900_19 border-solid flex flex-1 flex-col gap-3.5 items-center justify-start p-4 rounded-md w-full">
-            <div className="h-[155px] relative w-full">
-              <Img
-                className="h-[155px] m-auto object-cover rounded-[3px] w-full"
-                src="images/img_rectangle50_155x349.png"
-                alt="rectangleFifty"
-              />
-              <Img
-                className="absolute h-11 object-cover right-[3%] top-[8%] w-[104px]"
-                src="images/img_frame43.png"
-                alt="frameFortyTwo"
-              />
-            </div>
-            <div className="flex flex-col gap-2 items-start justify-start w-auto">
-              <div className="flex flex-col gap-2 items-start justify-start w-auto">
-                <Text
-                  className="text-base text-gray-900 w-auto"
-                  size="txtPlusJakartaSansRomanBold16Gray900"
-                >
-                  News Heading will be here
-                </Text>
-                <Text
-                  className="leading-[22.00px] max-w-[349px] md:max-w-full text-gray-900_7f text-xs"
-                  size="txtPlusJakartaSansRomanRegular12Gray9007f"
-                >
-                  Lorem ipsum dolor sit amet consectetur. Donec egestas ut
-                  accumsan nisi..
-                </Text>
-              </div>
-              <div className="flex flex-row gap-6 items-start justify-start w-auto">
-                <div className="flex flex-row gap-[5px] items-center justify-start w-auto">
-                  <div className="flex flex-row gap-2 items-center justify-start w-auto">
-                    <Img
-                      className="h-4 w-4"
-                      src="images/img_group2.svg"
-                      alt="groupTwo"
-                    />
-                    <Text
-                      className="text-gray-900_7f text-xs w-auto"
-                      size="txtPlusJakartaSansRomanRegular12Gray9007f"
-                    >
-                      Comments
-                    </Text>
-                  </div>
-                  <Text
-                    className="text-gray-900 text-sm w-auto"
-                    size="txtPlusJakartaSansRomanMedium14Gray900"
-                  >
-                    (70)
-                  </Text>
-                </div>
-                <div className="flex flex-row gap-[5px] items-center justify-start w-auto">
-                  <div className="flex flex-row gap-2 items-center justify-start w-auto">
-                    <Img
-                      className="h-4 w-4"
-                      src="images/img_eye.svg"
-                      alt="eye"
-                    />
-                    <Text
-                      className="text-gray-900_7f text-xs w-auto"
-                      size="txtPlusJakartaSansRomanRegular12Gray9007f"
-                    >
-                      View
-                    </Text>
-                  </div>
-                  <Text
-                    className="text-gray-900 text-sm w-auto"
-                    size="txtPlusJakartaSansRomanMedium14Gray900"
-                  >
-                    (19570)
-                  </Text>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white-A700 border border-gray-900_19 border-solid flex flex-1 flex-col gap-3.5 items-center justify-start p-4 rounded-md w-full">
-            <Img
-              className="h-[155px] sm:h-auto object-cover rounded-[3px] w-full"
-              src="images/img_rectangle50_155x349.png"
-              alt="rectangle2171"
-            />
-            <div className="flex flex-col gap-2 items-start justify-start w-auto">
-              <div className="flex flex-col gap-2 items-start justify-start w-auto">
-                <Text
-                  className="text-base text-gray-900 w-auto"
-                  size="txtPlusJakartaSansRomanBold16Gray900"
-                >
-                  News Heading will be here
-                </Text>
-                <Text
-                  className="leading-[22.00px] max-w-[349px] md:max-w-full text-gray-900_7f text-xs"
-                  size="txtPlusJakartaSansRomanRegular12Gray9007f"
-                >
-                  Lorem ipsum dolor sit amet consectetur. Donec egestas ut
-                  accumsan nisi..
-                </Text>
-              </div>
-              <div className="flex flex-row gap-6 items-start justify-start w-auto">
-                <div className="flex flex-row gap-[5px] items-center justify-start w-auto">
-                  <div className="flex flex-row gap-2 items-center justify-start w-auto">
-                    <Img
-                      className="h-4 w-4"
-                      src="images/img_group2.svg"
-                      alt="groupTwo"
-                    />
-                    <Text
-                      className="text-gray-900_7f text-xs w-auto"
-                      size="txtPlusJakartaSansRomanRegular12Gray9007f"
-                    >
-                      Comments
-                    </Text>
-                  </div>
-                  <Text
-                    className="text-gray-900 text-sm w-auto"
-                    size="txtPlusJakartaSansRomanMedium14Gray900"
-                  >
-                    (70)
-                  </Text>
-                </div>
-                <div className="flex flex-row gap-[5px] items-center justify-start w-auto">
-                  <div className="flex flex-row gap-2 items-center justify-start w-auto">
-                    <Img
-                      className="h-4 w-4"
-                      src="images/img_eye.svg"
-                      alt="eye"
-                    />
-                    <Text
-                      className="text-gray-900_7f text-xs w-auto"
-                      size="txtPlusJakartaSansRomanRegular12Gray9007f"
-                    >
-                      View
-                    </Text>
-                  </div>
-                  <Text
-                    className="text-gray-900 text-sm w-auto"
-                    size="txtPlusJakartaSansRomanMedium14Gray900"
-                  >
-                    (19570)
-                  </Text>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white-A700 border border-gray-900_19 border-solid flex flex-1 flex-col gap-3.5 items-center justify-start p-4 rounded-md w-full">
-            <Img
-              className="h-[155px] sm:h-auto object-cover rounded-[3px] w-full"
-              src="images/img_rectangle50_155x349.png"
-              alt="rectangle2172"
-            />
-            <div className="flex flex-col gap-2 items-start justify-start w-auto">
-              <div className="flex flex-col gap-2 items-start justify-start w-auto">
-                <Text
-                  className="text-base text-gray-900 w-auto"
-                  size="txtPlusJakartaSansRomanBold16Gray900"
-                >
-                  News Heading will be here
-                </Text>
-                <Text
-                  className="leading-[22.00px] max-w-[349px] md:max-w-full text-gray-900_7f text-xs"
-                  size="txtPlusJakartaSansRomanRegular12Gray9007f"
-                >
-                  Lorem ipsum dolor sit amet consectetur. Donec egestas ut
-                  accumsan nisi..
-                </Text>
-              </div>
-              <div className="flex flex-row gap-6 items-start justify-start w-auto">
-                <div className="flex flex-row gap-[5px] items-center justify-start w-auto">
-                  <div className="flex flex-row gap-2 items-center justify-start w-auto">
-                    <Img
-                      className="h-4 w-4"
-                      src="images/img_group2.svg"
-                      alt="groupTwo"
-                    />
-                    <Text
-                      className="text-gray-900_7f text-xs w-auto"
-                      size="txtPlusJakartaSansRomanRegular12Gray9007f"
-                    >
-                      Comments
-                    </Text>
-                  </div>
-                  <Text
-                    className="text-gray-900 text-sm w-auto"
-                    size="txtPlusJakartaSansRomanMedium14Gray900"
-                  >
-                    (70)
-                  </Text>
-                </div>
-                <div className="flex flex-row gap-[5px] items-center justify-start w-auto">
-                  <div className="flex flex-row gap-2 items-center justify-start w-auto">
-                    <Img
-                      className="h-4 w-4"
-                      src="images/img_eye.svg"
-                      alt="eye"
-                    />
-                    <Text
-                      className="text-gray-900_7f text-xs w-auto"
-                      size="txtPlusJakartaSansRomanRegular12Gray9007f"
-                    >
-                      View
-                    </Text>
-                  </div>
-                  <Text
-                    className="text-gray-900 text-sm w-auto"
-                    size="txtPlusJakartaSansRomanMedium14Gray900"
-                  >
-                    (19570)
-                  </Text>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white-A700 border border-gray-900_19 border-solid flex flex-1 flex-col gap-3.5 items-center justify-start p-4 rounded-md w-full">
-            <Img
-              className="h-[155px] sm:h-auto object-cover rounded-[3px] w-full"
-              src="images/img_rectangle50_155x349.png"
-              alt="rectangle2176"
-            />
-            <div className="flex flex-col gap-2 items-start justify-start w-auto">
-              <div className="flex flex-col gap-2 items-start justify-start w-auto">
-                <Text
-                  className="text-base text-gray-900 w-auto"
-                  size="txtPlusJakartaSansRomanBold16Gray900"
-                >
-                  News Heading will be here
-                </Text>
-                <Text
-                  className="leading-[22.00px] max-w-[349px] md:max-w-full text-gray-900_7f text-xs"
-                  size="txtPlusJakartaSansRomanRegular12Gray9007f"
-                >
-                  Lorem ipsum dolor sit amet consectetur. Donec egestas ut
-                  accumsan nisi..
-                </Text>
-              </div>
-              <div className="flex flex-row gap-6 items-start justify-start w-auto">
-                <div className="flex flex-row gap-[5px] items-center justify-start w-auto">
-                  <div className="flex flex-row gap-2 items-center justify-start w-auto">
-                    <Img
-                      className="h-4 w-4"
-                      src="images/img_group2.svg"
-                      alt="groupTwo"
-                    />
-                    <Text
-                      className="text-gray-900_7f text-xs w-auto"
-                      size="txtPlusJakartaSansRomanRegular12Gray9007f"
-                    >
-                      Comments
-                    </Text>
-                  </div>
-                  <Text
-                    className="text-gray-900 text-sm w-auto"
-                    size="txtPlusJakartaSansRomanMedium14Gray900"
-                  >
-                    (70)
-                  </Text>
-                </div>
-                <div className="flex flex-row gap-[5px] items-center justify-start w-auto">
-                  <div className="flex flex-row gap-2 items-center justify-start w-auto">
-                    <Img
-                      className="h-4 w-4"
-                      src="images/img_eye.svg"
-                      alt="eye"
-                    />
-                    <Text
-                      className="text-gray-900_7f text-xs w-auto"
-                      size="txtPlusJakartaSansRomanRegular12Gray9007f"
-                    >
-                      View
-                    </Text>
-                  </div>
-                  <Text
-                    className="text-gray-900 text-sm w-auto"
-                    size="txtPlusJakartaSansRomanMedium14Gray900"
-                  >
-                    (19570)
-                  </Text>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white-A700 border border-gray-900_19 border-solid flex flex-1 flex-col gap-3.5 items-center justify-start p-4 rounded-md w-full">
-            <Img
-              className="h-[155px] sm:h-auto object-cover rounded-[3px] w-full"
-              src="images/img_rectangle50_155x349.png"
-              alt="rectangle2177"
-            />
-            <div className="flex flex-col gap-2 items-start justify-start w-auto">
-              <div className="flex flex-col gap-2 items-start justify-start w-auto">
-                <Text
-                  className="text-base text-gray-900 w-auto"
-                  size="txtPlusJakartaSansRomanBold16Gray900"
-                >
-                  News Heading will be here
-                </Text>
-                <Text
-                  className="leading-[22.00px] max-w-[349px] md:max-w-full text-gray-900_7f text-xs"
-                  size="txtPlusJakartaSansRomanRegular12Gray9007f"
-                >
-                  Lorem ipsum dolor sit amet consectetur. Donec egestas ut
-                  accumsan nisi..
-                </Text>
-              </div>
-              <div className="flex flex-row gap-6 items-start justify-start w-auto">
-                <div className="flex flex-row gap-[5px] items-center justify-start w-auto">
-                  <div className="flex flex-row gap-2 items-center justify-start w-auto">
-                    <Img
-                      className="h-4 w-4"
-                      src="images/img_group2.svg"
-                      alt="groupTwo"
-                    />
-                    <Text
-                      className="text-gray-900_7f text-xs w-auto"
-                      size="txtPlusJakartaSansRomanRegular12Gray9007f"
-                    >
-                      Comments
-                    </Text>
-                  </div>
-                  <Text
-                    className="text-gray-900 text-sm w-auto"
-                    size="txtPlusJakartaSansRomanMedium14Gray900"
-                  >
-                    (70)
-                  </Text>
-                </div>
-                <div className="flex flex-row gap-[5px] items-center justify-start w-auto">
-                  <div className="flex flex-row gap-2 items-center justify-start w-auto">
-                    <Img
-                      className="h-4 w-4"
-                      src="images/img_eye.svg"
-                      alt="eye"
-                    />
-                    <Text
-                      className="text-gray-900_7f text-xs w-auto"
-                      size="txtPlusJakartaSansRomanRegular12Gray9007f"
-                    >
-                      View
-                    </Text>
-                  </div>
-                  <Text
-                    className="text-gray-900 text-sm w-auto"
-                    size="txtPlusJakartaSansRomanMedium14Gray900"
-                  >
-                    (19570)
-                  </Text>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white-A700 border border-gray-900_19 border-solid flex flex-1 flex-col gap-3.5 items-center justify-start p-4 rounded-md w-full">
-            <Img
-              className="h-[155px] sm:h-auto object-cover rounded-[3px] w-full"
-              src="images/img_rectangle50_155x349.png"
-              alt="rectangle2178"
-            />
-            <div className="flex flex-col gap-2 items-start justify-start w-auto">
-              <div className="flex flex-col gap-2 items-start justify-start w-auto">
-                <Text
-                  className="text-base text-gray-900 w-auto"
-                  size="txtPlusJakartaSansRomanBold16Gray900"
-                >
-                  News Heading will be here
-                </Text>
-                <Text
-                  className="leading-[22.00px] max-w-[349px] md:max-w-full text-gray-900_7f text-xs"
-                  size="txtPlusJakartaSansRomanRegular12Gray9007f"
-                >
-                  Lorem ipsum dolor sit amet consectetur. Donec egestas ut
-                  accumsan nisi..
-                </Text>
-              </div>
-              <div className="flex flex-row gap-6 items-start justify-start w-auto">
-                <div className="flex flex-row gap-[5px] items-center justify-start w-auto">
-                  <div className="flex flex-row gap-2 items-center justify-start w-auto">
-                    <Img
-                      className="h-4 w-4"
-                      src="images/img_group2.svg"
-                      alt="groupTwo"
-                    />
-                    <Text
-                      className="text-gray-900_7f text-xs w-auto"
-                      size="txtPlusJakartaSansRomanRegular12Gray9007f"
-                    >
-                      Comments
-                    </Text>
-                  </div>
-                  <Text
-                    className="text-gray-900 text-sm w-auto"
-                    size="txtPlusJakartaSansRomanMedium14Gray900"
-                  >
-                    (70)
-                  </Text>
-                </div>
-                <div className="flex flex-row gap-[5px] items-center justify-start w-auto">
-                  <div className="flex flex-row gap-2 items-center justify-start w-auto">
-                    <Img
-                      className="h-4 w-4"
-                      src="images/img_eye.svg"
-                      alt="eye"
-                    />
-                    <Text
-                      className="text-gray-900_7f text-xs w-auto"
-                      size="txtPlusJakartaSansRomanRegular12Gray9007f"
-                    >
-                      View
-                    </Text>
-                  </div>
-                  <Text
-                    className="text-gray-900 text-sm w-auto"
-                    size="txtPlusJakartaSansRomanMedium14Gray900"
-                  >
-                    (19570)
-                  </Text>
-                </div>
-              </div>
-            </div>
-          </div>
+          {news?.map((item, index) => (
+            <RoyalNewsItem key={index} {...item} />
+          ))}
         </div>
+
         <div className="flex sm:flex-col flex-row gap-6 items-start justify-start mt-[138px] w-auto sm:w-full">
           <div className="flex flex-col h-8 md:h-auto items-center justify-start px-3 py-2 rounded-lg w-20">
             <Text
