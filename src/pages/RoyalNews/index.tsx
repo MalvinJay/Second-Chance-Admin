@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { Button, Img, Text } from "components";
 import Layout from "components/Layout/Layout";
 import RoyalNewsItem from "components/RoyalNews/RoyalNewsItem";
+import MyModal from "components/Shared/Modal/Modal";
+import AddEditArticle from "components/RoyalNews/AddEditArticle/AddEditArticle";
 
 const news = [
   {
@@ -41,6 +44,8 @@ const news = [
 ];
 
 const RoyalNewsPage: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <Layout title="Royal News">
       <div className="flex flex-col items-center justify-start w-[96%] md:w-full">
@@ -55,6 +60,7 @@ const RoyalNewsPage: React.FC = () => {
             <Button
               className="cursor-pointer font-semibold min-w-[129px] text-center text-sm"
               color="deep_purple_A200_19"
+              onClick={() => setIsOpen(true)}
             >
               + Add News
             </Button>
@@ -174,6 +180,19 @@ const RoyalNewsPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {isOpen && (
+        <MyModal
+          style="w-full max-w-5xl"
+          isOpen={isOpen}
+          closeModal={(val) => setIsOpen(false)}
+        >
+          <AddEditArticle
+            title="Add Royal News"
+            handleClose={() => setIsOpen(false)}
+          />
+        </MyModal>
+      )}
     </Layout>
   );
 };
