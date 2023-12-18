@@ -2,7 +2,7 @@ import { Button } from "components/Button";
 import { Img } from "components/Img";
 import { Text } from "components/Text";
 
-const AddArticle = () => {
+const AddArticle = ({ setShow = (e: boolean) => {} }) => {
   return (
     <div className="bg-gray-50 border border-purple-A400 border-solid flex md:flex-1 flex-col items-center justify-start p-8 sm:px-5 rounded-lg w-[38%] md:w-full">
       <div className="flex flex-col gap-2.5 items-start justify-start w-auto">
@@ -18,6 +18,7 @@ const AddArticle = () => {
             <Text
               className="text-base text-blue_gray-900 w-auto"
               size="txtPlusJakartaSansRomanBold16"
+              onClick={() => setShow(true)}
             >
               Add new Royal News
             </Text>

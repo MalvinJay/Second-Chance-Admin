@@ -11,6 +11,7 @@ import AddArticle from "components/RoyalNews/AddArticle";
 import ArticleItem from "components/RoyalNews/ArticleItem";
 import AddEditShow from "components/AddEditShow/AddEditShow";
 import MyModal from "components/Shared/Modal/Modal";
+import AddEditArticle from "components/RoyalNews/AddEditArticle/AddEditArticle";
 
 // Upcoming shows
 const upcomingColumns = [
@@ -216,6 +217,7 @@ const testimonies = [
 
 const HomepagePage: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [show, setShow] = useState(false);
 
   return (
     <Layout title="Home">
@@ -392,7 +394,7 @@ const HomepagePage: React.FC = () => {
             </Text>
 
             <div className="flex md:flex-col flex-row gap-6 items-start justify-start max-w-[1143px] w-full">
-              <AddArticle />
+              <AddArticle setShow={setShow} />
 
               <section className="royal-news-items">
                 <div className="bg-white-A700 flex md:flex-1 flex-col items-end justify-start overflow-auto rounded-lg w-full">
@@ -433,6 +435,19 @@ const HomepagePage: React.FC = () => {
           <AddEditShow
             title="Add Upcoming Shows"
             handleClose={() => setIsOpen(false)}
+          />
+        </MyModal>
+      )}
+
+      {show && (
+        <MyModal
+          style="w-full max-w-5xl"
+          isOpen={isOpen}
+          closeModal={(val) => setShow(false)}
+        >
+          <AddEditArticle
+            title="Add Royal News"
+            handleClose={() => setShow(false)}
           />
         </MyModal>
       )}
