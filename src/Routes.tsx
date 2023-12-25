@@ -1,6 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NotFound from "pages/NotFound";
+
+import { FallbackIcon } from "components/Icons/Icons";
+
 const AddPreviousShows = React.lazy(() => import("pages/AddPreviousShows"));
 const ContactUs = React.lazy(() => import("pages/ContactUs"));
 const AddFMStation = React.lazy(() => import("pages/AddFMStation"));
@@ -14,33 +17,17 @@ const VOGLiveSeries = React.lazy(() => import("pages/VOGLiveSeries"));
 const AddNewMember = React.lazy(() => import("pages/AddNewMember"));
 const Aboutus = React.lazy(() => import("pages/Aboutus"));
 const Homepage = React.lazy(() => import("pages/Homepage"));
+const SignIn = React.lazy(() => import("pages/SignIn"));
 
 const ProjectRoutes = () => {
   return (
     <React.Suspense
       fallback={
-        <div className="w-[193px] !sticky bg-gray-900 h-screen sm:hidden md:px-5 top-[0]">
-          <svg
-            className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
-        </div>
+        !location.pathname.includes("sign-in") && (
+          <div className="w-[193px] !sticky bg-gray-900 h-screen sm:hidden md:px-5 top-[0]">
+            <FallbackIcon />
+          </div>
+        )
       }
     >
       <Router>
@@ -53,6 +40,7 @@ const ProjectRoutes = () => {
           <Route path="/fm-stations" element={<FMStation />} />
           <Route path="/royal-news" element={<RoyalNews />} />
           <Route path="/contact-us" element={<ContactUs />} />
+          <Route path="/sign-in" element={<SignIn />} />
 
           <Route path="/addnewmember" element={<AddNewMember />} />
           <Route path="/addvogliveseries" element={<AddVOGLiveSeries />} />

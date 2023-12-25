@@ -1,13 +1,14 @@
 import axios, { AxiosResponse, AxiosError } from "axios";
 import Cookies from "js-cookie";
 
-const BASE_API_URL = "https://jsonplaceholder.typicode.com";
+const BASE_API_URL = "https://08a8-154-160-10-17.ngrok-free.app/api";
 
 // Create an Axios instance
 const AXIOS_INSTANCE = axios.create({
     baseURL: BASE_API_URL,
     headers: {
         "Content-Type": "application/json",
+        "Accept": "application/json"
     },
 });
 
@@ -29,6 +30,7 @@ AXIOS_INSTANCE.interceptors.request.use(
 const onResponseSuccess = (response: AxiosResponse) => {
     return response;
 };
+
 function onResponseError(err: AxiosError) {
     const status = err.status || (err.response ? err.response.status : 0);
     const currentURL = window.location.href.toString().split(window.location.host)[1];
@@ -38,6 +40,7 @@ function onResponseError(err: AxiosError) {
     }
     return Promise.reject(err);
 }
+
 AXIOS_INSTANCE.interceptors.response.use(onResponseSuccess, onResponseError);
 
 export default AXIOS_INSTANCE;

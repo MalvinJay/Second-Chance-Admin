@@ -1,18 +1,63 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Menu, MenuItem, Sidebar } from "react-pro-sidebar";
 import { Link } from "react-router-dom";
 import "./Layout.css";
+import Cookies from "js-cookie";
+
+import { useNavigate } from "react-router-dom";
 
 import { Img, Text } from "components";
 import { sideBarMenu } from "contants";
+import AXIOS_INSTANCE from "api/axios";
+import { setUser } from "store/UserSlicer/userSlice";
+import { useAppDispatch } from "store/hooks";
+import { Alert, Snackbar } from "@mui/material";
+import { TAlertMsgProp } from "types/shared.type";
 
 const Layout = ({
   children,
   title,
+  alertMsg,
+  showAlert,
+  handleClose,
 }: {
   children: React.ReactNode;
   title: string;
+  alertMsg?: TAlertMsgProp;
+  showAlert?: boolean;
+  handleClose?: () => void;
 }) => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const token = Cookies.get("token");
+
+  const clearUserData = () => {
+    dispatch(setUser(null));
+    Cookies.remove("token");
+    navigate("/sign-in");
+  };
+
+  const handleSignOut = () => {
+    console.log("Handle sign out");
+
+    AXIOS_INSTANCE.post("/users/logout").then((res) => {
+      console.log("login response:", res);
+      const data = res.data;
+      switch (res.status) {
+        case 200:
+          if (data) clearUserData();
+          break;
+
+        default:
+          break;
+      }
+    });
+  };
+
+  // useEffect(() => {
+  //   if (!token) clearUserData();
+  // }, [token]);
+
   return (
     <div className="bg-gray-50 flex flex-col font-plusjakartasans items-center justify-start mx-auto w-full">
       <div className="flex md:flex-col flex-row md:gap-5 items-start justify-evenly w-full">
@@ -63,7 +108,7 @@ const Layout = ({
               ))}
             </div>
             <div className="flex flex-col items-center justify-start mt-[204px] w-full">
-              <MenuItem>
+              <MenuItem onClick={handleSignOut}>
                 <div className="flex items-start justify-end">
                   <Text className="md:ml-[0] ml-[11px] mt-1 w-auto">
                     Sign Out
@@ -91,6 +136,25 @@ const Layout = ({
           {children}
         </div>
       </div>
+
+      {/* Snackbar */}
+      <Snackbar
+        open={showAlert}
+        autoHideDuration={5000}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+      >
+        <Alert
+          onClose={handleClose}
+          severity={alertMsg.status}
+          sx={{ width: "100%" }}
+        >
+          {alertMsg.msg}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

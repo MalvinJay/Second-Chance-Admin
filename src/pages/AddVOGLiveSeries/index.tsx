@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Button, Img, Input, Text } from "components";
+import Uploader from "components/Shared/Uploader/Uploader";
 
 const AddVOGLiveSeriesPage: React.FC = () => {
   return (
@@ -164,41 +165,14 @@ const AddVOGLiveSeriesPage: React.FC = () => {
               </Button>
             </div>
           </div>
-          <div className="flex flex-col gap-5 items-start justify-start mt-8 w-auto md:w-full">
-            <Text
-              className="text-blue_gray-900 text-xl w-auto"
-              size="txtPlusJakartaSansRomanSemiBold20"
-            >
-              Banner Image
-            </Text>
-            <div
-              className="bg-cover bg-no-repeat flex flex-col h-[132px] items-center justify-start p-6 sm:px-5 w-full"
-              style={{ backgroundImage: "url('images/img_group10120.svg')" }}
-            >
-              <div className="flex flex-col gap-2.5 items-center justify-start w-auto sm:w-full">
-                <Img
-                  className="h-6 w-6"
-                  src="images/img_television.svg"
-                  alt="television"
-                />
-                <div className="flex flex-col gap-2 items-center justify-start w-auto sm:w-full">
-                  <Text
-                    className="text-base text-blue_gray-900 w-auto"
-                    size="txtPlusJakartaSansRomanBold16"
-                  >
-                    Upload Images
-                  </Text>
-                  <Text
-                    className="text-blue_gray-900_87 text-center text-xs w-auto"
-                    size="txtPlusJakartaSansRomanRegular12"
-                  >
-                    Drag and drop or click here to browse files (File format :
-                    JPEG, PNG, JPG)
-                  </Text>
-                </div>
-              </div>
-            </div>
-          </div>
+
+          <Uploader
+            title="Banner Image"
+            ctaTitle="Upload Images"
+            uploadIcon="images/img_television.svg"
+            ctaTypes="JPEG, PNG, JPG"
+          />
+
           <div className="flex flex-col gap-5 items-start justify-start mt-8 w-auto md:w-full">
             <Text
               className="text-blue_gray-900 text-xl w-auto"

@@ -281,7 +281,6 @@ const TVShowsPage: React.FC = () => {
         >
           <AddEditShow
             title="Add TV Shows"
-            type="vog"
             handleClose={() => setIsOpen(false)}
             showExtras
           />
