@@ -4,7 +4,7 @@ import { imageVideoUploadAPIFn } from "api/imageUploads";
 import { AxiosError } from "axios";
 import { Img } from "components/Img";
 import { Text } from "components/Text";
-import { useEffect } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { IImageUploadPayload } from "types/shared.type";
 
@@ -26,45 +26,39 @@ const BannerUploader = (props: IBannerProps) => {
   } = useForm();
   const { icon, title, uploadText, name, uploadType, ctaTypes, handleUpload } =
     props;
+  const [preview, setPreview] = useState<string>("");
 
   const {
     mutateAsync: isUploadingMutate,
     isLoading,
     isSuccess: isUploadingSuccess,
-    // error: isUploadingError,
   } = useMutation({
     mutationFn: imageVideoUploadAPIFn,
-    onError: (error: AxiosError) => error?.response?.data,
+    onError: (error: AxiosError) => {
+      error?.response?.data;
+
+      // Throw error message here...
+    },
   });
 
-  const handleItemUpload = (imgFile: File | undefined) => {
+  const handleItemUpload = async (imgFile: File | undefined) => {
     clearErrors(name);
-    // const formData = new FormData();
-    // formData.append("image", imgFile);
-    // formData.append("folder", uploadType);
 
     const payload = {
       image: imgFile,
       folder: uploadType,
     };
 
-    isUploadingMutate(payload as unknown as IImageUploadPayload)
-      .then(
-        (res) => {
-          console.log("IsUploading response:", res);
-          // handleUpload();
-        },
-        (err) => {
-          console.error("Error uploading:", err);
-        }
-      )
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+    const {
+      data: { data },
+    } = await isUploadingMutate(payload as any);
+
+    handleUpload(data);
+    setPreview(data.previewImage);
   };
 
   return (
-    <div className="relative bg-gray-900_20 border border-gray-900_26 rounded-[10px] flex flex-col h-[132px] items-center justify-start p-6 sm:px-5 w-full">
+    <div className="relative bg-gray-900_20 border border-gray-900_26 rounded-[10px] flex flex-col min-h-[132px] items-center justify-start p-6 sm:px-5 w-full">
       {isLoading && (
         <CircularProgress
           className="absolute top-4 left-2"
@@ -88,7 +82,18 @@ const BannerUploader = (props: IBannerProps) => {
           {...register(name, { required: true })}
           onChange={(e) => handleItemUpload(e.target?.files?.[0])}
         />
-        <Img className="h-6 w-6" src={icon} alt="television" />
+        {preview ? (
+          <Img
+            className="w-64 h-64 object-cover"
+            src={preview}
+            alt="television"
+          />
+        ) : (
+          <>
+            <Img className="h-6 w-6" src={icon} alt="television" />
+          </>
+        )}
+
         <div className="flex flex-col gap-2 items-center justify-start w-full">
           <Text
             className="text-base text-blue_gray-900 w-auto"

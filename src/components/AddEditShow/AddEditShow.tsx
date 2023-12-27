@@ -1,5 +1,6 @@
 import { CircularProgress } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
+import { queryClient } from "App";
 import { AddShowAPIFn } from "api/shows";
 import { AxiosError } from "axios";
 import BannerUploader from "components/BannerUploader/BannerUploader";
@@ -47,28 +48,25 @@ const AddEditShow = (props: IAddEditShowProps) => {
     onError: (error: AxiosError) => error?.response?.data,
   });
 
-  const handleUpload = (val: string, type: string) => {
+  const handleUpload = (val: any, type: string) => {
     console.log("Upload file:", val);
-    setFormValues((prev: any) => {
-      return {
-        ...prev,
-        [type]: {
-          img_url: val,
-          file_name: "",
-        },
-      };
-    });
+    // setFormValues((prev: any) => {
+    //   return {
+    //     ...prev,
+    //     [type]: {
+    //       ...val,
+    //     },
+    //   };
+    // });
+    setFormValues({ ...val });
   };
 
   const onSubmit = (values: any) => {
-    console.log("form values:", values);
-
     const payload = {
       ...values,
       thumbnail: { ...formValues },
     };
 
-    // console.log("Final payload:", payload);
     isAddingShowMutate(payload)
       .then(
         (res) => {
@@ -80,6 +78,9 @@ const AddEditShow = (props: IAddEditShowProps) => {
               msg: `${type} added successfully`,
             });
             setShowAlert(true);
+
+            // Invalidate vogLiveServices key
+            queryClient.invalidateQueries(["vogLiveServices"]);
           } else {
             setAlertMsg({
               status: "error",
@@ -406,6 +407,7 @@ const AddEditShow = (props: IAddEditShowProps) => {
               variant="gradient"
               color="purple_A200_purple_500"
               type="submit"
+              disabled={isLoading}
             >
               {isLoading && <CircularProgress color="inherit" size={24} />}
               <Text

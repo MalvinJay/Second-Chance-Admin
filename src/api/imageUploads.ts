@@ -6,6 +6,7 @@ export const imageVideoUploadAPIFn = async (payload: IImageUploadPayload): Promi
     try {
         const response = await AXIOS_INSTANCE.post("/files/upload", payload, {
             headers: {
+                "Accept": "application/json",
                 "Content-Type": "multipart/form-data"
             }
         });

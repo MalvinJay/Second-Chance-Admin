@@ -290,7 +290,7 @@ export default function MuiTable(props: ICustomeTable) {
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
       ),
-    [order, orderBy, page, rowsPerPage]
+    [data, order, orderBy, page, rowsPerPage]
   );
 
   return (

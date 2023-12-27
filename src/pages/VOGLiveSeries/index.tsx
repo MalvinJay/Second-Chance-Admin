@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button, Img, Input, Line, Text } from "components";
 import { DeleteIcon, EditIcon } from "components/Icons/Icons";
 import Layout from "components/Layout/Layout";
@@ -10,10 +10,15 @@ import MyModal from "components/Shared/Modal/Modal";
 import AddEditShow from "components/AddEditShow/AddEditShow";
 import MuiTable from "components/Shared/Table/MuiTable";
 import Pagination from "components/Shared/Pagination/Pagination";
-import { Paper, Typography } from "@mui/material";
+import { CircularProgress, Paper, Typography } from "@mui/material";
 import { getVOGLiveServicesAPI } from "api/shows";
 import { useReactQuery } from "hooks/useReactQuery";
 import { TAlertMsgProp } from "types/shared.type";
+
+interface IvogLiveServices {
+  pagination: any;
+  services: any;
+}
 
 // Previous show
 const vogLiveServiceColumns = [
@@ -30,8 +35,6 @@ const vogLiveServiceColumns = [
   { label: "Social Networks", renderCell: (item) => item.socials },
   { label: "Actions", renderCell: (item) => item.actions },
 ];
-
-const vogliveservices = [];
 
 // Array(20).fill({
 //   id: Math.floor(Math.random() * 10 + 1),
@@ -79,6 +82,11 @@ interface HeadCell {
   numeric: boolean;
 }
 
+interface IVogLiveServicesData {
+  services: any[];
+  pagination: any;
+}
+
 const VOGLiveSeriesPage: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -103,12 +111,12 @@ const VOGLiveSeriesPage: React.FC = () => {
       disablePadding: true,
       label: "Show Name",
     },
-    {
-      id: "hosted_by",
-      numeric: false,
-      disablePadding: false,
-      label: "Hosted By",
-    },
+    // {
+    //   id: "hosted_by",
+    //   numeric: false,
+    //   disablePadding: false,
+    //   label: "Hosted By",
+    // },
     {
       id: "created_at",
       numeric: false,
@@ -129,12 +137,58 @@ const VOGLiveSeriesPage: React.FC = () => {
     },
   ];
 
-  const { data: vogLiveServicesList } = useReactQuery(
-    "vogLiveServices",
+  const {
+    isLoading,
+    data: vogLiveServices,
+  }: { isLoading: boolean; data: any } = useReactQuery(
+    ["vogLiveServices"],
     "/live-services"
   );
 
-  console.log("vogLiveServicesList:", vogLiveServicesList);
+  const filteredVogServices = useMemo(() => {
+    if (
+      vogLiveServices &&
+      "services" in vogLiveServices &&
+      Array.isArray(vogLiveServices.services)
+    ) {
+      return vogLiveServices?.services.map((el: any) => {
+        return {
+          id: el.id,
+          name: (
+            <div className="flex gap-4 items-center">
+              <Img
+                className="h-[37px] md:h-auto object-cover rounded-md w-[43px]"
+                src={el.thumbnail?.img_url}
+                alt={el.thumbnail?.file_name}
+              />
+              <span>{el.title}</span>
+            </div>
+          ),
+          // hostedBy: "Stephen Adom",
+          date_time: `${new Date(el.airing_date)?.toDateString().slice(4)} | ${
+            el.airing_time
+          }`,
+          social: (
+            <div className="flex items-center gap-2">
+              <img src="images/img_frame899.svg" />
+            </div>
+          ),
+          actions: (
+            <div className="flex gap-2 items-center">
+              <Button className="cursor-pointer flex items-center justify-center gap-1">
+                <EditIcon color="#949698" />
+              </Button>
+              <Button className="cursor-pointer flex items-center justify-center gap-1">
+                <DeleteIcon color="#949698" />
+              </Button>
+            </div>
+          ),
+        };
+      });
+    }
+  }, [vogLiveServices, showAlert, isLoading]) as any[];
+
+  console.log("filteredVogServices:", filteredVogServices);
 
   return (
     <Layout
@@ -145,14 +199,9 @@ const VOGLiveSeriesPage: React.FC = () => {
     >
       <div className="bg-white-A700 border border-gray-900_19 border-solid flex flex-col items-center justify-end p-5 rounded-[10px] w-[96%] md:w-full">
         <div className="flex flex-col items-center justify-start w-full">
-          {/* <CustomTable
-            tableHeading={vogLiveServiceColumns}
-            data={vogliveservices}
-          /> */}
-
           <MuiTable
             tableHeading={headCells}
-            data={vogliveservices}
+            data={filteredVogServices ?? []}
             toolbarTitle="Live Services Listings"
             toolbarActions={
               <Button
@@ -164,15 +213,31 @@ const VOGLiveSeriesPage: React.FC = () => {
               </Button>
             }
           />
-          {vogliveservices && vogliveservices.length <= 0 && (
-            <Paper className="w-1/2 text-center p-4 h-24 flex items-center justify-center">
-              <Typography>No Data</Typography>
+          {filteredVogServices?.length <= 0 && (
+            <Paper
+              elevation={0}
+              className="w-1/2 text-center p-4 h-24 flex items-center justify-center"
+            >
+              {isLoading ? (
+                <CircularProgress color="inherit" size={32} />
+              ) : (
+                <Typography>No Data</Typography>
+              )}
             </Paper>
           )}
         </div>
       </div>
 
-      <Pagination count={vogliveservices.length} />
+      <Pagination
+        count={
+          vogLiveServices
+            ? Math.ceil(
+                vogLiveServices.pagination?.total /
+                  vogLiveServices.pagination.per_page
+              )
+            : 0
+        }
+      />
 
       {isOpen && (
         <MyModal

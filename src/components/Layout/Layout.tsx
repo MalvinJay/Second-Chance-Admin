@@ -54,9 +54,9 @@ const Layout = ({
     });
   };
 
-  // useEffect(() => {
-  //   if (!token) clearUserData();
-  // }, [token]);
+  useEffect(() => {
+    if (!token) clearUserData();
+  }, [token]);
 
   return (
     <div className="bg-gray-50 flex flex-col font-plusjakartasans items-center justify-start mx-auto w-full">
@@ -149,10 +149,10 @@ const Layout = ({
       >
         <Alert
           onClose={handleClose}
-          severity={alertMsg.status}
+          severity={alertMsg?.status}
           sx={{ width: "100%" }}
         >
-          {alertMsg.msg}
+          {alertMsg?.msg}
         </Alert>
       </Snackbar>
     </div>
