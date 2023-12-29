@@ -1,11 +1,21 @@
-import { useState } from "react";
-import { Box, Tabs, Tab } from "@mui/material";
+import { useMemo, useState } from "react";
+import {
+  Box,
+  Tabs,
+  Tab,
+  Paper,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
 import { Button, Img, List, Text } from "components";
 import { DeleteIcon, EditIcon } from "components/Icons/Icons";
 import Layout from "components/Layout/Layout";
 import MuiTable from "components/Shared/Table/MuiTable";
 import MyModal from "components/Shared/Modal/Modal";
 import AddEditShow from "components/AddEditShow/AddEditShow";
+import { useReactQuery } from "hooks/useReactQuery";
+import PaginationComp from "components/Shared/Pagination/Pagination";
+import { TAlertMsgProp } from "types/shared.type";
 
 interface Data {
   id: number;
@@ -20,6 +30,11 @@ interface HeadCell {
   id: keyof Data;
   label: string;
   numeric: boolean;
+}
+
+interface ITVShowsData {
+  services: any[];
+  pagination: any;
 }
 
 function a11yProps(index: number) {
@@ -89,41 +104,59 @@ const TVShowsPage: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [value, setValue] = useState(0);
 
-  const tvShows = Array(20).fill({
-    id: Math.floor(Math.random() * 10 + 1),
-    name: (
-      <div className="flex gap-4 items-center">
-        <Img
-          className="h-[37px] md:h-auto object-cover rounded-md w-[43px]"
-          src="images/img_rectangle2161_40x48.png"
-          alt="rectangle2161"
-        />
-        <span>Christopher Nolan</span>
-      </div>
-    ),
-    hostedBy: "Stephen Adom",
-    date_time: "27 June, 2023 | 5:30 pm",
-    social: (
-      <div className="flex items-center gap-2">
-        <img src="images/img_frame899.svg" />
-      </div>
-    ),
-    actions: (
-      <div className="flex gap-2 items-center">
-        <Button className="cursor-pointer flex items-center justify-center gap-1">
-          <EditIcon color="#949698" />
-        </Button>
-        <Button className="cursor-pointer flex items-center justify-center gap-1">
-          <DeleteIcon color="#949698" />
-        </Button>
-      </div>
-    ),
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMsg, setAlertMsg] = useState<TAlertMsgProp>({
+    msg: "",
+    status: "success",
   });
 
+  const { isLoading, data: tvShows }: { isLoading: boolean; data: any } =
+    useReactQuery(["tvShows"], "/tv-shows");
+
+  const filteredTvShows = useMemo(() => {
+    if (tvShows && "services" in tvShows && Array.isArray(tvShows.services)) {
+      return tvShows?.services?.map((el: any) => {
+        return {
+          id: el.id,
+          name: (
+            <div className="flex gap-4 items-center">
+              <Img
+                className="h-[37px] md:h-auto object-cover rounded-md w-[43px]"
+                src={el.thumbnail?.img_url}
+                alt={el.thumbnail?.file_name}
+              />
+              <span>{el.title}</span>
+            </div>
+          ),
+          hostedBy: "Stephen Adom",
+          date_time: `${new Date(el.airing_date)?.toDateString().slice(4)} | ${
+            el.airing_time
+          }`,
+          social: (
+            <div className="flex items-center gap-2">
+              <img src="images/img_frame899.svg" />
+            </div>
+          ),
+          actions: (
+            <div className="flex gap-2 items-center">
+              <Button className="cursor-pointer flex items-center justify-center gap-1">
+                <EditIcon color="#949698" />
+              </Button>
+              <Button className="cursor-pointer flex items-center justify-center gap-1">
+                <DeleteIcon color="#949698" />
+              </Button>
+            </div>
+          ),
+        };
+      });
+    } else [];
+  }, [tvShows, showAlert, isLoading]) as any[];
+
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    console.log("newValue:", newValue);
     setValue(newValue);
   };
+
+  console.log("filteredTvShows:", filteredTvShows);
 
   return (
     <Layout title="Tv Shows">
@@ -158,126 +191,43 @@ const TVShowsPage: React.FC = () => {
 
         <div className="bg-white-A700 border border-gray-900_19 border-solid flex flex-col items-center justify-end p-5 rounded-[10px] w-full">
           <CustomTabPanel value={value} index={0}>
-            <MuiTable tableHeading={headCells} data={tvShows} />
+            <MuiTable tableHeading={headCells} data={filteredTvShows ?? []} />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
-            <MuiTable tableHeading={headCells} data={tvShows} />
+            <MuiTable tableHeading={headCells} data={filteredTvShows ?? []} />
           </CustomTabPanel>
+
+          {!tvShows ||
+            (tvShows?.servces?.length <= 0 && (
+              <Paper
+                elevation={0}
+                className="w-1/2 text-center p-4 h-24 flex items-center justify-center"
+              >
+                {isLoading ? (
+                  <CircularProgress color="inherit" size={32} />
+                ) : (
+                  <Typography>No Data</Typography>
+                )}
+              </Paper>
+            ))}
         </div>
 
-        <div className="flex sm:flex-col flex-row gap-6 items-start justify-start mt-[76px] w-auto sm:w-full">
-          <div className="flex flex-col h-8 md:h-auto items-center justify-start px-3 py-2 rounded-lg w-20">
-            <Text
-              className="text-deep_purple-A200 text-xs w-auto"
-              size="txtPlusJakartaSansRomanSemiBold12"
-            >
-              Previous
-            </Text>
-          </div>
-          <div className="flex sm:flex-col flex-row gap-1 items-center justify-start w-auto sm:w-full">
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-[50%] w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs w-auto"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                1
-              </Text>
-            </div>
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-[50%] w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs w-auto"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                ...
-              </Text>
-            </div>
-            <Button
-              className="cursor-pointer h-8 rounded-lg text-center text-xs w-8"
-              color="gray_200"
-              size="sm"
-            >
-              10
-            </Button>
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-lg w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs w-auto"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                11
-              </Text>
-            </div>
-            <Button
-              className="cursor-pointer font-semibold h-8 rounded-lg text-center text-xs w-8"
-              color="deep_purple_A200"
-              size="sm"
-            >
-              12
-            </Button>
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-lg w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs w-auto"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                13
-              </Text>
-            </div>
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-lg w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs w-auto"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                14
-              </Text>
-            </div>
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-lg w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs w-auto"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                15
-              </Text>
-            </div>
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-lg w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs w-auto"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                16
-              </Text>
-            </div>
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-lg w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs w-auto"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                ...
-              </Text>
-            </div>
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-lg w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                26
-              </Text>
-            </div>
-          </div>
-          <div className="flex flex-col items-center justify-start px-3 py-2 rounded-lg w-auto">
-            <Text
-              className="text-center text-deep_purple-A200 text-xs w-auto"
-              size="txtPlusJakartaSansRomanSemiBold12"
-            >
-              Next
-            </Text>
-          </div>
-        </div>
+        <PaginationComp
+          count={
+            filteredTvShows
+              ? Math.ceil(
+                  tvShows?.pagination?.total / tvShows?.pagination.per_page
+                )
+              : 0
+          }
+        />
       </div>
 
       {isOpen && (
         <MyModal
-          style="w-full max-w-5xl"
+          style="w-full max-w-4xl"
           isOpen={isOpen}
-          closeModal={(val) => setIsOpen(false)}
+          closeModal={() => setIsOpen(false)}
         >
           <AddEditShow
             title="Add TV Shows"

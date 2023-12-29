@@ -36,37 +36,6 @@ const vogLiveServiceColumns = [
   { label: "Actions", renderCell: (item) => item.actions },
 ];
 
-// Array(20).fill({
-//   id: Math.floor(Math.random() * 10 + 1),
-//   name: (
-//     <div className="flex gap-4 items-center">
-//       <Img
-//         className="h-[37px] md:h-auto object-cover rounded-md w-[43px]"
-//         src="images/img_rectangle2161_40x48.png"
-//         alt="rectangle2161"
-//       />
-//       <span>Christopher Nolan</span>
-//     </div>
-//   ),
-//   hostedBy: "Stephen Adom",
-//   date_time: "27 June, 2023 | 5:30 pm",
-//   social: (
-//     <div className="flex items-center gap-2">
-//       <img src="images/img_frame899.svg" />
-//     </div>
-//   ),
-//   actions: (
-//     <div className="flex gap-2 items-center">
-//       <Button className="cursor-pointer flex items-center justify-center gap-1">
-//         <EditIcon color="#949698" />
-//       </Button>
-//       <Button className="cursor-pointer flex items-center justify-center gap-1">
-//         <DeleteIcon color="#949698" />
-//       </Button>
-//     </div>
-//   ),
-// });
-
 interface Data {
   id: number;
   name: string;
@@ -188,8 +157,6 @@ const VOGLiveSeriesPage: React.FC = () => {
     }
   }, [vogLiveServices, showAlert, isLoading]) as any[];
 
-  console.log("filteredVogServices:", filteredVogServices);
-
   return (
     <Layout
       title="VOG Live Services"
@@ -241,9 +208,9 @@ const VOGLiveSeriesPage: React.FC = () => {
 
       {isOpen && (
         <MyModal
-          style="w-full max-w-5xl"
+          style="w-full max-w-4xl"
           isOpen={isOpen}
-          closeModal={(val) => setIsOpen(false)}
+          closeModal={() => setIsOpen(false)}
         >
           <AddEditShow
             title="Add VOG Live Series"

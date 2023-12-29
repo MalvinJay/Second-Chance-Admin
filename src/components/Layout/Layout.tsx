@@ -82,12 +82,12 @@ const Layout = ({
             onClick={handleClick}
             variant="text"
             size="small"
-            className="text-black"
             sx={{
               padding: 0,
               margin: 0,
               width: 0,
               height: 0,
+              color: "black",
             }}
           >
             <AccountCircleOutlinedIcon color="inherit" />

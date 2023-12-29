@@ -36,7 +36,10 @@ const AddEditShow = (props: IAddEditShowProps) => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const [formValues, setFormValues] = useState({});
+  const [formValues, setFormValues] = useState({
+    logo: {},
+    banner: {},
+  });
 
   const {
     mutateAsync: isAddingShowMutate,
@@ -50,22 +53,29 @@ const AddEditShow = (props: IAddEditShowProps) => {
 
   const handleUpload = (val: any, type: string) => {
     console.log("Upload file:", val);
-    // setFormValues((prev: any) => {
-    //   return {
-    //     ...prev,
-    //     [type]: {
-    //       ...val,
-    //     },
-    //   };
-    // });
-    setFormValues({ ...val });
+    setFormValues((prev: any) => {
+      return {
+        ...prev,
+        [type]: {
+          ...val,
+        },
+      };
+    });
+    // setFormValues({ ...val });
   };
 
   const onSubmit = (values: any) => {
     const payload = {
       ...values,
-      thumbnail: { ...formValues },
     };
+
+    if (type === "vog") {
+      payload.thumbnail = {
+        ...formValues.banner,
+      };
+    } else {
+      payload.thumbnail = formValues;
+    }
 
     isAddingShowMutate(payload)
       .then(
