@@ -2,7 +2,7 @@ import axios, { AxiosResponse, AxiosError } from "axios";
 import Cookies from "js-cookie";
 
 // const BASE_API_URL = "https://63d4-154-160-9-117.ngrok-free.app/api";
-const BASE_API_URL = "https://d466-154-160-7-209.ngrok-free.app/api";
+const BASE_API_URL = "https://9983-154-160-5-194.ngrok-free.app/api";
 
 // Create an Axios instance
 const AXIOS_INSTANCE = axios.create({

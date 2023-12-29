@@ -3,3 +3,10 @@
     min-width: 193px !important;
     max-width: 193px !important;
 }
+.userdropdown {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

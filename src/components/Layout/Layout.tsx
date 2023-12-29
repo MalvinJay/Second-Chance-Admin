@@ -11,8 +11,15 @@ import { sideBarMenu } from "contants";
 import AXIOS_INSTANCE from "api/axios";
 import { setUser } from "store/UserSlicer/userSlice";
 import { useAppDispatch } from "store/hooks";
-import { Alert, Snackbar } from "@mui/material";
+import { Alert, Button, Snackbar, Stack } from "@mui/material";
 import { TAlertMsgProp } from "types/shared.type";
+import { NotificationIcon } from "components/Icons/Icons";
+
+import MuiMenu from "@mui/material/Menu";
+import MuiMenuItem from "@mui/material/MenuItem";
+
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 
 const Layout = ({
   children,
@@ -30,6 +37,86 @@ const Layout = ({
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const token = Cookies.get("token");
+
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseFn = (type: string) => {
+    setAnchorEl(null);
+
+    switch (type) {
+      case "profile":
+        break;
+      case "account":
+        break;
+      case "logout":
+        handleSignOut();
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  const menuOptions = [
+    {
+      name: "Notification",
+      icon: <NotificationIcon />,
+    },
+    {
+      name: "Settings",
+      icon: <SettingsOutlinedIcon />,
+    },
+    {
+      name: "user",
+      icon: (
+        <>
+          <Button
+            id="basic-button"
+            aria-controls={open ? "basic-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            onClick={handleClick}
+            variant="text"
+            size="small"
+            className="text-black"
+            sx={{
+              padding: 0,
+              margin: 0,
+              width: 0,
+              height: 0,
+            }}
+          >
+            <AccountCircleOutlinedIcon color="inherit" />
+          </Button>
+
+          <MuiMenu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+            className="mt-6"
+          >
+            <MuiMenuItem onClick={() => handleCloseFn("profile")}>
+              Profile
+            </MuiMenuItem>
+            <MuiMenuItem onClick={() => handleCloseFn("account")}>
+              My account
+            </MuiMenuItem>
+            <MuiMenuItem onClick={() => handleCloseFn("logout")}>
+              Logout
+            </MuiMenuItem>
+          </MuiMenu>
+        </>
+      ),
+    },
+  ];
 
   const clearUserData = () => {
     dispatch(setUser(null));
@@ -127,11 +214,18 @@ const Layout = ({
             >
               {title}
             </Text>
-            <Img
+            {/* <Img
               className="h-11 mr-2 w-[164px]"
               src="images/img_frame11.svg"
               alt="frameEleven"
-            />
+            /> */}
+            <Stack direction={"row"} gap={2}>
+              {menuOptions.map((item) => (
+                <div className="userdropdown rounded-full border border-gray-300 bg-slate-50">
+                  {item.icon}
+                </div>
+              ))}
+            </Stack>
           </div>
           {children}
         </div>
