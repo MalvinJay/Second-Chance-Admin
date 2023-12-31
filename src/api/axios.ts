@@ -34,10 +34,12 @@ const onResponseSuccess = (response: AxiosResponse) => {
 
 function onResponseError(err: AxiosError) {
     const status = err.status || (err.response ? err.response.status : 0);
+    console.log("API request status:", status);
+
     const currentURL = window.location.href.toString().split(window.location.host)[1];
-    if (status === 401 && currentURL !== "/login") {
+    if ((status === 401) && currentURL !== "/sign-in") { // || status === 500
         Cookies.remove("token");
-        window.location.href = "/login";
+        window.location.href = "/sign-in";
     }
     return Promise.reject(err);
 }

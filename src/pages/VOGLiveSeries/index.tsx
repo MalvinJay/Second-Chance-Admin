@@ -1,19 +1,27 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Button, Img, Input, Line, Text } from "components";
+import { Button as CustomBtn, Img } from "components";
 import { DeleteIcon, EditIcon } from "components/Icons/Icons";
 import Layout from "components/Layout/Layout";
 import { Checkbox } from "components/Shared/Checkbox";
-import CustomTable from "components/Shared/Table/CustomTable";
 import MyModal from "components/Shared/Modal/Modal";
 import AddEditShow from "components/AddEditShow/AddEditShow";
 import MuiTable from "components/Shared/Table/MuiTable";
 import Pagination from "components/Shared/Pagination/Pagination";
-import { CircularProgress, Paper, Typography } from "@mui/material";
-import { getVOGLiveServicesAPI } from "api/shows";
+import {
+  Button,
+  CircularProgress,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { useReactQuery } from "hooks/useReactQuery";
 import { TAlertMsgProp } from "types/shared.type";
+import { useMutation } from "@tanstack/react-query";
+import { DeleteLiveServicesAPIFn, PatchLiveServiceAPIFn } from "api/shows";
+import { AxiosError } from "axios";
+import { queryClient } from "App";
 
 interface IvogLiveServices {
   pagination: any;
@@ -58,12 +66,21 @@ interface IVogLiveServicesData {
 
 const VOGLiveSeriesPage: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const [confirm, setConfirm] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [editMode, setEditMode] = useState(false);
   const [alertMsg, setAlertMsg] = useState<TAlertMsgProp>({
     msg: "",
     status: "success",
   });
+  const [initialValues, setInitialValues] = useState(null);
+  const [selected, setSelected] = useState<readonly number[]>([]);
+
+  const { mutateAsync: deleteVOGMutate, isLoading: isDeletingVOG } =
+    useMutation({
+      mutationFn: DeleteLiveServicesAPIFn,
+      onError: (error: AxiosError) => error?.response?.data,
+    });
 
   const handleClose = () => {
     setShowAlert(false);
@@ -114,6 +131,50 @@ const VOGLiveSeriesPage: React.FC = () => {
     "/live-services"
   );
 
+  const handleDelete = (item: any) => {
+    setInitialValues(item);
+    setConfirm(true);
+  };
+
+  const handleEdit = (item: any) => {
+    setEditMode(true);
+    setInitialValues({
+      ...item,
+      video_url: item?.video?.video_url,
+      img_url: item.thumbnail.img_url,
+    });
+    setIsOpen(true);
+    setSelected([]);
+  };
+
+  const RemoveVOGItem = async () => {
+    console.log("Item to be removed:", initialValues);
+    setSelected([]);
+
+    deleteVOGMutate(initialValues?.id)
+      .then(() => {
+        setConfirm(false);
+        setInitialValues(null);
+        setAlertMsg({
+          status: "success",
+          msg: `VOG service removed`,
+        });
+        setShowAlert(true);
+        queryClient.invalidateQueries(["vogLiveServices"]);
+      })
+      .catch(() => {
+        setAlertMsg({
+          status: "error",
+          msg: "Error updating VOG service",
+        });
+        setShowAlert(true);
+      });
+  };
+
+  const handleBulkAction = () => {
+    console.log("Bulk action:", selected);
+  };
+
   const filteredVogServices = useMemo(() => {
     if (
       vogLiveServices &&
@@ -126,9 +187,10 @@ const VOGLiveSeriesPage: React.FC = () => {
           name: (
             <div className="flex gap-4 items-center">
               <Img
-                className="h-[37px] md:h-auto object-cover rounded-md w-[43px]"
+                className="h-[37px] md:h-auto object-cover rounded-md w-[43px] bg-slate-50"
                 src={el.thumbnail?.img_url}
                 alt={el.thumbnail?.file_name}
+                placeholder="images/img_img60591.png"
               />
               <span>{el.title}</span>
             </div>
@@ -144,10 +206,16 @@ const VOGLiveSeriesPage: React.FC = () => {
           ),
           actions: (
             <div className="flex gap-2 items-center">
-              <Button className="cursor-pointer flex items-center justify-center gap-1">
+              <Button
+                className="cursor-pointer flex items-center justify-center gap-1"
+                onClick={() => handleEdit(el)}
+              >
                 <EditIcon color="#949698" />
               </Button>
-              <Button className="cursor-pointer flex items-center justify-center gap-1">
+              <Button
+                className="cursor-pointer flex items-center justify-center gap-1"
+                onClick={() => handleDelete(el)}
+              >
                 <DeleteIcon color="#949698" />
               </Button>
             </div>
@@ -171,16 +239,19 @@ const VOGLiveSeriesPage: React.FC = () => {
             data={filteredVogServices ?? []}
             toolbarTitle="Live Services Listings"
             toolbarActions={
-              <Button
+              <CustomBtn
                 className="cursor-pointer font-semibold text-center text-sm"
                 color="deep_purple_A200_19"
                 onClick={() => setIsOpen(true)}
               >
                 + Add New
-              </Button>
+              </CustomBtn>
             }
+            selected={selected}
+            setSelected={setSelected}
+            handleBulkAction={handleBulkAction}
           />
-          {filteredVogServices?.length <= 0 && (
+          {(isLoading || filteredVogServices?.length <= 0) && (
             <Paper
               elevation={0}
               className="w-1/2 text-center p-4 h-24 flex items-center justify-center"
@@ -210,15 +281,70 @@ const VOGLiveSeriesPage: React.FC = () => {
         <MyModal
           style="w-full max-w-4xl"
           isOpen={isOpen}
-          closeModal={() => setIsOpen(false)}
+          closeModal={() => {
+            setIsOpen(false);
+            setEditMode(false);
+          }}
         >
           <AddEditShow
-            title="Add VOG Live Series"
+            editMode={editMode}
+            title={`${
+              !editMode ? "Add VOG Live Series" : "Update Live Service"
+            } `}
             type="vog"
             setShowAlert={setShowAlert}
             setAlertMsg={setAlertMsg}
-            handleClose={() => setIsOpen(false)}
+            handleClose={() => {
+              setIsOpen(false);
+              setEditMode(false);
+            }}
+            initialValues={initialValues}
           />
+        </MyModal>
+      )}
+
+      {confirm && (
+        <MyModal
+          style="w-full max-w-lg"
+          isOpen={confirm}
+          closeModal={() => setConfirm(false)}
+        >
+          <div className="bg-white-A700 flex flex-col items-center justify-end p-6 md:px-5 rounded-[10px] shadow-bs w-full">
+            <Typography variant="h5" align="left">
+              Confirm Delete
+            </Typography>
+            <br />
+            <Typography variant="body1">
+              Do you want to delete this item?
+            </Typography>
+            <br />
+
+            <Stack
+              direction={"row"}
+              justifyContent={"flex-end"}
+              gap={2}
+              className="text-blue_gray-900"
+            >
+              <Button
+                color="primary"
+                variant="outlined"
+                onClick={() => setConfirm(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                color="error"
+                variant="contained"
+                onClick={RemoveVOGItem}
+                className="gap-1"
+              >
+                {isDeletingVOG && (
+                  <CircularProgress color="inherit" size={24} />
+                )}
+                Confirm
+              </Button>
+            </Stack>
+          </div>
         </MyModal>
       )}
     </Layout>

@@ -23,6 +23,9 @@ interface ICustomeTable {
   data: any[];
   toolbarTitle?: string;
   toolbarActions?: React.ReactNode;
+  selected?: readonly number[];
+  setSelected?: (e: readonly number[]) => void;
+  handleBulkAction?: () => void;
 }
 
 interface Data {
@@ -175,10 +178,11 @@ interface EnhancedTableToolbarProps {
   toolbarTitle?: string;
   numSelected: number;
   toolbarActions?: React.ReactNode;
+  handleBulkAction: () => void;
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  const { toolbarTitle, numSelected, toolbarActions } = props;
+  const { toolbarTitle, numSelected, toolbarActions, handleBulkAction } = props;
 
   return (
     <Toolbar
@@ -206,7 +210,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 
         {numSelected > 0 ? (
           <Tooltip title="Delete">
-            <IconButton>
+            <IconButton onClick={() => handleBulkAction}>
               <Img
                 className="h-5 w-5"
                 src="images/img_thumbsup_blue_gray_900_20x20.svg"
@@ -223,10 +227,17 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 }
 
 export default function MuiTable(props: ICustomeTable) {
-  const { tableHeading, data, toolbarTitle, toolbarActions } = props;
+  const {
+    tableHeading,
+    data,
+    toolbarTitle,
+    toolbarActions,
+    selected,
+    setSelected,
+    handleBulkAction,
+  } = props;
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<keyof Data>("calories");
-  const [selected, setSelected] = React.useState<readonly number[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -249,6 +260,7 @@ export default function MuiTable(props: ICustomeTable) {
   };
 
   const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
+    console.log("Trigger row click");
     const selectedIndex = selected.indexOf(id);
     let newSelected: readonly number[] = [];
 
@@ -301,6 +313,7 @@ export default function MuiTable(props: ICustomeTable) {
             numSelected={selected.length}
             toolbarTitle={toolbarTitle}
             toolbarActions={toolbarActions}
+            handleBulkAction={handleBulkAction}
           />
         )}
 

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Tabs,
@@ -103,6 +103,7 @@ function CustomTabPanel(props: TabPanelProps) {
 const TVShowsPage: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [value, setValue] = useState(0);
+  const [selected, setSelected] = useState<readonly number[]>([]);
 
   const [showAlert, setShowAlert] = useState(false);
   const [alertMsg, setAlertMsg] = useState<TAlertMsgProp>({
@@ -114,18 +115,19 @@ const TVShowsPage: React.FC = () => {
     useReactQuery(["tvShows"], "/tv-shows");
 
   const filteredTvShows = useMemo(() => {
-    if (tvShows && "services" in tvShows && Array.isArray(tvShows.services)) {
-      return tvShows?.services?.map((el: any) => {
+    if (tvShows && "shows" in tvShows && Array.isArray(tvShows.shows)) {
+      return tvShows?.shows?.map((el: any) => {
         return {
           id: el.id,
           name: (
             <div className="flex gap-4 items-center">
               <Img
                 className="h-[37px] md:h-auto object-cover rounded-md w-[43px]"
-                src={el.thumbnail?.img_url}
-                alt={el.thumbnail?.file_name}
+                src={el.banner?.img_url}
+                alt={el.banner?.file_name}
+                placeholder="images/img_img60591.png"
               />
-              <span>{el.title}</span>
+              <span>{el.name}</span>
             </div>
           ),
           hostedBy: "Stephen Adom",
@@ -152,11 +154,25 @@ const TVShowsPage: React.FC = () => {
     } else [];
   }, [tvShows, showAlert, isLoading]) as any[];
 
+  const filteredUpcomingShows = useMemo(() => {
+    if (filteredTvShows)
+      return filteredTvShows.filter(
+        (show) => new Date() <= new Date(show.date_time.split(" | ")[0])
+      );
+    else [];
+  }, [tvShows, filteredTvShows]) as any[];
+
+  const filteredPreviousShows = useMemo(() => {
+    if (filteredTvShows)
+      return filteredTvShows.filter(
+        (show) => new Date() > new Date(show.date_time.split(" | ")[0])
+      );
+    else [];
+  }, [tvShows, filteredTvShows]) as any[];
+
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-
-  console.log("filteredTvShows:", filteredTvShows);
 
   return (
     <Layout title="Tv Shows">
@@ -191,36 +207,56 @@ const TVShowsPage: React.FC = () => {
 
         <div className="bg-white-A700 border border-gray-900_19 border-solid flex flex-col items-center justify-end p-5 rounded-[10px] w-full">
           <CustomTabPanel value={value} index={0}>
-            <MuiTable tableHeading={headCells} data={filteredTvShows ?? []} />
+            <MuiTable
+              tableHeading={headCells}
+              data={filteredUpcomingShows ?? []}
+              selected={selected}
+              setSelected={setSelected}
+            />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
-            <MuiTable tableHeading={headCells} data={filteredTvShows ?? []} />
+            <MuiTable
+              tableHeading={headCells}
+              data={filteredPreviousShows ?? []}
+              selected={selected}
+              setSelected={setSelected}
+            />
           </CustomTabPanel>
 
-          {!tvShows ||
-            (tvShows?.servces?.length <= 0 && (
-              <Paper
-                elevation={0}
-                className="w-1/2 text-center p-4 h-24 flex items-center justify-center"
-              >
-                {isLoading ? (
-                  <CircularProgress color="inherit" size={32} />
-                ) : (
-                  <Typography>No Data</Typography>
-                )}
-              </Paper>
-            ))}
+          {(filteredUpcomingShows?.length <= 0 ||
+            filteredPreviousShows?.length <= 0 ||
+            isLoading) && (
+            <Paper
+              elevation={0}
+              className="w-1/2 text-center p-4 h-24 flex items-center justify-center"
+            >
+              {isLoading ? (
+                <CircularProgress color="inherit" size={32} />
+              ) : (
+                <>
+                  {value === 0 && filteredUpcomingShows?.length <= 0 && (
+                    <Typography>No Data</Typography>
+                  )}
+                  {value === 1 && filteredPreviousShows?.length <= 0 && (
+                    <Typography>No Data</Typography>
+                  )}
+                </>
+              )}
+            </Paper>
+          )}
         </div>
 
-        <PaginationComp
-          count={
-            filteredTvShows
-              ? Math.ceil(
-                  tvShows?.pagination?.total / tvShows?.pagination.per_page
-                )
-              : 0
-          }
-        />
+        <div className="mt-10">
+          <PaginationComp
+            count={
+              filteredTvShows
+                ? Math.ceil(
+                    tvShows?.pagination?.total / tvShows?.pagination.per_page
+                  )
+                : 0
+            }
+          />
+        </div>
       </div>
 
       {isOpen && (

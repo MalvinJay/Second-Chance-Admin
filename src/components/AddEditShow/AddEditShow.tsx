@@ -1,7 +1,7 @@
 import { CircularProgress } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "App";
-import { AddShowAPIFn } from "api/shows";
+import { AddShowAPIFn, PatchLiveServiceAPIFn } from "api/shows";
 import { AxiosError } from "axios";
 import BannerUploader from "components/BannerUploader/BannerUploader";
 import { Button } from "components/Button";
@@ -13,29 +13,43 @@ import { useForm } from "react-hook-form";
 import { TAlertMsgProp } from "types/shared.type";
 
 interface IAddEditShowProps {
+  editMode: boolean;
   type?: string;
   handleClose: () => void;
   title: string;
   showExtras?: boolean;
   setShowAlert?: (e: boolean) => void;
   setAlertMsg?: (e: TAlertMsgProp) => void;
+  initialValues?: any;
 }
 
 const AddEditShow = (props: IAddEditShowProps) => {
   const {
+    editMode,
     title,
     type = "show",
     showExtras = false,
     handleClose,
     setAlertMsg,
     setShowAlert,
+    initialValues,
   } = props;
   const {
     register,
     clearErrors,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      title: initialValues?.title,
+      host: initialValues?.host,
+      airing_date: initialValues?.airing_date,
+      about_show: initialValues?.about_show,
+      img_url: initialValues?.img_url,
+      logo: initialValues?.img_url,
+      video_url: initialValues?.video_url,
+    },
+  });
   const [formValues, setFormValues] = useState({
     logo: {},
     banner: {},
@@ -51,6 +65,13 @@ const AddEditShow = (props: IAddEditShowProps) => {
     onError: (error: AxiosError) => error?.response?.data,
   });
 
+  const { mutateAsync: patchVOGMutate, isLoading: isPatchingVOG } = useMutation(
+    {
+      mutationFn: PatchLiveServiceAPIFn,
+      onError: (error: AxiosError) => error?.response?.data,
+    }
+  );
+
   const handleUpload = (val: any, type: string) => {
     console.log("Upload file:", val);
     setFormValues((prev: any) => {
@@ -61,60 +82,98 @@ const AddEditShow = (props: IAddEditShowProps) => {
         },
       };
     });
-    // setFormValues({ ...val });
   };
 
   const onSubmit = (values: any) => {
-    const payload = {
+    let payload = {
       ...values,
     };
 
+    console.log("formValues:", formValues);
+
     if (type === "vog") {
-      payload.thumbnail = {
-        ...formValues.banner,
-      };
+      if (editMode) {
+        payload.thumbnail = initialValues.thumbnail;
+      } else
+        payload.thumbnail = {
+          ...formValues.banner,
+        };
     } else {
-      payload.thumbnail = formValues;
+      payload = {
+        ...payload,
+        ...formValues,
+      };
     }
 
-    isAddingShowMutate(payload)
-      .then(
-        (res) => {
-          console.log("res:", res);
-          if (res) {
-            handleClose();
-            setAlertMsg({
-              status: "success",
-              msg: `${type} added successfully`,
-            });
-            setShowAlert(true);
+    console.log("Final Payload:", payload);
+    editMode
+      ? patchVOGMutate({
+          id: initialValues.id || payload.id,
+          data: payload,
+        })
+          .then(
+            (res) => {
+              if (res) {
+                handleClose();
+                setAlertMsg({
+                  status: "success",
+                  msg: `${editMode ? "updated" : "added"} ${type} successfully`,
+                });
+                setShowAlert(true);
 
-            // Invalidate vogLiveServices key
-            queryClient.invalidateQueries(["vogLiveServices"]);
-          } else {
+                queryClient.invalidateQueries(["vogLiveServices"]);
+              } else {
+                setAlertMsg({
+                  status: "error",
+                  msg: `Error ${editMode ? "updating" : "adding"} ${type}`,
+                });
+                setShowAlert(true);
+              }
+            },
+            (err) => {
+              console.error("Error adding show:", err);
+            }
+          )
+          .catch((error) => {
+            console.error("Error adding show:", error);
             setAlertMsg({
               status: "error",
               msg: "Error adding show",
             });
             setShowAlert(true);
-          }
-        },
-        (err) => {
-          console.error("Error adding show:", err);
-        }
-      )
-      .catch((error) => {
-        console.error("Error adding show:", error);
-        setAlertMsg({
-          status: "error",
-          msg: "Error adding show",
-        });
-        setShowAlert(true);
-      });
+          })
+      : isAddingShowMutate(payload)
+          .then(
+            (res) => {
+              if (res) {
+                handleClose();
+                setAlertMsg({
+                  status: "success",
+                  msg: `${editMode ? "updated" : "added"} ${type} successfully`,
+                });
+                setShowAlert(true);
 
-    // console.log("addShowAPI:", addShowAPI);
-    // if (addShowAPI) {
-    // } else
+                queryClient.invalidateQueries(["vogLiveServices"]);
+              } else {
+                setAlertMsg({
+                  status: "error",
+                  msg: `Error ${editMode ? "updating" : "adding"} ${type}`,
+                });
+                setShowAlert(true);
+              }
+            },
+            (err) => {
+              console.error("Error adding show:", err);
+            }
+          )
+          .catch((error) => {
+            console.error("Error adding show:", error);
+            setAlertMsg({
+              status: "error",
+              msg: "Error adding show",
+            });
+            setShowAlert(true);
+          });
   };
 
   return (
@@ -238,6 +297,7 @@ const AddEditShow = (props: IAddEditShowProps) => {
                   wrapClassName="border border-gray-900_26 border-solid w-full"
                   type="text"
                   {...register("about_show", { required: true })}
+                  onChange={() => clearErrors("about_show")}
                 />
                 {errors?.about_show && (
                   <p className="text-sm text-red-600 font-black">
@@ -326,6 +386,8 @@ const AddEditShow = (props: IAddEditShowProps) => {
                 ctaTypes=".jpeg, .png, .jpg"
                 handleUpload={(e) => handleUpload(e, "logo")}
                 uploadType={type}
+                defaultValue={initialValues?.logo}
+                key="logo"
               />
             </div>
           )}
@@ -344,8 +406,10 @@ const AddEditShow = (props: IAddEditShowProps) => {
               title="Upload Images"
               uploadText="Drag and drop or click here to browse files"
               ctaTypes=".jpeg, .png, .jpg"
-              handleUpload={(e) => handleUpload(e, "image")}
+              handleUpload={(e) => handleUpload(e, "banner")}
               uploadType={type}
+              defaultValue={initialValues?.img_url}
+              key="banner"
             />
             {errors?.img_url && (
               <p className="text-sm text-red-600 font-black">
@@ -417,14 +481,16 @@ const AddEditShow = (props: IAddEditShowProps) => {
               variant="gradient"
               color="purple_A200_purple_500"
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || isPatchingVOG}
             >
-              {isLoading && <CircularProgress color="inherit" size={24} />}
+              {(isLoading || isPatchingVOG) && (
+                <CircularProgress color="inherit" size={24} />
+              )}
               <Text
                 className="text-sm text-center text-white-A700"
                 size="txtPlusJakartaSansRomanSemiBold14"
               >
-                Add Show
+                {editMode ? "Update" : "Add"} {type === "vog" ? "VOG" : "Show"}
               </Text>
             </Button>
           </div>

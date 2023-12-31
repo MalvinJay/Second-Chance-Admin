@@ -4,7 +4,7 @@ import { imageVideoUploadAPIFn } from "api/imageUploads";
 import { AxiosError } from "axios";
 import { Img } from "components/Img";
 import { Text } from "components/Text";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { IImageUploadPayload } from "types/shared.type";
 
@@ -13,6 +13,7 @@ interface IBannerProps {
   uploadType: string;
   handleUpload: (e: any) => void;
   name: string;
+  defaultValue?: string;
   icon?: string;
   uploadText?: string;
   ctaTypes?: string;
@@ -24,8 +25,16 @@ const BannerUploader = (props: IBannerProps) => {
     clearErrors,
     formState: { errors },
   } = useForm();
-  const { icon, title, uploadText, name, uploadType, ctaTypes, handleUpload } =
-    props;
+  const {
+    icon,
+    title,
+    uploadText,
+    name,
+    uploadType,
+    ctaTypes,
+    handleUpload,
+    defaultValue,
+  } = props;
   const [preview, setPreview] = useState<string>("");
 
   const {
@@ -57,6 +66,10 @@ const BannerUploader = (props: IBannerProps) => {
     setPreview(data.previewImage);
   };
 
+  useEffect(() => {
+    if (defaultValue) setPreview(defaultValue);
+  }, [defaultValue]);
+
   return (
     <div className="relative bg-gray-900_20 border border-gray-900_26 rounded-[10px] flex flex-col min-h-[132px] items-center justify-start p-6 sm:px-5 w-full">
       {isLoading && (
@@ -86,7 +99,8 @@ const BannerUploader = (props: IBannerProps) => {
           <Img
             className="w-64 h-64 object-cover"
             src={preview}
-            alt="television"
+            alt="uploads"
+            placeholder="images/img_img60591.png"
           />
         ) : (
           <>

@@ -61,7 +61,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       color = "white_A700",
       ...restProps
     },
-    ref,
+    ref
   ) => {
     const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
       if (onChange) onChange(e?.target?.value);
@@ -79,7 +79,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {!!prefix && prefix}
           <input
             ref={ref}
-            className={`${className} bg-transparent border-0`}
+            className={`${className} text-black-900 bg-transparent border-0`}
             type={type}
             name={name}
             placeholder={placeholder}
@@ -91,7 +91,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {!!errors && <ErrorMessage errors={errors} />}
       </>
     );
-  },
+  }
 );
 
 export { Input };
