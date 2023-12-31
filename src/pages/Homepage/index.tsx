@@ -1,19 +1,19 @@
 "use client";
 
+import { TAlertMsgProp } from "types/shared.type";
 import { useState } from "react";
 
-import { Button, Img, Input, List, Text } from "components";
+import { Button, Img, List, Text } from "components";
 import Layout from "components/Layout/Layout";
 import CustomTable from "components/Shared/Table/CustomTable";
-import { Checkbox } from "../../components/Shared/Checkbox";
+import PageHeader from "components/PageHeader/PageHeader";
+import { Checkbox } from "components/Shared/Checkbox";
 import SliderItem from "components/Shared/Slider/SliderItem";
 import AddArticle from "components/RoyalNews/AddArticle";
 import ArticleItem from "components/RoyalNews/ArticleItem";
 import AddEditShow from "components/AddEditShow/AddEditShow";
 import MyModal from "components/Shared/Modal/Modal";
 import AddEditArticle from "components/RoyalNews/AddEditArticle/AddEditArticle";
-import { TAlertMsgProp } from "types/shared.type";
-import PageHeader from "components/PageHeader/PageHeader";
 
 // Upcoming shows
 const upcomingColumns = [
@@ -102,6 +102,7 @@ const onlineColumns = [
   { label: "Sent On", renderCell: (item) => item.sent_on },
   { label: "Actions", renderCell: (item) => item.actions },
 ];
+
 const testimonies = [
   {
     sent_by: (
@@ -156,11 +157,24 @@ const HomepagePage: React.FC = () => {
   });
   const [initialValues, setInitialValues] = useState(null);
 
+  const handleClose = () => {
+    setShowAlert(false);
+    setAlertMsg({
+      msg: "",
+      status: "success",
+    });
+  };
+
   return (
-    <Layout title="Home">
+    <Layout
+      title="Home"
+      alertMsg={alertMsg}
+      showAlert={showAlert}
+      handleClose={handleClose}
+    >
       <div className="flex flex-col gap-8 items-center justify-start w-full px-6">
         <div className="bg-white-A700 border border-gray-900_19 border-solid flex flex-col items-center justify-start p-[18px] rounded-[10px] w-full">
-          <PageHeader />
+          <PageHeader setAlertMsg={setAlertMsg} setShowAlert={setShowAlert} />
         </div>
 
         <div className="bg-white-A700 border border-gray-900_19 border-solid flex flex-col items-center justify-start pt-6 sm:px-5 px-6 rounded-[10px] w-full">

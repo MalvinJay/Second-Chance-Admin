@@ -48,3 +48,19 @@ export const createQueryParams = (filters: any) => {
 
   return query
 }
+
+export const getEmbededYTLink = (youtubeLink: string) => {
+  try {
+    let embededUrl = "https://www.youtube.com/embed/"
+    if (youtubeLink) {
+      if (youtubeLink.includes('youtu.be/')) return embededUrl + youtubeLink.split('youtu.be/')[1]
+      else if (youtubeLink.includes('watch?v=')) return embededUrl + youtubeLink.split('watch?v=')[1]
+      else return youtubeLink
+    }
+
+    return ""
+  } catch (error) {
+    console.error("Error extracting embeded ID:", error)
+    return ""
+  }
+}

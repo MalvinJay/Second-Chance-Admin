@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useMemo, useRef, useState } from "react";
 import { CircularProgress } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "App";
@@ -11,20 +11,29 @@ import { Text } from "components/Text";
 import { useReactQuery } from "hooks/useReactQuery";
 import { useForm } from "react-hook-form";
 import { TAlertMsgProp } from "types/shared.type";
+import { getEmbededYTLink } from "utils";
 
-const PageHeader = () => {
+interface PageHeaderProps {
+  setAlertMsg: (e: TAlertMsgProp) => void;
+  setShowAlert: (e: boolean) => void;
+}
+
+const PageHeader = (props: PageHeaderProps) => {
   const {
     register,
+    setValue,
+    getValues,
     clearErrors,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const [showAlert, setShowAlert] = useState(false);
-  const [editMode, setEditMode] = useState(false);
-  const [alertMsg, setAlertMsg] = useState<TAlertMsgProp>({
-    msg: "",
-    status: "success",
-  });
+
+  const { setAlertMsg, setShowAlert } = props;
+  const [show, setshow] = useState(true);
+  const iframeRef = useRef(null);
+  const { isLoading, data: header }: { isLoading: boolean; data: any } =
+    useReactQuery(["header"], "/content/header");
+
   const { mutateAsync: addHeaderMutate, isLoading: isAddingHeader } =
     useMutation({
       mutationFn: AddHeaderAPIFn,
@@ -37,12 +46,6 @@ const PageHeader = () => {
       onError: (error: AxiosError) => error?.response?.data,
     });
 
-  const { isLoading, data: header }: { isLoading: boolean; data: any } =
-    useReactQuery(["header"], "/content/header");
-
-  if (header) {
-    console.log("header:", header.data);
-  }
   const onSubmit = (values: any) => {
     let payload = {
       ...values,
@@ -60,7 +63,7 @@ const PageHeader = () => {
               if (res) {
                 setAlertMsg({
                   status: "success",
-                  msg: `${editMode ? "updated" : "added"} ${type} successfully`,
+                  msg: `Updated page header successfully`,
                 });
                 setShowAlert(true);
 
@@ -68,7 +71,7 @@ const PageHeader = () => {
               } else {
                 setAlertMsg({
                   status: "error",
-                  msg: `Error ${editMode ? "updating" : "adding"} ${type}`,
+                  msg: `Error updating page header`,
                 });
                 setShowAlert(true);
               }
@@ -91,7 +94,7 @@ const PageHeader = () => {
               if (res) {
                 setAlertMsg({
                   status: "success",
-                  msg: `${editMode ? "updated" : "added"} ${type} successfully`,
+                  msg: `Added page header successfully`,
                 });
                 setShowAlert(true);
 
@@ -99,7 +102,7 @@ const PageHeader = () => {
               } else {
                 setAlertMsg({
                   status: "error",
-                  msg: `Error ${editMode ? "updating" : "adding"} ${type}`,
+                  msg: `Error adding page header`,
                 });
                 setShowAlert(true);
               }
@@ -117,6 +120,15 @@ const PageHeader = () => {
             setShowAlert(true);
           });
   };
+
+  const currentHeaderVideo = useMemo(() => {
+    if (header && header?.video?.video_url) {
+      setValue("title", header?.title);
+      setValue("video_url", header?.video?.video_url);
+
+      return getEmbededYTLink(header?.video?.video_url);
+    } else return "https://www.youtube.com/embed/mBnq_Y3dUw0";
+  }, [header]);
 
   return (
     <div className="grid grid-cols-2 w-full gap-6">
@@ -187,13 +199,13 @@ const PageHeader = () => {
         </div>
 
         <Button
-          className="cursor-pointer font-semibold min-w-[140px] text-center text-sm"
+          className="cursor-pointer font-semibold flex justify-center gap-2 min-w-[140px] text-center text-sm"
           size="xl"
           variant="gradient"
           color="purple_A200_purple_500"
           type="submit"
         >
-          {(isAddingHeader || isPatchingHeader) && (
+          {(isLoading || isAddingHeader || isPatchingHeader) && (
             <CircularProgress color="inherit" size={24} />
           )}
           Upload Video
@@ -207,18 +219,31 @@ const PageHeader = () => {
         >
           Video Preview
         </Text>
+
         <div className="h-[373px] relative w-full mt-5">
-          <Img
-            className="h-[373px] m-auto object-cover rounded-md w-full"
-            src="images/img_rectangle2.png"
-            alt="rectangleTwo"
-          />
-          <div className="absolute bg-gray-900_7f flex flex-col h-full inset-[0] items-center justify-center m-auto p-[131px] md:px-10 sm:px-5 rounded-md w-full">
-            <Img
-              className="h-[66px] mb-[45px] w-[66px]"
-              src="images/img_overflowmenu.svg"
-              alt="overflowmenu"
+          <div className="h-[373px] relative w-full md:bg-black-900">
+            <iframe
+              id="pageHeader"
+              ref={iframeRef}
+              className="w-full h-full rounded-lg"
+              src={currentHeaderVideo}
+              title={getValues("title")}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
             />
+
+            {/* {show && (
+              <div
+                className="cursor-pointer absolute flex flex-col h-full inset-[0] items-center justify-center m-auto p-[295px] md:p-0 md:px-10 sm:px-5 rounded-[25px] md:rounded-none shadow-bs1 w-full"
+                onClick={() => setshow(!show)}
+              >
+                <Img
+                  className="h-[98px] w-[98px] hover:scale-110 transform transalte duration-500"
+                  src="images/img_play.svg"
+                  alt="play"
+                />
+              </div>
+            )} */}
           </div>
         </div>
       </div>
@@ -226,4 +251,4 @@ const PageHeader = () => {
   );
 };
 
-export default PageHeader;
+export default memo(PageHeader);
