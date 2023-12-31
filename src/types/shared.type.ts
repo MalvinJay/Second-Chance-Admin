@@ -10,4 +10,5 @@ export type TAlertMsgProp = {
 export interface patchLiveServicesProps {
     id: string;
     data: any;
+    type?: string;
 }

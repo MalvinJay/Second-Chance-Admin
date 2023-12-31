@@ -62,8 +62,12 @@ const BannerUploader = (props: IBannerProps) => {
       data: { data },
     } = await isUploadingMutate(payload as any);
 
-    handleUpload(data, uploadType);
     setPreview(data.previewImage);
+
+    const newData = { ...data };
+    if (newData.previewImage) delete newData.previewImage;
+
+    handleUpload(newData, uploadType);
   };
 
   useEffect(() => {

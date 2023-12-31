@@ -83,6 +83,7 @@ const AddEditShow = (props: IAddEditShowProps) => {
   const onSubmit = (values: any) => {
     let payload = {
       ...values,
+      type,
     };
 
     console.log("formValues:", formValues);
@@ -110,10 +111,12 @@ const AddEditShow = (props: IAddEditShowProps) => {
     }
 
     console.log("Final Payload:", payload);
+
     editMode
       ? patchVOGMutate({
           id: initialValues.id || payload.id,
           data: payload,
+          type,
         })
           .then(
             (res) => {
@@ -125,7 +128,9 @@ const AddEditShow = (props: IAddEditShowProps) => {
                 });
                 setShowAlert(true);
 
-                queryClient.invalidateQueries(["vogLiveServices"]);
+                if (type === "vog")
+                  queryClient.invalidateQueries(["vogLiveServices"]);
+                if (type === "show") queryClient.invalidateQueries(["tvShows"]);
               } else {
                 setAlertMsg({
                   status: "error",
@@ -157,7 +162,9 @@ const AddEditShow = (props: IAddEditShowProps) => {
                 });
                 setShowAlert(true);
 
-                queryClient.invalidateQueries(["vogLiveServices"]);
+                if (type === "vog")
+                  queryClient.invalidateQueries(["vogLiveServices"]);
+                if (type === "show") queryClient.invalidateQueries(["tvShows"]);
               } else {
                 setAlertMsg({
                   status: "error",

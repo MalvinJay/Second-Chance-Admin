@@ -1,4 +1,4 @@
-import { memo, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { CircularProgress } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "App";
@@ -123,12 +123,15 @@ const PageHeader = (props: PageHeaderProps) => {
 
   const currentHeaderVideo = useMemo(() => {
     if (header && header?.video?.video_url) {
-      setValue("title", header?.title);
-      setValue("video_url", header?.video?.video_url);
-
       return getEmbededYTLink(header?.video?.video_url);
     } else return "https://www.youtube.com/embed/mBnq_Y3dUw0";
   }, [header]);
+
+  useEffect(() => {
+    console.log("setting form data:", header);
+    setValue("title", header?.title);
+    setValue("video_url", header?.video?.video_url);
+  }, [currentHeaderVideo, header]);
 
   return (
     <div className="grid grid-cols-2 w-full gap-6">

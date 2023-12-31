@@ -4,7 +4,11 @@ import AXIOS_INSTANCE from "./axios";
 
 export const AddShowAPIFn = async (payload: any): Promise<any> => {
     try {
-        const response = await AXIOS_INSTANCE.post("/live-services/create", payload);
+        let url = ''
+        if (payload.type === "show") url = "tv-shows/create"
+        else url = "live-services/create"
+
+        const response = await AXIOS_INSTANCE.post(url, payload);
         return response.data;
     } catch (error: any) {
         console.log("Error creating show:", error);
@@ -13,7 +17,11 @@ export const AddShowAPIFn = async (payload: any): Promise<any> => {
 };
 export const PatchLiveServiceAPIFn = async (payload: patchLiveServicesProps): Promise<any> => {
     try {
-        const response = await AXIOS_INSTANCE.put(`/live-services/${payload.id}`, payload.data);
+        let url = ''
+        if (payload.type === "show") url = `/tv-shows/${payload.id}`
+        else url = `/live-services/${payload.id}`
+
+        const response = await AXIOS_INSTANCE.put(url, payload.data);
         return response.data;
     } catch (error: any) {
         console.log("Error updating live service:", error);
