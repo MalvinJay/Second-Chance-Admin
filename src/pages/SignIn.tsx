@@ -183,6 +183,9 @@ export default function SignIn() {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
                 disabled={loading}
+                style={{
+                  backgroundColor: "#1565c0",
+                }}
               >
                 Sign In
                 {loading && (
