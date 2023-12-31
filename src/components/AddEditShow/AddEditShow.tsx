@@ -16,7 +16,7 @@ interface IAddEditShowProps {
   editMode: boolean;
   type?: string;
   handleClose: () => void;
-  title: string;
+  title?: string;
   showExtras?: boolean;
   setShowAlert?: (e: boolean) => void;
   setAlertMsg?: (e: TAlertMsgProp) => void;
@@ -79,6 +79,7 @@ const AddEditShow = (props: IAddEditShowProps) => {
         ...prev,
         [type]: {
           ...val,
+          img_desc: type,
         },
       };
     });

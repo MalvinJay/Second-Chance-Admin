@@ -12,6 +12,8 @@ import ArticleItem from "components/RoyalNews/ArticleItem";
 import AddEditShow from "components/AddEditShow/AddEditShow";
 import MyModal from "components/Shared/Modal/Modal";
 import AddEditArticle from "components/RoyalNews/AddEditArticle/AddEditArticle";
+import { TAlertMsgProp } from "types/shared.type";
+import PageHeader from "components/PageHeader/PageHeader";
 
 // Upcoming shows
 const upcomingColumns = [
@@ -39,40 +41,9 @@ const upcomingColumns = [
   { label: "Social Networks", renderCell: (item) => item.socials },
   { label: "Actions", renderCell: (item) => item.actions },
 ];
-const upcoming = [
-  {
-    name: "new",
-    hostedBy: "3rd Dec. 2023",
-    time: "TASK",
-    social: (
-      <div className="flex items-center gap-2">
-        <img src="images/img_frame899.svg" />
-      </div>
-    ),
-    actions: (
-      <div className="flex items-center gap-2">
-        <img src="images/img_grid.svg" alt="" />
-      </div>
-    ),
-  },
-  {
-    name: "Obrapa",
-    hostedBy: "3rd Dec. 2023",
-    time: "TASK",
-    social: (
-      <div className="flex items-center gap-2">
-        <img src="images/img_frame899.svg" />
-      </div>
-    ),
-    actions: (
-      <div className="flex items-center gap-2">
-        <img src="images/img_grid.svg" alt="" />
-      </div>
-    ),
-  },
-];
+const upcoming = [];
 
-// Previous show
+// Previous shows
 const previousColumns = [
   {
     label: "Show Name",
@@ -87,48 +58,7 @@ const previousColumns = [
   { label: "Views", renderCell: (item) => item.socials },
   { label: "Actions", renderCell: (item) => item.actions },
 ];
-const previous = [
-  {
-    name: (
-      <div className="flex gap-4 items-center">
-        <Img
-          className="h-[37px] md:h-auto object-cover rounded-md w-[43px]"
-          src="images/img_rectangle2161.png"
-          alt="rectangle2161"
-        />
-        <span>Miracle hour</span>
-      </div>
-    ),
-    hostedBy: "Malvin Jay",
-    streamed_on: "27 June, 2023 | 5:30 pm",
-    views: "4856",
-    actions: (
-      <div className="flex items-center gap-2">
-        <img src="images/img_grid.svg" alt="" />
-      </div>
-    ),
-  },
-  {
-    name: (
-      <div className="flex gap-4 items-center">
-        <Img
-          className="h-[37px] md:h-auto object-cover rounded-md w-[43px]"
-          src="images/img_rectangle2161.png"
-          alt="rectangle2161"
-        />
-        <span>Learn from the prophet</span>
-      </div>
-    ),
-    hostedBy: "Malvin Jay",
-    streamed_on: "28 June, 2023 | 5:30 pm",
-    views: "4856",
-    actions: (
-      <div className="flex items-center gap-2">
-        <img src="images/img_grid.svg" alt="" />
-      </div>
-    ),
-  },
-];
+const previous = [];
 
 // Advertisements
 const advertisements = [
@@ -218,85 +148,19 @@ const testimonies = [
 const HomepagePage: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [show, setShow] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [alertMsg, setAlertMsg] = useState<TAlertMsgProp>({
+    msg: "",
+    status: "success",
+  });
+  const [initialValues, setInitialValues] = useState(null);
 
   return (
     <Layout title="Home">
       <div className="flex flex-col gap-8 items-center justify-start w-full px-6">
         <div className="bg-white-A700 border border-gray-900_19 border-solid flex flex-col items-center justify-start p-[18px] rounded-[10px] w-full">
-          <div className="grid grid-cols-2 w-full gap-6">
-            <div className="flex sm:flex-1 flex-col gap-4 items-start justify-start md:mt-0 w-full">
-              <Text
-                className="text-[22px] text-center text-gray-900 sm:text-lg md:text-xl"
-                size="txtPlusJakartaSansRomanBold22"
-              >
-                Header Sections Content
-              </Text>
-              <div className="flex flex-col gap-6 items-start justify-start w-full">
-                <div className="flex flex-col gap-4 items-start justify-start w-full">
-                  <Text
-                    className="text-base text-gray-900_7f w-auto"
-                    size="txtPlusJakartaSansRomanMedium16"
-                  >
-                    Header Text
-                  </Text>
-                  <Input
-                    name="groupFour"
-                    placeholder="Write the header content here"
-                    className="p-0 placeholder:text-gray-900_7f text-left text-xs w-full"
-                    wrapClassName="border border-gray-900_19 border-solid w-full"
-                    color="gray_50"
-                    size="sm"
-                  ></Input>
-                </div>
-                <div className="flex flex-col gap-4 items-start justify-start w-full">
-                  <Text
-                    className="text-base text-gray-900_7f w-auto"
-                    size="txtPlusJakartaSansRomanMedium16"
-                  >
-                    Paste the youtube link here
-                  </Text>
-                  <Input
-                    name="groupFour_One"
-                    placeholder="youtube link will be here"
-                    className="p-0 placeholder:text-gray-900_7f text-left text-xs w-full"
-                    wrapClassName="border border-gray-900_19 border-solid w-full"
-                    color="gray_50"
-                    size="sm"
-                  ></Input>
-                </div>
-              </div>
-              <Button
-                className="cursor-pointer font-semibold min-w-[140px] text-center text-sm"
-                size="xl"
-                variant="gradient"
-                color="purple_A200_purple_500"
-              >
-                Upload Video
-              </Button>
-            </div>
-            <div className="w-full">
-              <Text
-                className="text-gray-900 text-lg"
-                size="txtPlusJakartaSansRomanBold18"
-              >
-                Video Preview
-              </Text>
-              <div className="h-[373px] relative w-full mt-5">
-                <Img
-                  className="h-[373px] m-auto object-cover rounded-md w-full"
-                  src="images/img_rectangle2.png"
-                  alt="rectangleTwo"
-                />
-                <div className="absolute bg-gray-900_7f flex flex-col h-full inset-[0] items-center justify-center m-auto p-[131px] md:px-10 sm:px-5 rounded-md w-full">
-                  <Img
-                    className="h-[66px] mb-[45px] w-[66px]"
-                    src="images/img_overflowmenu.svg"
-                    alt="overflowmenu"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+          <PageHeader />
         </div>
 
         <div className="bg-white-A700 border border-gray-900_19 border-solid flex flex-col items-center justify-start pt-6 sm:px-5 px-6 rounded-[10px] w-full">
@@ -433,8 +297,16 @@ const HomepagePage: React.FC = () => {
           closeModal={(val) => setIsOpen(false)}
         >
           <AddEditShow
-            title="Add Upcoming Shows"
-            handleClose={() => setIsOpen(false)}
+            editMode={editMode}
+            title={`${!editMode ? "Add Tv Show" : "Update Tv Show"} `}
+            type="vog"
+            setShowAlert={setShowAlert}
+            setAlertMsg={setAlertMsg}
+            handleClose={() => {
+              setIsOpen(false);
+              setEditMode(false);
+            }}
+            initialValues={initialValues}
           />
         </MyModal>
       )}

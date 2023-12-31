@@ -20,23 +20,25 @@ interface HeadCell {
   numeric: boolean;
 }
 
-const fmStations = Array(20).fill({
-  id: Math.floor(Math.random() * 10 + 1),
-  channel_name: "Kumasi",
-  frequency: "88.9 Mhz",
-  available_show: "8",
-  status: "Active",
-  actions: (
-    <div className="flex gap-2 items-center">
-      <Button className="cursor-pointer flex items-center justify-center gap-1">
-        <EditIcon color="#949698" />
-      </Button>
-      <Button className="cursor-pointer flex items-center justify-center gap-1">
-        <DeleteIcon color="#949698" />
-      </Button>
-    </div>
-  ),
-});
+// const fmStations = Array(20).fill({
+//   id: Math.floor(Math.random() * 10 + 1),
+//   channel_name: "Kumasi",
+//   frequency: "88.9 Mhz",
+//   available_show: "8",
+//   status: "Active",
+//   actions: (
+//     <div className="flex gap-2 items-center">
+//       <Button className="cursor-pointer flex items-center justify-center gap-1">
+//         <EditIcon color="#949698" />
+//       </Button>
+//       <Button className="cursor-pointer flex items-center justify-center gap-1">
+//         <DeleteIcon color="#949698" />
+//       </Button>
+//     </div>
+//   ),
+// });
+
+const fmStations = [];
 
 const headCells: readonly HeadCell[] = [
   {
@@ -73,6 +75,7 @@ const headCells: readonly HeadCell[] = [
 
 const FMStationPage: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [selected, setSelected] = useState<readonly number[]>([]);
 
   return (
     <Layout title="FM Stations">
@@ -96,7 +99,12 @@ const FMStationPage: React.FC = () => {
         </div>
 
         <div className="bg-white-A700 border border-gray-900_19 border-solid flex flex-col items-center justify-start mt-8 pt-6 sm:px-5 px-6 rounded-[10px] w-full">
-          <MuiTable tableHeading={headCells} data={fmStations} />
+          <MuiTable
+            tableHeading={headCells}
+            data={fmStations ?? []}
+            selected={selected}
+            setSelected={setSelected}
+          />
         </div>
 
         <div className="flex sm:flex-col flex-row gap-6 items-start justify-start mt-[308px] w-auto sm:w-full">

@@ -58,5 +58,5 @@ module.exports = {
       boxShadow: { bs: "0px 10px  20px 5px #00000019" },
     },
   },
-  plugins: [require("@tailwindcss/forms")],
+  // plugins: [require("@tailwindcss/forms")],
 };
