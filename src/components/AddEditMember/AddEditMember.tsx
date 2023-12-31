@@ -82,6 +82,10 @@ const AddEditMember = (props: IAddEditMemberProps) => {
               icon="images/img_television.svg"
               title="Upload Images"
               uploadText="Drag and drop or click here to browse files (File format :JPEG, PNG, JPG)"
+              handleUpload={(e, type) => {
+                console.log("type:", type);
+                // handleUpload(e, "banner");
+              }}
             />
           </div>
 

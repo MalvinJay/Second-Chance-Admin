@@ -110,6 +110,8 @@ const TVShowsPage: React.FC = () => {
     msg: "",
     status: "success",
   });
+  const [editMode, setEditMode] = useState(false);
+  const [initialValues, setInitialValues] = useState(null);
 
   const { isLoading, data: tvShows }: { isLoading: boolean; data: any } =
     useReactQuery(["tvShows"], "/tv-shows");
@@ -266,9 +268,15 @@ const TVShowsPage: React.FC = () => {
           closeModal={() => setIsOpen(false)}
         >
           <AddEditShow
+            editMode={editMode}
             title="Add TV Shows"
-            handleClose={() => setIsOpen(false)}
             showExtras
+            setShowAlert={setShowAlert}
+            setAlertMsg={setAlertMsg}
+            handleClose={() => {
+              setIsOpen(false);
+              setEditMode(false);
+            }}
           />
         </MyModal>
       )}

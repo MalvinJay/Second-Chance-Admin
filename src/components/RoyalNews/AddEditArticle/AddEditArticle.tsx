@@ -85,9 +85,16 @@ const AddEditArticle = (props: IAddEditArticleProps) => {
             </Text>
 
             <BannerUploader
+              name="cover"
               icon="images/img_television.svg"
               title="Upload Images"
-              uploadText="Drag and drop or click here to browse files (File format :JPEG, PNG, JPG)"
+              uploadText="Drag and drop or click here to browse files"
+              ctaTypes=".jpeg, .png, .jpg"
+              handleUpload={(e, type) => {
+                console.log("type:", type);
+                // handleUpload(e, "banner");
+              }}
+              uploadType="cover"
             />
           </div>
 

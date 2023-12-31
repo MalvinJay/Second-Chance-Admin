@@ -11,7 +11,7 @@ import { IImageUploadPayload } from "types/shared.type";
 interface IBannerProps {
   title: string;
   uploadType: string;
-  handleUpload: (e: any) => void;
+  handleUpload: (e: any, type: string) => void;
   name: string;
   defaultValue?: string;
   icon?: string;
@@ -62,7 +62,7 @@ const BannerUploader = (props: IBannerProps) => {
       data: { data },
     } = await isUploadingMutate(payload as any);
 
-    handleUpload(data);
+    handleUpload(data, uploadType);
     setPreview(data.previewImage);
   };
 

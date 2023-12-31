@@ -55,12 +55,7 @@ const AddEditShow = (props: IAddEditShowProps) => {
     banner: {},
   });
 
-  const {
-    mutateAsync: isAddingShowMutate,
-    isLoading,
-    // isSuccess: isAddingShowSuccess,
-    // error: isAddingShowError,
-  } = useMutation({
+  const { mutateAsync: isAddingShowMutate, isLoading } = useMutation({
     mutationFn: AddShowAPIFn,
     onError: (error: AxiosError) => error?.response?.data,
   });
@@ -102,7 +97,15 @@ const AddEditShow = (props: IAddEditShowProps) => {
     } else {
       payload = {
         ...payload,
-        ...formValues,
+        logo: {
+          ...formValues.logo,
+          img_desc: "logo",
+        },
+        banner: {
+          ...formValues.logo,
+          ...formValues.banner,
+          img_desc: "banner",
+        },
       };
     }
 
@@ -385,8 +388,11 @@ const AddEditShow = (props: IAddEditShowProps) => {
                 title="Upload Logo image"
                 uploadText="Drag and drop or click here to browse files"
                 ctaTypes=".jpeg, .png, .jpg"
-                handleUpload={(e) => handleUpload(e, "logo")}
-                uploadType={type}
+                handleUpload={(e, type) => {
+                  console.log("type:", type);
+                  handleUpload(e, "logo");
+                }}
+                uploadType="logo"
                 defaultValue={initialValues?.logo}
                 key="logo"
               />
@@ -407,8 +413,11 @@ const AddEditShow = (props: IAddEditShowProps) => {
               title="Upload Images"
               uploadText="Drag and drop or click here to browse files"
               ctaTypes=".jpeg, .png, .jpg"
-              handleUpload={(e) => handleUpload(e, "banner")}
-              uploadType={type}
+              handleUpload={(e, type) => {
+                console.log("type:", type);
+                handleUpload(e, "banner");
+              }}
+              uploadType="banner"
               defaultValue={initialValues?.img_url}
               key="banner"
             />
