@@ -44,6 +44,7 @@ const Layout = ({
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleCloseFn = (type: string) => {
     setAnchorEl(null);
 
@@ -231,7 +232,6 @@ const Layout = ({
         </div>
       </div>
 
-      {/* Snackbar */}
       <Snackbar
         open={showAlert}
         autoHideDuration={5000}

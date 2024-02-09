@@ -6,7 +6,7 @@ import { DeleteIcon, EditIcon } from "components/Icons/Icons";
 import Layout from "components/Layout/Layout";
 import { Checkbox } from "components/Shared/Checkbox";
 import MyModal from "components/Shared/Modal/Modal";
-import AddEditShow from "components/AddEditShow/AddEditShow";
+import AddEditVOG from "components/AddEditVOG/AddEditVOG";
 import MuiTable from "components/Shared/Table/MuiTable";
 import Pagination from "components/Shared/Pagination/Pagination";
 import {
@@ -27,22 +27,6 @@ interface IvogLiveServices {
   pagination: any;
   services: any;
 }
-
-// Previous show
-const vogLiveServiceColumns = [
-  {
-    label: "Show Name",
-    renderCell: (item) => item.name,
-    select: {
-      renderHeaderCellSelect: () => <Checkbox />,
-      renderCellSelect: (item) => <Checkbox />,
-    },
-  },
-  { label: "Hosted By", renderCell: (item) => item.hosted_by },
-  { label: "Date and Time", renderCell: (item) => item.created_at },
-  { label: "Social Networks", renderCell: (item) => item.socials },
-  { label: "Actions", renderCell: (item) => item.actions },
-];
 
 interface Data {
   id: number;
@@ -286,7 +270,7 @@ const VOGLiveSeriesPage: React.FC = () => {
             setEditMode(false);
           }}
         >
-          <AddEditShow
+          <AddEditVOG
             editMode={editMode}
             title={`${
               !editMode ? "Add VOG Live Series" : "Update Live Service"

@@ -39,12 +39,12 @@ export const DeleteLiveServicesAPIFn = async (id: string): Promise<any> => {
     }
 };
 
-export const DeleteShowAPIFn = async (payload: any): Promise<any> => {
+export const DeleteShowAPIFn = async (id: string): Promise<any> => {
     try {
-        const response = await AXIOS_INSTANCE.delete("/live-services/create", payload);
+        const response = await AXIOS_INSTANCE.delete(`/tv-shows/${id}`);
         return response.data;
     } catch (error: any) {
-        console.log("Error creating show:", error);
+        console.log("Error removing tv show:", error);
         return error?.response;
     }
 };

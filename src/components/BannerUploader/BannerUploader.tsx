@@ -1,17 +1,16 @@
+import React, { useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import { imageVideoUploadAPIFn } from "api/imageUploads";
 import { AxiosError } from "axios";
 import { Img } from "components/Img";
 import { Text } from "components/Text";
-import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { IImageUploadPayload } from "types/shared.type";
 
 interface IBannerProps {
   title: string;
   uploadType: string;
-  handleUpload: (e: any, type: string) => void;
+  handleUpload: (e: any) => void;
   name: string;
   defaultValue?: string;
   icon?: string;
@@ -35,18 +34,13 @@ const BannerUploader = (props: IBannerProps) => {
     handleUpload,
     defaultValue,
   } = props;
+
   const [preview, setPreview] = useState<string>("");
 
-  const {
-    mutateAsync: isUploadingMutate,
-    isLoading,
-    isSuccess: isUploadingSuccess,
-  } = useMutation({
+  const { mutateAsync: isUploadingMutate, isLoading } = useMutation({
     mutationFn: imageVideoUploadAPIFn,
     onError: (error: AxiosError) => {
       error?.response?.data;
-
-      // Throw error message here...
     },
   });
 
@@ -67,7 +61,7 @@ const BannerUploader = (props: IBannerProps) => {
     const newData = { ...data };
     if (newData.previewImage) delete newData.previewImage;
 
-    handleUpload(newData, uploadType);
+    handleUpload(newData);
   };
 
   useEffect(() => {
@@ -87,13 +81,13 @@ const BannerUploader = (props: IBannerProps) => {
       <div
         className="cursor-pointer flex flex-col gap-2.5 items-center justify-start w-full"
         onClick={() => {
-          document.getElementById("upload-item").click();
+          document.getElementById(`upload-item-${uploadType}`).click();
         }}
       >
         <input
           name={name}
           style={{ display: "none" }}
-          id="upload-item"
+          id={`upload-item-${uploadType}`}
           type="file"
           accept={ctaTypes}
           {...register(name, { required: true })}
@@ -101,7 +95,7 @@ const BannerUploader = (props: IBannerProps) => {
         />
         {preview ? (
           <Img
-            className="w-64 h-64 object-cover"
+            className="min-w-64 min-h-64 object-cover"
             src={preview}
             alt="uploads"
             placeholder="images/img_img60591.png"

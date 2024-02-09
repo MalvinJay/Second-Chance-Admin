@@ -41,12 +41,13 @@ const AddEditShow = (props: IAddEditShowProps) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      name: initialValues?.name,
+      title: initialValues?.title,
       host: initialValues?.host,
       airing_date: initialValues?.airing_date,
       description: initialValues?.description,
       img_url: initialValues?.img_url,
       logo: initialValues?.img_url,
+      video_url: initialValues?.video_url,
     },
   });
   const [formValues, setFormValues] = useState({
@@ -67,6 +68,7 @@ const AddEditShow = (props: IAddEditShowProps) => {
   );
 
   const handleUpload = (val: any, type: string) => {
+    console.log("Upload file:", val);
     setFormValues((prev: any) => {
       return {
         ...prev,
@@ -84,18 +86,29 @@ const AddEditShow = (props: IAddEditShowProps) => {
       type,
     };
 
-    payload = {
-      ...payload,
-      logo: {
-        ...formValues.logo,
-        img_desc: "logo",
-      },
-      banner: {
-        ...formValues.logo,
-        ...formValues.banner,
-        img_desc: "banner",
-      },
-    };
+    console.log("formValues:", formValues);
+
+    if (type === "vog") {
+      if (editMode) {
+        payload.thumbnail = initialValues.thumbnail;
+      } else
+        payload.thumbnail = {
+          ...formValues.banner,
+        };
+    } else {
+      payload = {
+        ...payload,
+        logo: {
+          ...formValues.logo,
+          img_desc: "logo",
+        },
+        banner: {
+          ...formValues.logo,
+          ...formValues.banner,
+          img_desc: "banner",
+        },
+      };
+    }
 
     console.log("Final Payload:", payload);
 
@@ -149,7 +162,9 @@ const AddEditShow = (props: IAddEditShowProps) => {
                 });
                 setShowAlert(true);
 
-                queryClient.invalidateQueries(["tvShows"]);
+                if (type === "vog")
+                  queryClient.invalidateQueries(["vogLiveServices"]);
+                if (type === "show") queryClient.invalidateQueries(["tvShows"]);
               } else {
                 setAlertMsg({
                   status: "error",
@@ -211,15 +226,15 @@ const AddEditShow = (props: IAddEditShowProps) => {
               </Text>
               <div className="w-full">
                 <Input
-                  name="name"
+                  name="title"
                   placeholder="Enter show name here"
                   className="p-0 placeholder:text-blue_gray-900_99 text-left text-sm w-full"
                   wrapClassName="border border-gray-900_26 border-solid w-full"
                   type="text"
-                  {...register("name", { required: true })}
-                  onChange={() => clearErrors("name")}
+                  {...register("title", { required: true })}
+                  onChange={() => clearErrors("title")}
                 />
-                {errors?.name && (
+                {errors?.title && (
                   <p className="text-sm text-red-600 font-black">
                     Provide show name
                   </p>
@@ -291,7 +306,7 @@ const AddEditShow = (props: IAddEditShowProps) => {
                   placeholder="Enter about here.."
                   className="p-0 placeholder:text-blue_gray-900_99 text-left text-sm w-full"
                   wrapClassName="border border-gray-900_26 border-solid w-full"
-                  type="textarea"
+                  type="text"
                   {...register("description", { required: true })}
                   onChange={() => clearErrors("description")}
                 />
@@ -300,6 +315,67 @@ const AddEditShow = (props: IAddEditShowProps) => {
                     Provide details about the show
                   </p>
                 )}
+              </div>
+            </div>
+          )}
+
+          {type === "vog" && (
+            <div className="flex flex-col gap-4 items-start justify-start mt-8 w-auto md:w-full">
+              <Text
+                className="text-blue_gray-900 text-xl w-auto"
+                size="txtPlusJakartaSansRomanSemiBold20"
+              >
+                Add Social Networks
+              </Text>
+              <div className="flex md:flex-col flex-row gap-5 items-start justify-start w-auto md:w-full">
+                <Button
+                  className="cursor-pointer flex items-center justify-center min-w-[213px]"
+                  leftIcon={
+                    <Img
+                      className="h-6 mr-2.5"
+                      src="images/img_frame.svg"
+                      alt="Frame"
+                    />
+                  }
+                  color="blue_A200"
+                  size="2xl"
+                >
+                  <div className="font-semibold text-left text-sm">
+                    Connect Facebook
+                  </div>
+                </Button>
+                <Button
+                  className="cursor-pointer flex items-center justify-center min-w-[212px]"
+                  leftIcon={
+                    <Img
+                      className="h-6 mr-2.5"
+                      src="images/img_info.svg"
+                      alt="info"
+                    />
+                  }
+                  color="red_300"
+                  size="2xl"
+                >
+                  <div className="font-semibold text-left text-sm">
+                    Connect Instagram
+                  </div>
+                </Button>
+                <Button
+                  className="cursor-pointer flex items-center justify-center min-w-[201px]"
+                  leftIcon={
+                    <Img
+                      className="h-6 mr-2.5"
+                      src="images/img_user.svg"
+                      alt="user"
+                    />
+                  }
+                  color="blue_400"
+                  size="2xl"
+                >
+                  <div className="font-semibold text-left text-sm">
+                    Connect LinkedIn
+                  </div>
+                </Button>
               </div>
             </div>
           )}
@@ -355,6 +431,49 @@ const AddEditShow = (props: IAddEditShowProps) => {
                 Provide show thumbnail image
               </p>
             )}
+          </div>
+
+          {/* <div className="flex flex-col gap-5 items-start justify-start w-full">
+            <Text
+              className="text-blue_gray-900 text-xl w-auto"
+              size="txtPlusJakartaSansRomanSemiBold20"
+            >
+              Upload Video
+            </Text>
+
+            <BannerUploader
+              icon="images/img_thumbsup_blue_gray_900.svg"
+              title="Upload Video"
+              uploadText="Drag and drop or click here to browse files"
+              ctaTypes=".mp4, .avi"
+              handleUpload={(e) => handleUpload(e, "video")}
+              uploadType={type}
+            />
+          </div> */}
+
+          <div className="flex sm:flex-1 flex-col gap-4 items-start justify-start w-full">
+            <Text
+              className="text-blue_gray-900 text-xl w-auto"
+              size="txtPlusJakartaSansRomanSemiBold20"
+            >
+              Upload Video Url
+            </Text>
+            <div className="w-full">
+              <Input
+                name="video_url"
+                placeholder="Enter video url here..."
+                className="p-0 placeholder:text-blue_gray-900_99 text-left text-sm w-full"
+                wrapClassName="border border-gray-900_26 border-solid w-full"
+                type="text"
+                {...register("video_url", { required: true })}
+                onChange={() => clearErrors("video_url")}
+              />
+              {errors?.video_url && (
+                <p className="text-sm text-red-600 font-black">
+                  Provide video url
+                </p>
+              )}
+            </div>
           </div>
 
           <div className="flex gap-4 items-start justify-end w-full">

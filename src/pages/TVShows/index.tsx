@@ -1,13 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import {
+  Button,
   Box,
   Tabs,
   Tab,
   Paper,
   CircularProgress,
   Typography,
+  Stack,
 } from "@mui/material";
-import { Button, Img, List, Text } from "components";
+import { Button as CustomBtn, Img, List, Text } from "components";
 import { DeleteIcon, EditIcon } from "components/Icons/Icons";
 import Layout from "components/Layout/Layout";
 import MuiTable from "components/Shared/Table/MuiTable";
@@ -16,6 +18,10 @@ import AddEditShow from "components/AddEditShow/AddEditShow";
 import { useReactQuery } from "hooks/useReactQuery";
 import PaginationComp from "components/Shared/Pagination/Pagination";
 import { TAlertMsgProp } from "types/shared.type";
+import { useMutation } from "@tanstack/react-query";
+import { DeleteShowAPIFn } from "api/shows";
+import { AxiosError } from "axios";
+import { queryClient } from "App";
 
 interface Data {
   id: number;
@@ -102,6 +108,7 @@ function CustomTabPanel(props: TabPanelProps) {
 
 const TVShowsPage: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [confirm, setConfirm] = useState(false);
   const [value, setValue] = useState(0);
   const [selected, setSelected] = useState<readonly number[]>([]);
 
@@ -115,6 +122,12 @@ const TVShowsPage: React.FC = () => {
 
   const { isLoading, data: tvShows }: { isLoading: boolean; data: any } =
     useReactQuery(["tvShows"], "/tv-shows");
+
+  const { mutateAsync: deleteTVShowMutate, isLoading: isDeletingTVShow } =
+    useMutation({
+      mutationFn: DeleteShowAPIFn,
+      onError: (error: AxiosError) => error?.response?.data,
+    });
 
   const filteredTvShows = useMemo(() => {
     if (tvShows && "shows" in tvShows && Array.isArray(tvShows.shows)) {
@@ -146,7 +159,10 @@ const TVShowsPage: React.FC = () => {
               <Button className="cursor-pointer flex items-center justify-center gap-1">
                 <EditIcon color="#949698" />
               </Button>
-              <Button className="cursor-pointer flex items-center justify-center gap-1">
+              <Button
+                className="cursor-pointer flex items-center justify-center gap-1"
+                onClick={() => handleDelete(el)}
+              >
                 <DeleteIcon color="#949698" />
               </Button>
             </div>
@@ -172,12 +188,54 @@ const TVShowsPage: React.FC = () => {
     else [];
   }, [tvShows, filteredTvShows]) as any[];
 
+  const handleDelete = (item: any) => {
+    setInitialValues(item);
+    setConfirm(true);
+  };
+
+  const removeTVShow = async () => {
+    console.log("Item to be removed:", initialValues);
+    setSelected([]);
+
+    deleteTVShowMutate(initialValues?.id)
+      .then(() => {
+        setConfirm(false);
+        setInitialValues(null);
+        setAlertMsg({
+          status: "success",
+          msg: `TV Show removed`,
+        });
+        setShowAlert(true);
+        queryClient.invalidateQueries(["tvShows"]);
+      })
+      .catch(() => {
+        setAlertMsg({
+          status: "error",
+          msg: "Error removing TV Show",
+        });
+        setShowAlert(true);
+      });
+  };
+
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
+  const handleClose = () => {
+    setAlertMsg({
+      msg: "",
+      status: "success",
+    });
+    setShowAlert(false);
+  };
+
   return (
-    <Layout title="Tv Shows">
+    <Layout
+      title="Tv Shows"
+      showAlert={showAlert}
+      alertMsg={alertMsg}
+      handleClose={handleClose}
+    >
       <div className="flex flex-col items-center justify-start w-[96%] md:w-full">
         <Box
           width={"100%"}
@@ -197,13 +255,13 @@ const TVShowsPage: React.FC = () => {
           </Tabs>
 
           {value === 0 && (
-            <Button
+            <CustomBtn
               className="cursor-pointer font-semibold text-center text-sm"
               color="deep_purple_A200_19"
               onClick={() => setIsOpen(true)}
             >
               + Add Show
-            </Button>
+            </CustomBtn>
           )}
         </Box>
 
@@ -214,6 +272,7 @@ const TVShowsPage: React.FC = () => {
               data={filteredUpcomingShows ?? []}
               selected={selected}
               setSelected={setSelected}
+              handleBulkAction={() => console.log("Bulk action:", selected)}
             />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
@@ -278,6 +337,51 @@ const TVShowsPage: React.FC = () => {
               setEditMode(false);
             }}
           />
+        </MyModal>
+      )}
+
+      {confirm && (
+        <MyModal
+          style="w-full max-w-lg"
+          isOpen={confirm}
+          closeModal={() => setConfirm(false)}
+        >
+          <div className="bg-white-A700 flex flex-col items-center justify-end p-6 md:px-5 rounded-[10px] shadow-bs w-full">
+            <Typography variant="h5" align="left">
+              Confirm Delete
+            </Typography>
+            <br />
+            <Typography variant="body1">
+              Do you want to delete this item?
+            </Typography>
+            <br />
+
+            <Stack
+              direction={"row"}
+              justifyContent={"flex-end"}
+              gap={2}
+              className="text-blue_gray-900"
+            >
+              <Button
+                color="primary"
+                variant="outlined"
+                onClick={() => setConfirm(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                color="error"
+                variant="contained"
+                onClick={removeTVShow}
+                className="gap-1"
+              >
+                {isDeletingTVShow && (
+                  <CircularProgress color="inherit" size={24} />
+                )}
+                Confirm
+              </Button>
+            </Stack>
+          </div>
         </MyModal>
       )}
     </Layout>
