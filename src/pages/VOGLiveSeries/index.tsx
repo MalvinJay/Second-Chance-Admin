@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 import { Button as CustomBtn, Img } from "components";
 import { DeleteIcon, EditIcon } from "components/Icons/Icons";
 import Layout from "components/Layout/Layout";
-import { Checkbox } from "components/Shared/Checkbox";
 import MyModal from "components/Shared/Modal/Modal";
 import AddEditVOG from "components/AddEditVOG/AddEditVOG";
 import MuiTable from "components/Shared/Table/MuiTable";

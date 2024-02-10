@@ -1,53 +1,80 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button, Img, Text } from "components";
 import Layout from "components/Layout/Layout";
 import RoyalNewsItem from "components/RoyalNews/RoyalNewsItem";
 import MyModal from "components/Shared/Modal/Modal";
 import AddEditArticle from "components/RoyalNews/AddEditArticle/AddEditArticle";
-
-const news = [
-  {
-    banner: "images/img_rectangle50_155x349.png",
-    title: "News Heading will be here",
-    description: "Lorem ipsum dolor sit amet consectetur. Donec egestas ut",
-    comments: "70",
-    views: "12.4k",
-  },
-  {
-    banner: "images/img_rectangle50_155x349.png",
-    title: "News Heading will be here",
-    description: "Lorem ipsum dolor sit amet consectetur. Donec egestas ut",
-    comments: "70",
-    views: "12.4k",
-  },
-  {
-    banner: "images/img_rectangle50_155x349.png",
-    title: "News Heading will be here",
-    description: "Lorem ipsum dolor sit amet consectetur. Donec egestas ut",
-    comments: "70",
-    views: "12.4k",
-  },
-  {
-    banner: "images/img_rectangle50_155x349.png",
-    title: "News Heading will be here",
-    description: "Lorem ipsum dolor sit amet consectetur. Donec egestas ut",
-    comments: "70",
-    views: "12.4k",
-  },
-  {
-    banner: "images/img_rectangle50_155x349.png",
-    title: "News Heading will be here",
-    description: "Lorem ipsum dolor sit amet consectetur. Donec egestas ut",
-    comments: "70",
-    views: "12.4k",
-  },
-];
+import { useReactQuery } from "hooks/useReactQuery";
+import { CircularProgress, Pagination, Paper, Typography } from "@mui/material";
+import AddCategory from "components/RoyalNews/AddCategory";
+import { TAlertMsgProp } from "types/shared.type";
 
 const RoyalNewsPage: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isShow, setIsShow] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [alertMsg, setAlertMsg] = useState<TAlertMsgProp>({
+    msg: "",
+    status: "success",
+  });
+  const [initialValues, setInitialValues] = useState(null);
+  const [filters, setfilters] = useState({
+    per_page: 50,
+    page: 1,
+  });
+
+  const { isLoading, data: royalNews }: { isLoading: boolean; data: any } =
+    useReactQuery(["royal-news"], "/posts", filters);
+
+  const {
+    isLoading: isFetchingCat,
+    data: categoriesData,
+  }: { isLoading: boolean; data: any } = useReactQuery(
+    ["royal-news-categories"],
+    "/categories"
+    // {
+    //   include: "publishedPosts",
+    //   filter: {
+    //     slug: "",
+    //   },
+    // }
+  );
+
+  const filteredRoyalNews = useMemo(() => {
+    if (
+      royalNews &&
+      "articles" in royalNews &&
+      Array.isArray(royalNews.articles)
+    ) {
+      return royalNews.articles;
+    }
+    return [];
+  }, [royalNews, isLoading]);
+
+  const categories = useMemo(() => {
+    if (categoriesData && "categories" in categoriesData)
+      return categoriesData?.categories;
+    return [];
+  }, [categoriesData]);
+
+  const handleClose = () => {
+    setIsShow(false);
+    setIsOpen(false);
+    setShowAlert(false);
+    setAlertMsg({
+      msg: "",
+      status: "success",
+    });
+  };
 
   return (
-    <Layout title="Royal News">
+    <Layout
+      title="Royal News"
+      alertMsg={alertMsg}
+      showAlert={showAlert}
+      handleClose={handleClose}
+    >
       <div className="flex flex-col items-center justify-start w-[96%] md:w-full">
         <div className="flex flex-row md:gap-10 items-center justify-between w-full">
           <Text
@@ -56,7 +83,7 @@ const RoyalNewsPage: React.FC = () => {
           >
             News List
           </Text>
-          <div className="flex flex-col items-center justify-start">
+          <div className="flex flex items-center justify-start gap-2">
             <Button
               className="cursor-pointer font-semibold min-w-[129px] text-center text-sm"
               color="deep_purple_A200_19"
@@ -64,132 +91,78 @@ const RoyalNewsPage: React.FC = () => {
             >
               + Add News
             </Button>
+            <Button
+              className="cursor-pointer font-semibold min-w-[129px] text-center text-sm"
+              color="deep_purple_A200_19"
+              onClick={() => setIsShow(true)}
+            >
+              Add Category
+            </Button>
           </div>
         </div>
 
         <div className="md:gap-5 gap-6 grid sm:grid-cols-1 md:grid-cols-2 grid-cols-3 justify-center min-h-[auto] mt-6 w-full">
-          {news?.map((item, index) => (
+          {filteredRoyalNews?.map((item, index) => (
             <RoyalNewsItem key={index} {...item} />
           ))}
         </div>
 
-        <div className="flex sm:flex-col flex-row gap-6 items-start justify-start mt-[138px] w-auto sm:w-full">
-          <div className="flex flex-col h-8 md:h-auto items-center justify-start px-3 py-2 rounded-lg w-20">
-            <Text
-              className="text-deep_purple-A200 text-xs w-auto"
-              size="txtPlusJakartaSansRomanSemiBold12"
-            >
-              Previous
-            </Text>
-          </div>
-          <div className="flex sm:flex-col flex-row gap-1 items-center justify-start w-auto sm:w-full">
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-[50%] w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs w-auto"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                1
-              </Text>
-            </div>
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-[50%] w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs w-auto"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                ...
-              </Text>
-            </div>
-            <Button
-              className="cursor-pointer h-8 rounded-lg text-center text-xs w-8"
-              color="gray_200"
-              size="sm"
-            >
-              10
-            </Button>
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-lg w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs w-auto"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                11
-              </Text>
-            </div>
-            <Button
-              className="cursor-pointer font-semibold h-8 rounded-lg text-center text-xs w-8"
-              color="deep_purple_A200"
-              size="sm"
-            >
-              12
-            </Button>
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-lg w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs w-auto"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                13
-              </Text>
-            </div>
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-lg w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs w-auto"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                14
-              </Text>
-            </div>
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-lg w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs w-auto"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                15
-              </Text>
-            </div>
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-lg w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs w-auto"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                16
-              </Text>
-            </div>
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-lg w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs w-auto"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                ...
-              </Text>
-            </div>
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-lg w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                26
-              </Text>
-            </div>
-          </div>
-          <div className="flex flex-col items-center justify-start px-3 py-2 rounded-lg w-auto">
-            <Text
-              className="text-center text-deep_purple-A200 text-xs w-auto"
-              size="txtPlusJakartaSansRomanSemiBold12"
-            >
-              Next
-            </Text>
-          </div>
-        </div>
+        {(isLoading || filteredRoyalNews?.length <= 0) && (
+          <Paper
+            elevation={0}
+            className="w-full text-center p-4 h-24 flex items-center justify-center"
+          >
+            {isLoading ? (
+              <CircularProgress color="inherit" size={32} />
+            ) : (
+              <Typography>No Data</Typography>
+            )}
+          </Paper>
+        )}
+
+        <Pagination
+          className="mt-10"
+          count={
+            royalNews
+              ? Math.ceil(
+                  royalNews?.pagination?.total / royalNews?.pagination.per_page
+                )
+              : 0
+          }
+        />
       </div>
 
       {isOpen && (
         <MyModal
-          style="w-full max-w-5xl"
+          style="w-full max-w-3xl"
           isOpen={isOpen}
           closeModal={(val) => setIsOpen(false)}
         >
           <AddEditArticle
+            editMode={editMode}
             title="Add Royal News"
-            handleClose={() => setIsOpen(false)}
+            handleClose={handleClose}
+            initialValues={initialValues}
+            setShowAlert={setShowAlert}
+            setAlertMsg={setAlertMsg}
+            categories={categories}
+          />
+        </MyModal>
+      )}
+
+      {isShow && (
+        <MyModal
+          style="w-full max-w-xl"
+          isOpen={isShow}
+          closeModal={() => setIsShow(false)}
+        >
+          <AddCategory
+            editMode={editMode}
+            title="Add Category"
+            handleClose={handleClose}
+            initialValues={initialValues}
+            setShowAlert={setShowAlert}
+            setAlertMsg={setAlertMsg}
           />
         </MyModal>
       )}
