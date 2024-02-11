@@ -250,6 +250,7 @@ const AddEditArticle = (props: IAddEditArticleProps) => {
               className="h-14 min-w-[12rem] border border-gray-900_26"
               variant="gradient"
               color="white"
+              onClick={handleClose}
             >
               <Text
                 className="text-blue_gray-900 text-sm"

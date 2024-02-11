@@ -1,7 +1,6 @@
 import { CircularProgress } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "App";
-import { AddArticleAPIFn } from "api/royalNews";
 import { AddTestimonyAPIFn } from "api/testimonies";
 import { AxiosError } from "axios";
 import BannerUploader from "components/BannerUploader/BannerUploader";
@@ -174,7 +173,7 @@ const AddEditTestimony = (props: IAddEditTestimonyProps) => {
               rows={4}
               {...register("testimony", { required: true })}
               onChange={() => clearErrors("testimony")}
-            ></TextArea>
+            />
           </div>
 
           <div className="flex flex-col gap-5 items-start justify-start w-full">
@@ -221,6 +220,7 @@ const AddEditTestimony = (props: IAddEditTestimonyProps) => {
               className="h-14 min-w-[12rem] border border-gray-900_26"
               variant="gradient"
               color="white"
+              onClick={handleClose}
             >
               <Text
                 className="text-blue_gray-900 text-sm"

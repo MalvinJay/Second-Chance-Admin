@@ -128,7 +128,6 @@ const PageHeader = (props: PageHeaderProps) => {
   }, [header]);
 
   useEffect(() => {
-    console.log("setting form data:", header);
     setValue("title", header?.title);
     setValue("video_url", header?.video?.video_url);
   }, [currentHeaderVideo, header]);
@@ -227,25 +226,12 @@ const PageHeader = (props: PageHeaderProps) => {
           <iframe
             id="pageHeader"
             ref={iframeRef}
-            className="w-full h-full rounded-lg"
+            className="w-full h-full rounded-lg bg-black-900"
             src={currentHeaderVideo}
             title={getValues("title")}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
           />
-
-          {/* {show && (
-            <div
-              className="cursor-pointer absolute flex flex-col h-full inset-[0] items-center justify-center m-auto p-[295px] md:p-0 md:px-10 sm:px-5 rounded-[25px] md:rounded-none shadow-bs1 w-full"
-              onClick={() => setshow(!show)}
-            >
-              <Img
-                className="h-[98px] w-[98px] hover:scale-110 transform transalte duration-500"
-                src="images/img_play.svg"
-                alt="play"
-              />
-            </div>
-          )} */}
         </div>
       </div>
     </div>

@@ -1,9 +1,11 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
+import AliceCarousel from "react-alice-carousel";
 import { TAlertMsgProp } from "types/shared.type";
 
-import { Button, Img, List, Text } from "components";
+import { Button, Img, Text } from "components";
+import { useReactQuery } from "hooks/useReactQuery";
 import Layout from "components/Layout/Layout";
 import CustomTable from "components/Shared/Table/CustomTable";
 import PageHeader from "components/PageHeader/PageHeader";
@@ -14,11 +16,9 @@ import ArticleItem from "components/RoyalNews/ArticleItem";
 import AddEditShow from "components/AddEditShow/AddEditShow";
 import MyModal from "components/Shared/Modal/Modal";
 import AddEditArticle from "components/RoyalNews/AddEditArticle/AddEditArticle";
-import { useReactQuery } from "hooks/useReactQuery";
 import { EditIcon, DeleteIcon } from "components/Icons/Icons";
 import EmptyList from "components/Shared/EmptyList/EmptyList";
 import { Slider } from "components/Carousel";
-import AliceCarousel from "react-alice-carousel";
 import TestimonyItem from "components/Testimonies/TestimonyItem";
 import AddEditTestimony from "components/Testimonies/AddTestimoty";
 
@@ -505,7 +505,7 @@ const HomepagePage: React.FC = () => {
         >
           <AddEditArticle
             editMode={editMode}
-            title="Add Royal News"
+            title={`${!editMode ? "Add News" : "Update News"}`}
             handleClose={handleClose}
             initialValues={initialValues}
             setShowAlert={setShowAlert}
@@ -523,7 +523,7 @@ const HomepagePage: React.FC = () => {
         >
           <AddEditTestimony
             editMode={editMode}
-            title="Add Testimony"
+            title={`${!editMode ? "Add Testimony" : "Update Testimony"}`}
             handleClose={handleClose}
             initialValues={initialValues}
             setShowAlert={setShowAlert}

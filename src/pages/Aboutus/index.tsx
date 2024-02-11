@@ -5,6 +5,9 @@ import { Checkbox } from "components/Shared/Checkbox";
 import CustomTable from "components/Shared/Table/CustomTable";
 import MyModal from "components/Shared/Modal/Modal";
 import AddEditMember from "components/AddEditMember/AddEditMember";
+import { TAlertMsgProp } from "types/shared.type";
+import EmptyList from "components/Shared/EmptyList/EmptyList";
+import { useReactQuery } from "hooks/useReactQuery";
 
 // Upcoming shows
 const membersColumns = [
@@ -86,6 +89,28 @@ const membersList = [
 
 const AboutusPage: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [initialValues, setInitialValues] = useState(null);
+  const [showAlert, setShowAlert] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [alertMsg, setAlertMsg] = useState<TAlertMsgProp>({
+    msg: "",
+    status: "success",
+  });
+
+  const {
+    isLoading: isLoadingUsers,
+    data: users,
+  }: { isLoading: boolean; data: any } = useReactQuery(["users"], "/users");
+
+  if (users) console.log("Users:", users);
+
+  const handleClose = () => {
+    setIsOpen(false);
+    setAlertMsg({
+      msg: "",
+      status: "success",
+    });
+  };
 
   return (
     <Layout title="About Us">
@@ -292,6 +317,7 @@ const AboutusPage: React.FC = () => {
           </div>
 
           <CustomTable tableHeading={membersColumns} data={membersList} />
+          <EmptyList list={membersList} isLoading={isLoadingUsers} />
         </div>
       </div>
 
@@ -301,7 +327,14 @@ const AboutusPage: React.FC = () => {
           isOpen={isOpen}
           closeModal={(val) => setIsOpen(false)}
         >
-          <AddEditMember handleClose={() => setIsOpen(false)} />
+          <AddEditMember
+            editMode={editMode}
+            title={`${!editMode ? "Add Member" : "Update Member"}`}
+            handleClose={handleClose}
+            initialValues={initialValues}
+            setShowAlert={setShowAlert}
+            setAlertMsg={setAlertMsg}
+          />
         </MyModal>
       )}
     </Layout>
