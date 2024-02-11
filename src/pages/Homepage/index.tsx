@@ -1,7 +1,7 @@
 "use client";
 
+import { useMemo, useRef, useState } from "react";
 import { TAlertMsgProp } from "types/shared.type";
-import { useState } from "react";
 
 import { Button, Img, List, Text } from "components";
 import Layout from "components/Layout/Layout";
@@ -9,11 +9,18 @@ import CustomTable from "components/Shared/Table/CustomTable";
 import PageHeader from "components/PageHeader/PageHeader";
 import { Checkbox } from "components/Shared/Checkbox";
 import SliderItem from "components/Shared/Slider/SliderItem";
-import AddArticle from "components/RoyalNews/AddArticle";
+import AddItem from "components/RoyalNews/AddArticle";
 import ArticleItem from "components/RoyalNews/ArticleItem";
 import AddEditShow from "components/AddEditShow/AddEditShow";
 import MyModal from "components/Shared/Modal/Modal";
 import AddEditArticle from "components/RoyalNews/AddEditArticle/AddEditArticle";
+import { useReactQuery } from "hooks/useReactQuery";
+import { EditIcon, DeleteIcon } from "components/Icons/Icons";
+import EmptyList from "components/Shared/EmptyList/EmptyList";
+import { Slider } from "components/Carousel";
+import AliceCarousel from "react-alice-carousel";
+import TestimonyItem from "components/Testimonies/TestimonyItem";
+import AddEditTestimony from "components/Testimonies/AddTestimoty";
 
 // Upcoming shows
 const upcomingColumns = [
@@ -41,7 +48,6 @@ const upcomingColumns = [
   { label: "Social Networks", renderCell: (item) => item.socials },
   { label: "Actions", renderCell: (item) => item.actions },
 ];
-const upcoming = [];
 
 // Previous shows
 const previousColumns = [
@@ -58,97 +64,67 @@ const previousColumns = [
   { label: "Views", renderCell: (item) => item.socials },
   { label: "Actions", renderCell: (item) => item.actions },
 ];
-const previous = [];
 
 // Advertisements
 const advertisements = [
-  {
-    title: "This space is for an advertisement",
-    banner: "images/img_rectangle42.png",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Donec egestas ut accumsan nisi",
-    cta: "Explore Now",
-    className: "sm:w-1/2 w-[427px]",
-  },
-  {
-    title: "This space is for an advertisement",
-    banner: "images/img_rectangle42_292x427.png",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Donec egestas ut accumsan nisi",
-    cta: "Explore Now",
-    className: "sm:w-1/2 w-[427px]",
-  },
-  {
-    title: "This space is for an advertisement",
-    banner: "images/img_rectangle42_294x426.png",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Donec egestas ut accumsan nisi",
-    cta: "Explore Now",
-    className: "sm:w-1/2 w-[427px]",
-  },
+  // {
+  //   title: "This space is for an advertisement",
+  //   banner: "images/img_rectangle42.png",
+  //   description:
+  //     "Lorem ipsum dolor sit amet consectetur. Donec egestas ut accumsan nisi",
+  //   cta: "Explore Now",
+  //   className: "sm:w-1/2 w-[427px]",
+  // },
+  // {
+  //   title: "This space is for an advertisement",
+  //   banner: "images/img_rectangle42_292x427.png",
+  //   description:
+  //     "Lorem ipsum dolor sit amet consectetur. Donec egestas ut accumsan nisi",
+  //   cta: "Explore Now",
+  //   className: "sm:w-1/2 w-[427px]",
+  // },
+  // {
+  //   title: "This space is for an advertisement",
+  //   banner: "images/img_rectangle42_294x426.png",
+  //   description:
+  //     "Lorem ipsum dolor sit amet consectetur. Donec egestas ut accumsan nisi",
+  //   cta: "Explore Now",
+  //   className: "sm:w-1/2 w-[427px]",
+  // },
 ];
 
 // Online Testimonies show
-const onlineColumns = [
-  {
-    label: "Sent By",
-    renderCell: (item) => item.sent_by,
-    select: {
-      renderHeaderCellSelect: () => <Checkbox />,
-      renderCellSelect: (item) => <Checkbox />,
-    },
-  },
-  { label: "Review", renderCell: (item) => item.review },
-  { label: "Sent On", renderCell: (item) => item.sent_on },
-  { label: "Actions", renderCell: (item) => item.actions },
-];
-
 const testimonies = [
-  {
-    sent_by: (
-      <div className="flex gap-3 items-center relative">
-        <Img
-          className="h-[37px] md:h-auto object-cover rounded-md w-[43px]"
-          src="images/img_rectangle2161_37x43.png"
-          alt="rectangle2161"
-        />
-        <span>Christopher Nolan</span>
-      </div>
-    ),
-    review: "Lorem ipsum dolor sit amet consectetur. In morbi senectus.",
-    sent_on: "25 June, 2023",
-    actions: (
-      <div className="flex gap-2 items-center">
-        <Button
-          className="cursor-pointer flex items-center justify-center min-w-[94px] gap-1"
-          leftIcon={
-            <Img
-              className="h-4"
-              src="images/img_checkmark.svg"
-              alt="checkmark"
-            />
-          }
-          color="light_green_700_19"
-        >
-          <div className="font-semibold text-[10px] text-left">Approve</div>
-        </Button>
-        <Button
-          className="cursor-pointer flex items-center justify-center min-w-[84px] gap-1"
-          leftIcon={
-            <Img className="h-4" src="images/img_close.svg" alt="close" />
-          }
-          color="red_500_19"
-        >
-          <div className="font-semibold text-[10px] text-left">Reject</div>
-        </Button>
-      </div>
-    ),
-  },
+  // {
+  //   name: "Henry Ayensu",
+  //   testimony:
+  //     "Lorem ipsum dolor sit amet consectetur. Turpis mi ut bibendum vitae integer a neque non. Turpis ut tempus sed diam id faucibus neque in quam. Tincidunt bibendum metus eros pretium lectus quis in",
+  //   photo: "images/img_rectangle2161_37x43.png",
+  //   position: "CEO, Creative House Agency",
+  //   isActive: false,
+  // },
+  // {
+  //   name: "Henry Ayensu",
+  //   testimony:
+  //     "Lorem ipsum dolor sit amet consectetur. Turpis mi ut bibendum vitae integer a neque non. Turpis ut tempus sed diam id faucibus neque in quam. Tincidunt bibendum metus eros pretium lectus quis in",
+  //   photo: "images/img_rectangle2161_37x43.png",
+  //   position: "CEO, Creative House Agency",
+  //   isActive: false,
+  // },
+  // {
+  //   name: "Henry Ayensu",
+  //   testimony:
+  //     "Lorem ipsum dolor sit amet consectetur. Turpis mi ut bibendum vitae integer a neque non. Turpis ut tempus sed diam id faucibus neque in quam. Tincidunt bibendum metus eros pretium lectus quis in",
+  //   photo: "images/img_rectangle2161_37x43.png",
+  //   position: "CEO, Creative House Agency",
+  //   isActive: false,
+  // },
 ];
 
 const HomepagePage: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [show, setShow] = useState(false);
+  const [showTest, setshowTest] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [alertMsg, setAlertMsg] = useState<TAlertMsgProp>({
@@ -156,13 +132,144 @@ const HomepagePage: React.FC = () => {
     status: "success",
   });
   const [initialValues, setInitialValues] = useState(null);
+  const [filters, setfilters] = useState({});
+  const sliderRef = useRef<AliceCarousel>(null);
+  const testimoniesRef = useRef<AliceCarousel>(null);
+
+  // TV Shows
+  const { isLoading, data: tvShows }: { isLoading: boolean; data: any } =
+    useReactQuery(["tvShows"], "/tv-shows");
+
+  const filteredTvShows = useMemo(() => {
+    if (tvShows && "shows" in tvShows && Array.isArray(tvShows.shows)) {
+      return tvShows?.shows?.map((el: any) => {
+        return {
+          // id: el.id,
+          name: (
+            <div className="flex gap-4 items-center">
+              <Img
+                className="h-[37px] md:h-auto object-cover rounded-md w-[43px]"
+                src={el.banner?.img_url}
+                alt={el.banner?.file_name}
+                placeholder="images/img_img60591.png"
+              />
+              <span>{el.name}</span>
+            </div>
+          ),
+          hostedBy: "Stephen Adom",
+          date_time: `${new Date(el.airing_date)?.toDateString().slice(4)} | ${
+            el.airing_time
+          }`,
+          social: (
+            <div className="flex items-center gap-2">
+              <img src="images/img_frame899.svg" />
+            </div>
+          ),
+          actions: (
+            <div className="flex gap-2 items-center">
+              <Button className="cursor-pointer flex items-center justify-center gap-1">
+                <EditIcon color="#949698" />
+              </Button>
+              <Button
+                className="cursor-pointer flex items-center justify-center gap-1"
+                onClick={() => handleDelete(el)}
+              >
+                <DeleteIcon color="#949698" />
+              </Button>
+            </div>
+          ),
+        };
+      });
+    } else [];
+  }, [tvShows, showAlert, isLoading]) as any[];
+
+  const filteredUpcomingShows = useMemo(() => {
+    if (filteredTvShows)
+      return filteredTvShows?.filter(
+        (show) => new Date() <= new Date(show.date_time?.split(" | ")[0])
+      );
+    else [];
+  }, [tvShows, filteredTvShows]) as any[];
+
+  const filteredPreviousShows = useMemo(() => {
+    if (filteredTvShows)
+      return filteredTvShows.filter(
+        (show) => new Date() > new Date(show.date_time.split(" | ")[0])
+      );
+    else [];
+  }, [tvShows, filteredTvShows]) as any[];
+
+  // Online Testimonies
+  const {
+    isLoading: isLoadingTestimonies,
+    data: onlineTestimonies,
+  }: { isLoading: boolean; data: any } = useReactQuery(
+    ["onlineTestimonies"],
+    "/online-testimonies"
+  );
+
+  // Royal News
+  const {
+    isLoading: isLoadingNews,
+    data: royalNews,
+  }: { isLoading: boolean; data: any } = useReactQuery(
+    ["royal-news"],
+    "/posts",
+    filters
+  );
+
+  const filteredRoyalNews = useMemo(() => {
+    // if (
+    //   royalNews &&
+    //   "articles" in royalNews &&
+    //   Array.isArray(royalNews.articles)
+    // ) {
+    //   return royalNews.articles;
+    // }
+
+    return [
+      // {
+      //   banner: "images/img_rectangle51.png",
+      //   title: "News title will be here",
+      //   description:
+      //     "Lorem ipsum dolor sit amet consectetur. Donec egestas ut accumsan nisi",
+      // },
+      // {
+      //   banner: "images/img_rectangle50.png",
+      //   title: "News title will be here",
+      //   description:
+      //     "Lorem ipsum dolor sit amet consectetur. Donec egestas ut accumsan nisi",
+      // },
+    ];
+  }, [royalNews, isLoading]) as any[];
+
+  const {
+    isLoading: isFetchingCat,
+    data: categoriesData,
+  }: { isLoading: boolean; data: any } = useReactQuery(
+    ["royal-news-categories"],
+    "/categories"
+  );
+
+  const categories = useMemo(() => {
+    if (categoriesData && "categories" in categoriesData)
+      return categoriesData?.categories;
+    return [];
+  }, [categoriesData]);
 
   const handleClose = () => {
+    setShow(false);
+    setshowTest(false);
     setShowAlert(false);
     setAlertMsg({
       msg: "",
       status: "success",
     });
+  };
+
+  const handleDelete = (item: any) => {
+    setInitialValues(item);
+    // setConfirm(true);
   };
 
   return (
@@ -195,7 +302,12 @@ const HomepagePage: React.FC = () => {
               </Button>
             </div>
 
-            <CustomTable tableHeading={upcomingColumns} data={upcoming} />
+            <CustomTable
+              tableHeading={upcomingColumns}
+              data={filteredUpcomingShows ?? []}
+            />
+
+            <EmptyList list={filteredUpcomingShows} isLoading={isLoading} />
           </div>
         </div>
 
@@ -210,7 +322,12 @@ const HomepagePage: React.FC = () => {
               </Text>
             </div>
 
-            <CustomTable tableHeading={previousColumns} data={previous} />
+            <CustomTable
+              tableHeading={previousColumns}
+              data={filteredPreviousShows ?? []}
+            />
+
+            <EmptyList list={filteredPreviousShows} isLoading={isLoading} />
           </div>
         </div>
 
@@ -246,9 +363,12 @@ const HomepagePage: React.FC = () => {
                   <SliderItem key={index} {...item} />
                 ))}
               </div>
+
+              <EmptyList list={advertisements} isLoading={isLoading} />
             </div>
           </div>
         </div>
+
         <div className="bg-white-A700 border border-gray-900_19 border-solid flex flex-col gap-[21px] items-start justify-end p-5 rounded-[10px] w-full">
           <div className="flex flex-row md:gap-10 items-center justify-between w-full">
             <Text
@@ -259,61 +379,113 @@ const HomepagePage: React.FC = () => {
             </Text>
           </div>
 
-          <CustomTable tableHeading={onlineColumns} data={testimonies} />
+          {/* <CustomTable tableHeading={onlineColumns} data={testimonies ?? []} /> */}
+
+          <div className="flex md:flex-col flex-row gap-6 items-start justify-start max-w-[1143px] w-full">
+            <AddItem
+              logo={
+                <Img
+                  className="h-6 md:h-auto object-cover w-6"
+                  src="images/img_documenttext.png"
+                  alt="documenttext"
+                />
+              }
+              title="Add new Testimonies"
+              description="Lorem ipsum dolor sit amet consectetur. Turpis mi ut bibendum vitae intege"
+              setShow={() => setshowTest(true)}
+            />
+
+            <section className="royal-news-items">
+              <div className="bg-white-A700 flex md:flex-1 flex-col items-end justify-start overflow-auto rounded-lg w-full">
+                <Slider
+                  ref={testimoniesRef}
+                  autoPlay
+                  autoPlayInterval={4000}
+                  // activeIndex={sliderState}
+                  responsive={{
+                    0: { items: 1 },
+                    550: { items: 2 },
+                    1050: { items: 2 },
+                  }}
+                  onSlideChanged={(e) => {
+                    // setsliderState(e?.item);
+                  }}
+                  className="max-w-7xl md:mt-0 mx-auto md:px-5 w-full testimonies"
+                  items={testimonies?.map((item, index) => (
+                    <TestimonyItem key={index} item={item} />
+                  ))}
+                />
+              </div>
+
+              <EmptyList list={testimonies} isLoading={isLoadingTestimonies} />
+            </section>
+          </div>
         </div>
 
         <div className="bg-white-A700 border border-gray-900_19 border-solid md:h-[1285px] sm:h-[344px] h-[388px] p-5 relative rounded-[10px] w-full">
           <div className="flex flex-col gap-6 h-max items-start justify-start m-auto w-auto">
-            <Text
-              className="text-[22px] text-gray-900 sm:text-lg md:text-xl w-auto"
-              size="txtPlusJakartaSansRomanBold22"
-            >
-              Royal News
-            </Text>
+            <div className="flex justify-between items-center">
+              <Text
+                className="text-[22px] text-gray-900 sm:text-lg md:text-xl w-auto"
+                size="txtPlusJakartaSansRomanBold22"
+              >
+                Royal News
+              </Text>
+
+              <div className="flex items-center gap-4"></div>
+            </div>
 
             <div className="flex md:flex-col flex-row gap-6 items-start justify-start max-w-[1143px] w-full">
-              <AddArticle setShow={setShow} />
+              <AddItem
+                logo={
+                  <Img
+                    className="h-6 md:h-auto object-cover w-6"
+                    src="images/img_documenttext.png"
+                    alt="documenttext"
+                  />
+                }
+                title="Add new Royal News"
+                description="Lorem ipsum dolor sit amet consectetur. Turpis mi ut bibendum vitae intege"
+                setShow={setShow}
+              />
 
               <section className="royal-news-items">
                 <div className="bg-white-A700 flex md:flex-1 flex-col items-end justify-start overflow-auto rounded-lg w-full">
-                  <List
-                    className="sm:flex-col flex-row gap-6 grid md:grid-cols-1 grid-cols-2 w-full"
-                    orientation="horizontal"
-                  >
-                    <ArticleItem
-                      banner="images/img_rectangle51.png"
-                      title="News title will be here"
-                      description="Lorem ipsum dolor sit amet consectetur. Donec egestas ut accumsan nisi"
-                    />
-                    <ArticleItem
-                      banner="images/img_rectangle50.png"
-                      title="News title will be here"
-                      description="Lorem ipsum dolor sit amet consectetur. Donec egestas ut accumsan nisi"
-                    />
-                  </List>
+                  <Slider
+                    ref={sliderRef}
+                    autoPlay
+                    autoPlayInterval={4000}
+                    // activeIndex={sliderState}
+                    responsive={{
+                      0: { items: 1 },
+                      550: { items: 2 },
+                      1050: { items: 2 },
+                    }}
+                    onSlideChanged={(e) => {
+                      // setsliderState(e?.item);
+                    }}
+                    className="max-w-7xl md:mt-0 mx-auto md:px-5 w-full coming-up-show"
+                    items={filteredRoyalNews.map((news, index) => (
+                      <ArticleItem key={index} {...news} />
+                    ))}
+                  />
                 </div>
+                <EmptyList list={filteredRoyalNews} isLoading={isLoadingNews} />
               </section>
             </div>
           </div>
-
-          <Img
-            className="absolute h-8 object-cover right-[2%] top-[5%] w-[72px]"
-            src="images/img_frame42.png"
-            alt="frameFortyTwo_One"
-          />
         </div>
       </div>
 
       {isOpen && (
         <MyModal
-          style="w-full max-w-5xl"
+          style="w-full max-w-4xl"
           isOpen={isOpen}
           closeModal={(val) => setIsOpen(false)}
         >
           <AddEditShow
             editMode={editMode}
             title={`${!editMode ? "Add Tv Show" : "Update Tv Show"} `}
-            type="vog"
             setShowAlert={setShowAlert}
             setAlertMsg={setAlertMsg}
             handleClose={() => {
@@ -327,13 +499,35 @@ const HomepagePage: React.FC = () => {
 
       {show && (
         <MyModal
-          style="w-full max-w-5xl"
-          isOpen={isOpen}
-          closeModal={(val) => setShow(false)}
+          style="w-full max-w-3xl"
+          isOpen={show}
+          closeModal={() => setShow(false)}
         >
           <AddEditArticle
+            editMode={editMode}
             title="Add Royal News"
-            handleClose={() => setShow(false)}
+            handleClose={handleClose}
+            initialValues={initialValues}
+            setShowAlert={setShowAlert}
+            setAlertMsg={setAlertMsg}
+            categories={categories}
+          />
+        </MyModal>
+      )}
+
+      {showTest && (
+        <MyModal
+          style="w-full max-w-3xl"
+          isOpen={showTest}
+          closeModal={() => setshowTest(false)}
+        >
+          <AddEditTestimony
+            editMode={editMode}
+            title="Add Testimony"
+            handleClose={handleClose}
+            initialValues={initialValues}
+            setShowAlert={setShowAlert}
+            setAlertMsg={setAlertMsg}
           />
         </MyModal>
       )}

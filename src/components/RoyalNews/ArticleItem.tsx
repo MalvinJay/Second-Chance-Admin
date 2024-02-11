@@ -29,7 +29,7 @@ const ArticleItem = (props: IArticleItemProps) => {
           {title}
         </Text>
         <Text
-          className="leading-[24.00px] max-w-[386px] md:max-w-full text-gray-900_7f text-sm"
+          className="!leading-loose max-w-[386px] md:max-w-full text-gray-900_7f text-sm"
           size="txtPlusJakartaSansRomanRegular14"
         >
           {description}

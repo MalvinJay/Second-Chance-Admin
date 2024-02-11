@@ -3,13 +3,40 @@ import { Button } from "components/Button";
 import { Img } from "components/Img";
 import { Input } from "components/Input";
 import { Text } from "components/Text";
+import { useForm } from "react-hook-form";
+import { TAlertMsgProp } from "types/shared.type";
 
 interface IAddEditMemberProps {
+  editMode: boolean;
+  type?: string;
   handleClose: () => void;
+  title: string;
+  setShowAlert?: (e: boolean) => void;
+  setAlertMsg?: (e: TAlertMsgProp) => void;
+  initialValues?: any;
 }
 
 const AddEditMember = (props: IAddEditMemberProps) => {
-  const { handleClose } = props;
+  const {
+    title,
+    editMode,
+    setAlertMsg,
+    setShowAlert,
+    handleClose,
+    initialValues,
+  } = props;
+  const {
+    register,
+    clearErrors,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      name: initialValues?.name,
+      testimony: initialValues?.testimony,
+      photos: initialValues?.photos,
+    },
+  });
 
   return (
     <div className="bg-gray-500 flex flex-col font-plusjakartasans items-center justify-end mx-auto w-full">
@@ -82,8 +109,7 @@ const AddEditMember = (props: IAddEditMemberProps) => {
               icon="images/img_television.svg"
               title="Upload Images"
               uploadText="Drag and drop or click here to browse files (File format :JPEG, PNG, JPG)"
-              handleUpload={(e, type) => {
-                console.log("type:", type);
+              handleUpload={(e) => {
                 // handleUpload(e, "banner");
               }}
             />

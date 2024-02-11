@@ -136,7 +136,7 @@ const RoyalNewsPage: React.FC = () => {
         <MyModal
           style="w-full max-w-3xl"
           isOpen={isOpen}
-          closeModal={(val) => setIsOpen(false)}
+          closeModal={() => setIsOpen(false)}
         >
           <AddEditArticle
             editMode={editMode}

@@ -1,5 +1,5 @@
 
-    @tailwind base;
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -109,5 +109,12 @@ li:hover{
 .ps-menu-label{
   display: flex;
   justify-content: space-between;
+}
+
+@media (min-width: 450px ) {
+  .testimonies .alice-carousel__stage li,
+  .coming-up-show .alice-carousel__stage li {
+    @apply pr-4 rounded-[15px];
+  }
 }
 

@@ -196,6 +196,9 @@ li.active-menu .ps-menu-button::before {
   border-radius: 15px;
   background: var(--primary-pink-gradient, linear-gradient(101deg, #FD1FF6 -3.34%, #C604C0 107.05%));
 }
+.royal-news-items {
+  min-width: 667px !important;
+}
 
 /* scroll */
 ::-webkit-scrollbar {

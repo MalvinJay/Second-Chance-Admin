@@ -2,12 +2,12 @@ import { CircularProgress } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "App";
 import { AddArticleAPIFn } from "api/royalNews";
+import { AddTestimonyAPIFn } from "api/testimonies";
 import { AxiosError } from "axios";
 import BannerUploader from "components/BannerUploader/BannerUploader";
 import { Button } from "components/Button";
 import { Img } from "components/Img";
 import { Input } from "components/Input";
-import { SelectBox } from "components/SelectBox";
 import { Text } from "components/Text";
 
 // import ReactQuillWrapper from "../ReactEditor";
@@ -16,7 +16,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { TAlertMsgProp } from "types/shared.type";
 
-interface IAddEditArticleProps {
+interface IAddEditTestimonyProps {
   editMode: boolean;
   type?: string;
   handleClose: () => void;
@@ -24,10 +24,9 @@ interface IAddEditArticleProps {
   setShowAlert?: (e: boolean) => void;
   setAlertMsg?: (e: TAlertMsgProp) => void;
   initialValues?: any;
-  categories?: any[];
 }
 
-const AddEditArticle = (props: IAddEditArticleProps) => {
+const AddEditTestimony = (props: IAddEditTestimonyProps) => {
   const {
     title,
     editMode,
@@ -35,7 +34,6 @@ const AddEditArticle = (props: IAddEditArticleProps) => {
     setShowAlert,
     handleClose,
     initialValues,
-    categories,
   } = props;
   const {
     register,
@@ -45,18 +43,24 @@ const AddEditArticle = (props: IAddEditArticleProps) => {
   } = useForm({
     defaultValues: {
       name: initialValues?.name,
-      featured_img: initialValues?.featured_img,
+      testimony: initialValues?.testimony,
+      photos: initialValues?.photos,
     },
   });
 
   const [formValues, setFormValues] = useState({});
 
   const handleUpload = (val: any, type: string) => {
-    setFormValues(val);
+    setFormValues((prev) => {
+      return {
+        ...prev,
+        [type]: val,
+      };
+    });
   };
 
-  const { mutateAsync: AddPatchNewsMutate, isLoading } = useMutation({
-    mutationFn: AddArticleAPIFn,
+  const { mutateAsync: AddTestimonyMutate, isLoading } = useMutation({
+    mutationFn: AddTestimonyAPIFn,
     onError: (error: AxiosError) => error?.response?.data,
   });
 
@@ -64,11 +68,10 @@ const AddEditArticle = (props: IAddEditArticleProps) => {
     let payload = {
       id: initialValues?.id || values?.id,
       ...values,
+      ...formValues,
     };
 
-    payload.featured_img = formValues;
-
-    AddPatchNewsMutate(payload)
+    AddTestimonyMutate(payload)
       .then(
         (res) => {
           const { code } = res;
@@ -76,31 +79,32 @@ const AddEditArticle = (props: IAddEditArticleProps) => {
             handleClose();
             setAlertMsg({
               status: "success",
-              msg: `${editMode ? "Updated" : "Added"} category successfully`,
+              msg: `${editMode ? "Updated" : "Added"} testimony successfully`,
             });
             setShowAlert(true);
-            queryClient.invalidateQueries(["royal-news"]);
+            queryClient.invalidateQueries(["onlineTestimonies"]);
           } else {
             setAlertMsg({
               status: "error",
-              msg: `Error ${editMode ? "updating" : "adding"} news article`,
+              msg: `Error ${editMode ? "updating" : "adding"} testimony`,
             });
             setShowAlert(true);
           }
         },
-        () => {
+        (err) => {
+          console.error("Error adding category:", err);
           setAlertMsg({
             status: "error",
-            msg: `Error ${editMode ? "updating" : "adding"} news article`,
+            msg: `Error ${editMode ? "updating" : "adding"} testimony`,
           });
           setShowAlert(true);
         }
       )
       .catch((error) => {
-        console.error("Error adding category:", error);
+        console.error("Error adding testimony:", error);
         setAlertMsg({
           status: "error",
-          msg: "Error adding category",
+          msg: "Error adding testimony",
         });
         setShowAlert(true);
       });
@@ -141,56 +145,17 @@ const AddEditArticle = (props: IAddEditArticleProps) => {
                 className="text-blue_gray-900 text-xl w-auto"
                 size="txtPlusJakartaSansRomanSemiBold20"
               >
-                News Headline
+                Name
               </Text>
               <Input
-                name="headline"
-                placeholder="Enter show name here"
-                className="p-0 placeholder:text-blue_gray-900_99 text-left text-base w-full"
+                name="name"
+                placeholder="Enter username"
+                className="p-0 placeholder:text-blue_gray-900_99 text-left text-sm w-full"
                 wrapClassName="border border-gray-900_26 border-solid w-full"
                 type="text"
-                {...register("headline", { required: true })}
-                onChange={() => clearErrors("headline")}
+                {...register("name", { required: true })}
+                onChange={() => clearErrors("name")}
               />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 items-center">
-              <div className="flex sm:flex-1 flex-col gap-4 items-start justify-start w-full">
-                <Text
-                  className="text-blue_gray-900 text-xl w-auto"
-                  size="txtPlusJakartaSansRomanSemiBold20"
-                >
-                  Sub Headline <i className="text-sm">(optional)</i>
-                </Text>
-                <Input
-                  name="frame1091_One"
-                  placeholder="Enter sub headline here..."
-                  className="p-0 placeholder:text-blue_gray-900_99 text-left text-sm w-full"
-                  wrapClassName="border border-gray-900_26 border-solid w-full"
-                  type="text"
-                />
-              </div>
-              <div className="flex sm:flex-1 flex-col gap-4 items-start justify-start w-full">
-                <Text
-                  className="text-blue_gray-900 text-xl w-auto"
-                  size="txtPlusJakartaSansRomanSemiBold20"
-                >
-                  Category
-                </Text>
-                <select
-                  name="category_id"
-                  className="border border-gray-900_26 border-solid w-full px-4 placeholder:text-blue_gray-900_99 text-left text-sm h-[67px] rounded-md"
-                  placeholder="Featured"
-                  {...register("category_id")}
-                  onChange={() => clearErrors("category_id")}
-                >
-                  {categories?.map((cat) => (
-                    <option key={cat.id} value={cat.name}>
-                      {cat.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
             </div>
           </div>
 
@@ -199,16 +164,16 @@ const AddEditArticle = (props: IAddEditArticleProps) => {
               className="text-blue_gray-900 text-xl w-auto"
               size="txtPlusJakartaSansRomanSemiBold20"
             >
-              Content
+              Testimony
             </Text>
 
             <TextArea
               name="content"
               className="bg-gray-50 border border-gray-900_19 border-solid pb-[35px] pl-4 sm:pr-5 pr-[35px] pt-[18px] rounded-md placeholder:text-gray-900_7f text-gray-900 text-left text-base w-full"
-              placeholder="Write article content here"
+              placeholder="Write testimony info here"
               rows={4}
-              {...register("content", { required: true })}
-              onChange={() => clearErrors("content")}
+              {...register("testimony", { required: true })}
+              onChange={() => clearErrors("testimony")}
             ></TextArea>
           </div>
 
@@ -217,29 +182,35 @@ const AddEditArticle = (props: IAddEditArticleProps) => {
               className="text-blue_gray-900 text-xl w-auto"
               size="txtPlusJakartaSansRomanSemiBold20"
             >
-              Banner Image
+              Upload Photos
             </Text>
 
             <BannerUploader
-              name="featured_img"
+              name="before"
               icon="images/img_television.svg"
-              title="Upload Image"
+              title="Upload Image (Before)"
               uploadText="Drag and drop or click here to browse files"
               ctaTypes=".jpeg, .png, .jpg"
               handleUpload={(e) => {
-                handleUpload(e, "featured_img");
+                handleUpload(e, "before");
               }}
               uploadType="banner"
-              key="featured_img"
+              key="before"
             />
-            {errors?.featured_img && (
-              <p className="text-sm text-red-600 font-black">
-                Provide show thumbnail image
-              </p>
-            )}
-          </div>
 
-          {/* Editor */}
+            <BannerUploader
+              name="after"
+              icon="images/img_television.svg"
+              title="Upload Image (After)"
+              uploadText="Drag and drop or click here to browse files"
+              ctaTypes=".jpeg, .png, .jpg"
+              handleUpload={(e) => {
+                handleUpload(e, "after");
+              }}
+              uploadType="banner"
+              key="after"
+            />
+          </div>
 
           <div className="flex flex-col gap-5 items-start justify-start w-full">
             {/* <ReactQuillWrapper /> */}
@@ -270,7 +241,7 @@ const AddEditArticle = (props: IAddEditArticleProps) => {
                 className="text-sm text-center text-white-A700"
                 size="txtPlusJakartaSansRomanSemiBold14"
               >
-                {editMode ? "Update" : "Save"} News
+                {editMode ? "Update" : "Save"} Testimony
               </Text>
             </Button>
           </div>
@@ -280,4 +251,4 @@ const AddEditArticle = (props: IAddEditArticleProps) => {
   );
 };
 
-export default AddEditArticle;
+export default AddEditTestimony;

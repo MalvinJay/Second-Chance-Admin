@@ -32,56 +32,56 @@ const membersColumns = [
   { label: "Actions", renderCell: (item) => item.actions },
 ];
 const membersList = [
-  {
-    name: (
-      <div className="flex gap-4 items-center">
-        <Img
-          className="h-[37px] md:h-auto object-cover rounded-md w-[43px]"
-          src="images/img_rectangle2161_37x43.png"
-          alt="rectangle2161"
-        />
-        <span>Christopher Nolan</span>
-      </div>
-    ),
-    designation: (
-      <div>
-        <span>CEO, Second Chances TV</span>
-      </div>
-    ),
-    social: (
-      <div className="flex items-center gap-2">
-        <img src="images/img_frame899.svg" />
-      </div>
-    ),
-    actions: (
-      <div className="flex items-center gap-2">
-        <img src="images/img_grid.svg" alt="" />
-      </div>
-    ),
-  },
-  {
-    name: (
-      <div className="flex gap-4 items-center">
-        <Img
-          className="h-[37px] md:h-auto object-cover rounded-md w-[43px]"
-          src="images/img_rectangle2161_37x43.png"
-          alt="rectangle2161"
-        />
-        <span>Christopher Nolan</span>
-      </div>
-    ),
-    designation: "CEO, Second Chances TV",
-    social: (
-      <div className="flex items-center gap-2">
-        <img src="images/img_frame899.svg" />
-      </div>
-    ),
-    actions: (
-      <div className="flex items-center gap-2">
-        <img src="images/img_grid.svg" alt="" />
-      </div>
-    ),
-  },
+  // {
+  //   name: (
+  //     <div className="flex gap-4 items-center">
+  //       <Img
+  //         className="h-[37px] md:h-auto object-cover rounded-md w-[43px]"
+  //         src="images/img_rectangle2161_37x43.png"
+  //         alt="rectangle2161"
+  //       />
+  //       <span>Christopher Nolan</span>
+  //     </div>
+  //   ),
+  //   designation: (
+  //     <div>
+  //       <span>CEO, Second Chances TV</span>
+  //     </div>
+  //   ),
+  //   social: (
+  //     <div className="flex items-center gap-2">
+  //       <img src="images/img_frame899.svg" />
+  //     </div>
+  //   ),
+  //   actions: (
+  //     <div className="flex items-center gap-2">
+  //       <img src="images/img_grid.svg" alt="" />
+  //     </div>
+  //   ),
+  // },
+  // {
+  //   name: (
+  //     <div className="flex gap-4 items-center">
+  //       <Img
+  //         className="h-[37px] md:h-auto object-cover rounded-md w-[43px]"
+  //         src="images/img_rectangle2161_37x43.png"
+  //         alt="rectangle2161"
+  //       />
+  //       <span>Christopher Nolan</span>
+  //     </div>
+  //   ),
+  //   designation: "CEO, Second Chances TV",
+  //   social: (
+  //     <div className="flex items-center gap-2">
+  //       <img src="images/img_frame899.svg" />
+  //     </div>
+  //   ),
+  //   actions: (
+  //     <div className="flex items-center gap-2">
+  //       <img src="images/img_grid.svg" alt="" />
+  //     </div>
+  //   ),
+  // },
 ];
 
 const AboutusPage: React.FC = () => {
@@ -90,7 +90,7 @@ const AboutusPage: React.FC = () => {
   return (
     <Layout title="About Us">
       <div className="flex flex-col gap-6 items-center justify-start w-[96%] md:w-full">
-        <div className="grid grid-cols-2 gap-6 items-stretch justify-between w-full h-full">
+        <div className="!hidden grid grid-cols-2 gap-6 items-stretch justify-between w-full h-full">
           <div className="grid grid-cols-1 bg-white-A700 border border-gray-900_19 border-solid p-5 rounded-[10px] w-full h-full">
             <Text
               className="text-[22px] text-left text-gray-900 sm:text-lg md:text-xl"
