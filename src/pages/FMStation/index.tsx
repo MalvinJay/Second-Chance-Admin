@@ -1,10 +1,24 @@
-import { useState } from "react";
-import { Button, Img, List, Text } from "components";
+import { useMemo, useState } from "react";
+import { Button as CustomBtn, Img, List, Text } from "components";
 import { DeleteIcon, EditIcon } from "components/Icons/Icons";
 import Layout from "components/Layout/Layout";
 import MuiTable from "components/Shared/Table/MuiTable";
 import MyModal from "components/Shared/Modal/Modal";
 import AddEditFMStation from "components/AddEditFMStation/AddEditFMStation";
+import EmptyList from "components/Shared/EmptyList/EmptyList";
+import { useReactQuery } from "hooks/useReactQuery";
+import { TAlertMsgProp } from "types/shared.type";
+import {
+  Button,
+  CircularProgress,
+  Pagination,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { useMutation } from "@tanstack/react-query";
+import { DeleteFMStationAPIFn } from "api/fmStation";
+import { AxiosError } from "axios";
+import { queryClient } from "App";
 interface Data {
   id: number;
   name: string;
@@ -19,24 +33,6 @@ interface HeadCell {
   label: string;
   numeric: boolean;
 }
-
-// const fmStations = Array(20).fill({
-//   id: Math.floor(Math.random() * 10 + 1),
-//   channel_name: "Kumasi",
-//   frequency: "88.9 Mhz",
-//   available_show: "8",
-//   status: "Active",
-//   actions: (
-//     <div className="flex gap-2 items-center">
-//       <Button className="cursor-pointer flex items-center justify-center gap-1">
-//         <EditIcon color="#949698" />
-//       </Button>
-//       <Button className="cursor-pointer flex items-center justify-center gap-1">
-//         <DeleteIcon color="#949698" />
-//       </Button>
-//     </div>
-//   ),
-// });
 
 const fmStations = [];
 
@@ -75,7 +71,109 @@ const headCells: readonly HeadCell[] = [
 
 const FMStationPage: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [confirm, setConfirm] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [initialValues, setInitialValues] = useState(null);
+  const [alertMsg, setAlertMsg] = useState<TAlertMsgProp>({
+    msg: "",
+    status: "success",
+  });
   const [selected, setSelected] = useState<readonly number[]>([]);
+
+  const {
+    isLoading: isLoadingStations,
+    data: stationsData,
+  }: { isLoading: boolean; data: any } = useReactQuery(
+    ["fm-stations"],
+    "/stations"
+  );
+
+  const filteredStations = useMemo(() => {
+    if (stationsData && "stations" in stationsData) {
+      return stationsData?.stations?.map((el: any) => {
+        return {
+          id: el.id,
+          name: el.name ?? "-",
+          frequency: el?.frequency ?? "-",
+          available_shows: el?.available_shows ?? "-",
+          status: el.status ?? "-",
+          actions: (
+            <div className="flex gap-2 items-center">
+              <Button
+                className="cursor-pointer flex items-center justify-center gap-1"
+                onClick={() => handleEdit(el)}
+              >
+                <EditIcon color="#949698" />
+              </Button>
+              <Button
+                className="cursor-pointer flex items-center justify-center gap-1"
+                onClick={() => handleDelete(el)}
+              >
+                <DeleteIcon color="#949698" />
+              </Button>
+            </div>
+          ),
+        };
+      });
+    }
+
+    return [];
+  }, [stationsData]);
+
+  const { mutateAsync: removeFmStationMutate, isLoading: isDeletingVOG } =
+    useMutation({
+      mutationFn: DeleteFMStationAPIFn,
+      onError: (error: AxiosError) => error?.response?.data,
+    });
+
+  const handleClose = () => {
+    setIsOpen(false);
+    setEditMode(false);
+    setShowAlert(false);
+    setAlertMsg({
+      msg: "",
+      status: "success",
+    });
+  };
+
+  const handleEdit = (item: any) => {
+    setEditMode(true);
+    setInitialValues(item);
+    setIsOpen(true);
+    setSelected([]);
+  };
+
+  const handleDelete = (item: any) => {
+    setInitialValues(item);
+    setConfirm(true);
+  };
+
+  const RemoveFMItem = async () => {
+    console.log("Item to be removed:", initialValues);
+    setSelected([]);
+
+    removeFmStationMutate(initialValues?.id)
+      .then((res) => {
+        console.log("res:", res);
+
+        setConfirm(false);
+        setInitialValues(null);
+        setAlertMsg({
+          status: "success",
+          msg: `FM Station service removed`,
+        });
+        setShowAlert(true);
+        queryClient.invalidateQueries(["fm-stations"]);
+      })
+      .catch(() => {
+        setAlertMsg({
+          status: "error",
+          msg: "Error updating FM Station",
+        });
+        setShowAlert(true);
+      });
+  };
 
   return (
     <Layout title="FM Stations">
@@ -88,131 +186,29 @@ const FMStationPage: React.FC = () => {
             Channel List
           </Text>
           <div className="flex flex-col items-center justify-start">
-            <Button
+            <CustomBtn
               className="cursor-pointer font-semibold min-w-[146px] text-center text-sm"
               color="deep_purple_A200_19"
               onClick={() => setIsOpen(true)}
             >
               + Add Channel
-            </Button>
+            </CustomBtn>
           </div>
         </div>
 
-        <div className="bg-white-A700 border border-gray-900_19 border-solid flex flex-col items-center justify-start mt-8 pt-6 sm:px-5 px-6 rounded-[10px] w-full">
+        <div className="bg-white-A700 border border-gray-900_19 border-solid flex flex-col items-center justify-start my-8 pt-6 sm:px-5 px-6 rounded-[10px] w-full">
           <MuiTable
             tableHeading={headCells}
-            data={fmStations ?? []}
+            data={filteredStations ?? []}
             selected={selected}
             setSelected={setSelected}
           />
+          <EmptyList list={filteredStations} isLoading={isLoadingStations} />
         </div>
 
-        <div className="flex sm:flex-col flex-row gap-6 items-start justify-start mt-[308px] w-auto sm:w-full">
-          <div className="flex flex-col h-8 md:h-auto items-center justify-start px-3 py-2 rounded-lg w-20">
-            <Text
-              className="text-deep_purple-A200 text-xs w-auto"
-              size="txtPlusJakartaSansRomanSemiBold12"
-            >
-              Previous
-            </Text>
-          </div>
-          <div className="flex sm:flex-col flex-row gap-1 items-center justify-start w-auto sm:w-full">
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-[50%] w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs w-auto"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                1
-              </Text>
-            </div>
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-[50%] w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs w-auto"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                ...
-              </Text>
-            </div>
-            <Button
-              className="cursor-pointer h-8 rounded-lg text-center text-xs w-8"
-              color="gray_200"
-              size="sm"
-            >
-              10
-            </Button>
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-lg w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs w-auto"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                11
-              </Text>
-            </div>
-            <Button
-              className="cursor-pointer font-semibold h-8 rounded-lg text-center text-xs w-8"
-              color="deep_purple_A200"
-              size="sm"
-            >
-              12
-            </Button>
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-lg w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs w-auto"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                13
-              </Text>
-            </div>
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-lg w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs w-auto"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                14
-              </Text>
-            </div>
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-lg w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs w-auto"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                15
-              </Text>
-            </div>
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-lg w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs w-auto"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                16
-              </Text>
-            </div>
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-lg w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs w-auto"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                ...
-              </Text>
-            </div>
-            <div className="flex flex-col h-8 md:h-auto items-center justify-start p-2 rounded-lg w-8">
-              <Text
-                className="text-center text-gray-500_01 text-xs"
-                size="txtPlusJakartaSansRomanRegular12Gray50001"
-              >
-                26
-              </Text>
-            </div>
-          </div>
-          <div className="flex flex-col items-center justify-start px-3 py-2 rounded-lg w-auto">
-            <Text
-              className="text-center text-deep_purple-A200 text-xs w-auto"
-              size="txtPlusJakartaSansRomanSemiBold12"
-            >
-              Next
-            </Text>
-          </div>
-        </div>
+        <Pagination
+          count={fmStations ? Math.ceil(fmStations.length / 20) : 0}
+        />
       </div>
 
       {isOpen && (
@@ -221,7 +217,59 @@ const FMStationPage: React.FC = () => {
           isOpen={isOpen}
           closeModal={(val) => setIsOpen(false)}
         >
-          <AddEditFMStation handleClose={() => setIsOpen(false)} />
+          <AddEditFMStation
+            editMode={editMode}
+            title={`${!editMode ? "Add FM Station" : "Update FM Station"} `}
+            setShowAlert={setShowAlert}
+            setAlertMsg={setAlertMsg}
+            handleClose={handleClose}
+            initialValues={initialValues}
+          />
+        </MyModal>
+      )}
+
+      {confirm && (
+        <MyModal
+          style="w-full max-w-lg"
+          isOpen={confirm}
+          closeModal={() => setConfirm(false)}
+        >
+          <div className="bg-white-A700 flex flex-col items-center justify-end p-6 md:px-5 rounded-[10px] shadow-bs w-full">
+            <Typography variant="h5" align="left">
+              Confirm Delete
+            </Typography>
+            <br />
+            <Typography variant="body1">
+              Do you want to remove this FM Station?
+            </Typography>
+            <br />
+
+            <Stack
+              direction={"row"}
+              justifyContent={"flex-end"}
+              gap={2}
+              className="text-blue_gray-900"
+            >
+              <Button
+                color="primary"
+                variant="outlined"
+                onClick={() => setConfirm(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                color="error"
+                variant="contained"
+                onClick={RemoveFMItem}
+                className="gap-1"
+              >
+                {isDeletingVOG && (
+                  <CircularProgress color="inherit" size={24} />
+                )}
+                Confirm
+              </Button>
+            </Stack>
+          </div>
         </MyModal>
       )}
     </Layout>

@@ -75,32 +75,32 @@ const AddEditMember = (props: IAddEditMemberProps) => {
             handleClose();
             setAlertMsg({
               status: "success",
-              msg: `${editMode ? "Updated" : "Added"} testimony successfully`,
+              msg: `${editMode ? "Updated" : "Added"} user successfully`,
             });
             setShowAlert(true);
-            queryClient.invalidateQueries(["onlineTestimonies"]);
+            queryClient.invalidateQueries(["users"]);
           } else {
             setAlertMsg({
               status: "error",
-              msg: `Error ${editMode ? "updating" : "adding"} testimony`,
+              msg: `Error ${editMode ? "updating" : "adding"} user`,
             });
             setShowAlert(true);
           }
         },
         (err) => {
-          console.error("Error adding category:", err);
+          console.error("Error adding user:", err);
           setAlertMsg({
             status: "error",
-            msg: `Error ${editMode ? "updating" : "adding"} testimony`,
+            msg: `Error ${editMode ? "updating" : "adding"} user`,
           });
           setShowAlert(true);
         }
       )
       .catch((error) => {
-        console.error("Error adding testimony:", error);
+        console.error("Error adding user:", error);
         setAlertMsg({
           status: "error",
-          msg: "Error adding testimony",
+          msg: "Error adding user",
         });
         setShowAlert(true);
       });

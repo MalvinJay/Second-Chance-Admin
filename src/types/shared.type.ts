@@ -12,3 +12,13 @@ export interface patchLiveServicesProps {
     data: any;
     type?: string;
 }
+
+export interface IAddEditProps {
+    title: string;
+    editMode: boolean;
+    handleClose: () => void;
+    type?: string;
+    initialValues?: any;
+    setShowAlert?: (e: boolean) => void;
+    setAlertMsg?: (e: TAlertMsgProp) => void;
+}

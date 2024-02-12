@@ -45,6 +45,9 @@ const AddEditArticle = (props: IAddEditArticleProps) => {
   } = useForm({
     defaultValues: {
       name: initialValues?.name,
+      headline: initialValues?.headline,
+      category_id: initialValues?.category_id,
+      content: initialValues?.content,
       featured_img: initialValues?.featured_img,
     },
   });
@@ -64,6 +67,8 @@ const AddEditArticle = (props: IAddEditArticleProps) => {
     let payload = {
       id: initialValues?.id || values?.id,
       ...values,
+      category_id: values.category_id ? Number(values.category_id) : null,
+      tags_ids: [values.category_id],
     };
 
     payload.featured_img = formValues;
@@ -185,7 +190,7 @@ const AddEditArticle = (props: IAddEditArticleProps) => {
                   onChange={() => clearErrors("category_id")}
                 >
                   {categories?.map((cat) => (
-                    <option key={cat.id} value={cat.name}>
+                    <option key={cat.id} value={cat.id}>
                       {cat.name}
                     </option>
                   ))}

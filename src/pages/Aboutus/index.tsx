@@ -113,7 +113,12 @@ const AboutusPage: React.FC = () => {
   };
 
   return (
-    <Layout title="About Us">
+    <Layout
+      title="About Us"
+      alertMsg={alertMsg}
+      showAlert={showAlert}
+      handleClose={handleClose}
+    >
       <div className="flex flex-col gap-6 items-center justify-start w-[96%] md:w-full">
         <div className="!hidden grid grid-cols-2 gap-6 items-stretch justify-between w-full h-full">
           <div className="grid grid-cols-1 bg-white-A700 border border-gray-900_19 border-solid p-5 rounded-[10px] w-full h-full">
