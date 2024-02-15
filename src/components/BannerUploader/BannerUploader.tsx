@@ -6,6 +6,7 @@ import { AxiosError } from "axios";
 import { Img } from "components/Img";
 import { Text } from "components/Text";
 import { useForm } from "react-hook-form";
+import placeholder from "/images/img_img60591.png";
 
 interface IBannerProps {
   title: string;
@@ -98,7 +99,7 @@ const BannerUploader = (props: IBannerProps) => {
             className="min-w-64 min-h-64 object-cover"
             src={preview}
             alt="uploads"
-            placeholder="images/img_img60591.png"
+            placeholder={placeholder}
           />
         ) : (
           <>

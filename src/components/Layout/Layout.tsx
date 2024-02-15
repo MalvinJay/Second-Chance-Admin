@@ -20,6 +20,7 @@ import MuiMenuItem from "@mui/material/MenuItem";
 
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import logoImg from "/images/img_img60591.png";
 
 const Layout = ({
   children,
@@ -29,7 +30,7 @@ const Layout = ({
   handleClose,
 }: {
   children: React.ReactNode;
-  title: string;
+  title: React.ReactNode;
   alertMsg?: TAlertMsgProp;
   showAlert?: boolean;
   handleClose?: () => void;
@@ -152,7 +153,7 @@ const Layout = ({
         <Sidebar className="side-bar !sticky bg-gray-900 h-screen sm:hidden flex overflow-hidden justify-start md:px-5 top-[0]">
           <Img
             className="h-[46px] md:h-auto ml-8 md:ml-[0] mr-[93px] mt-[23px] object-cover w-[36%]"
-            src="images/img_img60591.png"
+            src={logoImg}
             alt="img60591"
           />
           <Menu

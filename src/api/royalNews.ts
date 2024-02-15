@@ -4,7 +4,7 @@ import AXIOS_INSTANCE from "./axios";
 
 export const AddArticleAPIFn = async (payload: any): Promise<any> => {
     try {
-        let url = 'post/create'
+        let url = 'posts/create'
 
         const response = await AXIOS_INSTANCE.post(url, payload);
         return response.data;

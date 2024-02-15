@@ -1,5 +1,4 @@
 import { Button } from "components/Button";
-import { Img } from "components/Img";
 import { Text } from "components/Text";
 
 const AddArticle = ({

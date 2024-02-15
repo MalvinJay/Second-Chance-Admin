@@ -9,6 +9,8 @@ import { CircularProgress, Pagination, Paper, Typography } from "@mui/material";
 import AddCategory from "components/RoyalNews/AddCategory";
 import { TAlertMsgProp } from "types/shared.type";
 
+import placeholder from "../../assets/images/placeholder.png";
+
 const RoyalNewsPage: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isShow, setIsShow] = useState(false);
@@ -47,7 +49,16 @@ const RoyalNewsPage: React.FC = () => {
       "articles" in royalNews &&
       Array.isArray(royalNews.articles)
     ) {
-      return royalNews.articles;
+      return royalNews.articles.map((el) => {
+        return {
+          banner: el?.feature_img?.img_url,
+          placeholder: placeholder,
+          title: el.headline,
+          description: el?.content,
+          comments: el.id ?? 0,
+          views: el?.id,
+        };
+      });
     }
     return [];
   }, [royalNews, isLoading]);

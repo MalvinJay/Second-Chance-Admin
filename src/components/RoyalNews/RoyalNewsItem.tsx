@@ -9,16 +9,18 @@ interface IRoyalNewsItemProps {
   description: string;
   comments: string;
   views: string;
+  placeholder?: string;
 }
 
 const RoyalNewsItem = (props: IRoyalNewsItemProps) => {
-  const { banner, title, description, comments, views } = props;
+  const { banner, title, description, comments, views, placeholder } = props;
   return (
     <div className="bg-white-A700 border border-gray-900_19 border-solid flex flex-1 flex-col gap-3.5 items-center justify-start p-4 rounded-md w-full">
       <div className="h-[155px] relative w-full group">
         <Img
           className="h-[155px] m-auto object-cover rounded-[3px] w-full"
           src={banner}
+          placeholder={placeholder}
           alt="rectangleFifty"
         />
 

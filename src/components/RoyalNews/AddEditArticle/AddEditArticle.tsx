@@ -55,7 +55,10 @@ const AddEditArticle = (props: IAddEditArticleProps) => {
   const [formValues, setFormValues] = useState({});
 
   const handleUpload = (val: any, type: string) => {
-    setFormValues(val);
+    setFormValues({
+      ...val,
+      img_desc: type,
+    });
   };
 
   const { mutateAsync: AddPatchNewsMutate, isLoading } = useMutation({
@@ -68,7 +71,7 @@ const AddEditArticle = (props: IAddEditArticleProps) => {
       id: initialValues?.id || values?.id,
       ...values,
       category_id: values.category_id ? Number(values.category_id) : null,
-      tags_ids: [values.category_id],
+      // tags_ids: [values.category_id],
     };
 
     payload.featured_img = formValues;
@@ -76,22 +79,13 @@ const AddEditArticle = (props: IAddEditArticleProps) => {
     AddPatchNewsMutate(payload)
       .then(
         (res) => {
-          const { code } = res;
-          if (res && code && [200, 201].includes(code)) {
-            handleClose();
-            setAlertMsg({
-              status: "success",
-              msg: `${editMode ? "Updated" : "Added"} category successfully`,
-            });
-            setShowAlert(true);
-            queryClient.invalidateQueries(["royal-news"]);
-          } else {
-            setAlertMsg({
-              status: "error",
-              msg: `Error ${editMode ? "updating" : "adding"} news article`,
-            });
-            setShowAlert(true);
-          }
+          handleClose();
+          setAlertMsg({
+            status: "success",
+            msg: `${editMode ? "Updated" : "Added"} article successfully`,
+          });
+          setShowAlert(true);
+          queryClient.invalidateQueries(["royal-news"]);
         },
         () => {
           setAlertMsg({
@@ -232,9 +226,9 @@ const AddEditArticle = (props: IAddEditArticleProps) => {
               uploadText="Drag and drop or click here to browse files"
               ctaTypes=".jpeg, .png, .jpg"
               handleUpload={(e) => {
-                handleUpload(e, "featured_img");
+                handleUpload(e, "news");
               }}
-              uploadType="banner"
+              uploadType="news"
               key="featured_img"
             />
             {errors?.featured_img && (

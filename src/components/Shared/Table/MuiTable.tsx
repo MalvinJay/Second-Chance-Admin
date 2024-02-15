@@ -24,7 +24,7 @@ interface ICustomeTable {
   toolbarTitle?: string;
   toolbarActions?: React.ReactNode;
   selected?: readonly number[];
-  setSelected?: (e: readonly number[]) => void;
+  setSelected?: (e: readonly number[], row: any) => void;
   handleBulkAction?: () => void;
 }
 
@@ -253,13 +253,17 @@ export default function MuiTable(props: ICustomeTable) {
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       const newSelected = data.map((n) => n.id);
-      setSelected(newSelected);
+      setSelected(newSelected, null);
       return;
     }
-    setSelected([]);
+    setSelected([], null);
   };
 
-  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
+  const handleClick = (
+    event: React.MouseEvent<unknown>,
+    id: number,
+    row: any
+  ) => {
     console.log("Trigger row click");
     const selectedIndex = selected.indexOf(id);
     let newSelected: readonly number[] = [];
@@ -276,7 +280,7 @@ export default function MuiTable(props: ICustomeTable) {
         selected.slice(selectedIndex + 1)
       );
     }
-    setSelected(newSelected);
+    setSelected(newSelected, row);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -343,7 +347,7 @@ export default function MuiTable(props: ICustomeTable) {
                 return (
                   <TableRow
                     hover
-                    onClick={(event) => handleClick(event, Number(row.id))}
+                    onClick={(event) => handleClick(event, Number(row.id), row)}
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
