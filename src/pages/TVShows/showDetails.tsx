@@ -1,20 +1,20 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Button,
   Box,
-  Tabs,
-  Tab,
   Paper,
   CircularProgress,
   Typography,
   Stack,
+  IconButton,
 } from "@mui/material";
-import { Button as CustomBtn, Img, List, Text } from "components";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import { Button as CustomBtn, Img, Text } from "components";
 import { DeleteIcon, EditIcon } from "components/Icons/Icons";
 import Layout from "components/Layout/Layout";
 import MuiTable from "components/Shared/Table/MuiTable";
 import MyModal from "components/Shared/Modal/Modal";
-import AddEditShow from "components/AddEditShow/AddEditShow";
+import AddEditShowEpisode from "components/AddEditShow/AddEditShowEpisode";
 import { useReactQuery } from "hooks/useReactQuery";
 import PaginationComp from "components/Shared/Pagination/Pagination";
 import { TAlertMsgProp } from "types/shared.type";
@@ -22,7 +22,10 @@ import { useMutation } from "@tanstack/react-query";
 import { DeleteShowAPIFn } from "api/shows";
 import { AxiosError } from "axios";
 import { queryClient } from "App";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import placeholder from "../../assets/images/placeholder.png";
+import bannerPlaceholder from "/images/img_img60591.png";
+import socialImg from "/images/img_frame899.svg";
 
 interface Data {
   id: number;
@@ -38,12 +41,28 @@ interface HeadCell {
   label: string;
   numeric: boolean;
 }
-
 interface ITVShowsData {
-  services: any[];
+  episodes: any[];
   pagination: any;
 }
-
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+interface tvShowProps {
+  id: string;
+  name: string;
+  host: string;
+  description: string;
+  slug: string;
+  airing_time: string;
+  airing_date: string;
+  logo: any;
+  banner: any;
+  created_at: Date;
+  updated_at: Date;
+}
 function a11yProps(index: number) {
   return {
     id: `simple-tab-${index}`,
@@ -56,7 +75,7 @@ const headCells: readonly HeadCell[] = [
     id: "name",
     numeric: false,
     disablePadding: true,
-    label: "Show Name",
+    label: "Title",
   },
   {
     id: "hosted_by",
@@ -84,12 +103,6 @@ const headCells: readonly HeadCell[] = [
   },
 ];
 
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
 function CustomTabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
 
@@ -107,7 +120,8 @@ function CustomTabPanel(props: TabPanelProps) {
   );
 }
 
-const TVShowsPage: React.FC = () => {
+const TVShowDetailsPage: React.FC = () => {
+  const { id: showSlug } = useParams();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [confirm, setConfirm] = useState(false);
@@ -122,8 +136,29 @@ const TVShowsPage: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
   const [initialValues, setInitialValues] = useState(null);
 
-  const { isLoading, data: tvShows }: { isLoading: boolean; data: any } =
-    useReactQuery(["tvShows"], "/tv-shows");
+  const {
+    isLoading: isDetailsLoading,
+    data,
+  }: { isLoading: boolean; data: any } = useReactQuery(
+    ["tvShowsDetails", showSlug],
+    `/tv-shows/${showSlug}`
+  );
+
+  const tvShowDetails = useMemo(() => {
+    if (data && "show" in data) {
+      return data.show;
+    }
+
+    return null;
+  }, [data]) as tvShowProps;
+
+  console.log("tvShowDetails:", tvShowDetails);
+
+  const { isLoading, data: tvShowEpisodes }: { isLoading: boolean; data: any } =
+    useReactQuery(
+      ["tvShowEpisodes", showSlug],
+      `/episodes?filter[slug]=${showSlug}`
+    );
 
   const { mutateAsync: deleteTVShowMutate, isLoading: isDeletingTVShow } =
     useMutation({
@@ -131,29 +166,33 @@ const TVShowsPage: React.FC = () => {
       onError: (error: AxiosError) => error?.response?.data,
     });
 
-  const filteredTvShows = useMemo(() => {
-    if (tvShows && "shows" in tvShows && Array.isArray(tvShows.shows)) {
-      return tvShows?.shows?.map((el: any) => {
+  const filteredTvShowEpisodes = useMemo(() => {
+    if (
+      tvShowEpisodes &&
+      "episodes" in tvShowEpisodes &&
+      Array.isArray(tvShowEpisodes.episodes)
+    ) {
+      return tvShowEpisodes?.episodes?.map((el: any) => {
         return {
-          id: el.slug,
+          id: el.id,
           name: (
             <div className="flex gap-4 items-center">
               <Img
                 className="h-[37px] md:h-auto object-cover rounded-md w-[43px]"
-                src={el.logo?.img_url}
-                alt={el.logo?.name}
-                placeholder="images/img_img60591.png"
+                src={el.banner?.img_url}
+                alt={el?.title}
+                placeholder={bannerPlaceholder}
               />
-              <span>{el.name}</span>
+              <span>{el.title}</span>
             </div>
           ),
-          hostedBy: el.host,
-          date_time: `${new Date(el.airing_date)?.toDateString().slice(4)} | ${
-            el.airing_time
-          }`,
+          hostedBy: el?.show?.host,
+          date_time: `${new Date(el?.show?.airing_date)
+            ?.toDateString()
+            .slice(4)} | ${el?.show?.airing_time}`,
           social: (
             <div className="flex items-center gap-2">
-              <img src="images/img_frame899.svg" />
+              <img src={socialImg} />
             </div>
           ),
           actions: (
@@ -171,24 +210,9 @@ const TVShowsPage: React.FC = () => {
           ),
         };
       });
-    } else [];
-  }, [tvShows, showAlert, isLoading]) as any[];
-
-  const filteredUpcomingShows = useMemo(() => {
-    if (filteredTvShows)
-      return filteredTvShows.filter(
-        (show) => new Date() <= new Date(show.date_time.split(" | ")[0])
-      );
-    else [];
-  }, [tvShows, filteredTvShows]) as any[];
-
-  const filteredPreviousShows = useMemo(() => {
-    if (filteredTvShows)
-      return filteredTvShows.filter(
-        (show) => new Date() > new Date(show.date_time.split(" | ")[0])
-      );
-    else [];
-  }, [tvShows, filteredTvShows]) as any[];
+    }
+    return [];
+  }, [tvShowEpisodes, showAlert, isLoading]) as any[];
 
   const handleDelete = (item: any) => {
     setInitialValues(item);
@@ -231,70 +255,96 @@ const TVShowsPage: React.FC = () => {
     setShowAlert(false);
   };
 
-  const handleRowSelected = (selectedList: any[], row: any) => {
-    setSelected(selectedList);
+  const handleBulkAction = () => {
+    console.log("Bulk action:", selected);
+  };
 
-    if (row.id) navigate(`/tv-shows/${row.id}`);
+  const handleBack = () => {
+    navigate("/tv-shows");
   };
 
   return (
     <Layout
-      title="Tv Shows"
+      title={
+        <div className="flex items-center gap-4">
+          <IconButton onClick={handleBack}>
+            <ArrowBackRoundedIcon />
+          </IconButton>
+
+          {tvShowDetails?.name}
+        </div>
+      }
       showAlert={showAlert}
       alertMsg={alertMsg}
       handleClose={handleClose}
     >
       <div className="flex flex-col items-center justify-start w-[96%] md:w-full">
-        <Box
-          width={"100%"}
-          display={"flex"}
-          justifyContent={"space-between"}
-          alignItems={"center"}
-          mb={4}
-        >
-          <Tabs value={value} onChange={handleChange} aria-label="tv-shows">
-            <Tab
-              value={0}
-              label="Upcoming Shows"
-              className="font-semibold min-w-[203px] text-[22px] text-center sm:text-lg md:text-xl"
-              {...a11yProps(0)}
-            />
-            <Tab value={1} label="Previous Shows" {...a11yProps(1)} />
-          </Tabs>
-
-          {value === 0 && (
-            <CustomBtn
-              className="cursor-pointer font-semibold text-center text-sm"
-              color="deep_purple_A200_19"
-              onClick={() => setIsOpen(true)}
-            >
-              + Add Show
-            </CustomBtn>
-          )}
-        </Box>
-
         <div className="bg-white-A700 border border-gray-900_19 border-solid flex flex-col items-center justify-end p-5 rounded-[10px] w-full">
-          <CustomTabPanel value={value} index={0}>
-            <MuiTable
-              tableHeading={headCells}
-              data={filteredUpcomingShows ?? []}
-              selected={selected}
-              setSelected={handleRowSelected}
-              handleBulkAction={() => console.log("Bulk action:", selected)}
-            />
-          </CustomTabPanel>
-          <CustomTabPanel value={value} index={1}>
-            <MuiTable
-              tableHeading={headCells}
-              data={filteredPreviousShows ?? []}
-              selected={selected}
-              setSelected={setSelected}
-            />
-          </CustomTabPanel>
+          <div className="flex md:flex-col flex-row mx-auto border-b border-gray-900_19 relative w-full pb-5 mb-5 min-h-[450px]">
+            <div className="flex flex-col items-start justify-end gap-5 w-4/5 md:w-full h-full">
+              <div className="flex flex-col gap-2 items-start justify-start w-full">
+                <Text
+                  className="text-[22px] text-gray-900 sm:text-lg md:text-xl"
+                  size="txtPlusJakartaSansRomanSemiBold22"
+                >
+                  Host
+                </Text>
 
-          {(filteredUpcomingShows?.length <= 0 ||
-            filteredPreviousShows?.length <= 0 ||
-            isLoading) && (
+                <Text
+                  className="leading-[30.00px] max-w-[613px] md:max-w-full text-gray-900 text-lg"
+                  size="txtPlusJakartaSansRomanRegular18Gray900"
+                >
+                  {tvShowDetails?.host}
+                </Text>
+              </div>
+
+              <div className="flex flex-col gap-4 items-start justify-start w-full">
+                <Text
+                  className="text-[22px] text-gray-900 sm:text-lg md:text-xl"
+                  size="txtPlusJakartaSansRomanSemiBold22"
+                >
+                  About Show
+                </Text>
+
+                <Text
+                  className="leading-[30.00px] max-w-[613px] md:max-w-full text-gray-900 text-lg"
+                  size="txtPlusJakartaSansRomanRegular18Gray900"
+                >
+                  {tvShowDetails?.description}
+                </Text>
+              </div>
+            </div>
+
+            <Img
+              className="absolute md:relative inset-y-[0] mt-0 right-[0] rounded-[50%] h-[400px] md:h-[300px] w-[400px] md:w-[300px] md:mx-auto"
+              src={tvShowDetails?.banner?.img_url}
+              placeholder={placeholder}
+              alt="showDetails"
+            />
+          </div>
+
+          <MuiTable
+            tableHeading={headCells}
+            data={filteredTvShowEpisodes ?? []}
+            toolbarTitle="Episodes"
+            toolbarActions={
+              <CustomBtn
+                className="cursor-pointer font-semibold text-center text-sm"
+                color="deep_purple_A200_19"
+                onClick={() => {
+                  setInitialValues(tvShowDetails);
+                  setIsOpen(true);
+                }}
+              >
+                + Add Episode
+              </CustomBtn>
+            }
+            selected={selected}
+            setSelected={setSelected}
+            handleBulkAction={handleBulkAction}
+          />
+
+          {(filteredTvShowEpisodes?.length <= 0 || isLoading) && (
             <Paper
               elevation={0}
               className="w-1/2 text-center p-4 h-24 flex items-center justify-center"
@@ -303,10 +353,7 @@ const TVShowsPage: React.FC = () => {
                 <CircularProgress color="inherit" size={32} />
               ) : (
                 <>
-                  {value === 0 && filteredUpcomingShows?.length <= 0 && (
-                    <Typography>No Data</Typography>
-                  )}
-                  {value === 1 && filteredPreviousShows?.length <= 0 && (
+                  {value === 0 && filteredTvShowEpisodes?.length <= 0 && (
                     <Typography>No Data</Typography>
                   )}
                 </>
@@ -318,9 +365,10 @@ const TVShowsPage: React.FC = () => {
         <div className="mt-10">
           <PaginationComp
             count={
-              filteredTvShows
+              filteredTvShowEpisodes
                 ? Math.ceil(
-                    tvShows?.pagination?.total / tvShows?.pagination.per_page
+                    tvShowEpisodes?.pagination?.total /
+                      tvShowEpisodes?.pagination.per_page
                   )
                 : 0
             }
@@ -334,12 +382,12 @@ const TVShowsPage: React.FC = () => {
           isOpen={isOpen}
           closeModal={() => setIsOpen(false)}
         >
-          <AddEditShow
+          <AddEditShowEpisode
             editMode={editMode}
-            title="Add TV Shows"
-            showExtras
+            title="Add Episode"
             setShowAlert={setShowAlert}
             setAlertMsg={setAlertMsg}
+            initialValues={initialValues}
             handleClose={() => {
               setIsOpen(false);
               setEditMode(false);
@@ -396,4 +444,4 @@ const TVShowsPage: React.FC = () => {
   );
 };
 
-export default TVShowsPage;
+export default TVShowDetailsPage;

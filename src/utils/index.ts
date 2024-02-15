@@ -64,3 +64,20 @@ export const getEmbededYTLink = (youtubeLink: string) => {
     return ""
   }
 }
+
+export const formatTitle = (
+  string,
+  term = "_",
+  update = " ",
+  toLower = false,
+) => {
+  if (string) {
+    const sentence = string?.replaceAll(term, update).toLowerCase().split(" ");
+    for (let i = 0; i < sentence.length; i++) {
+      sentence[i] = sentence[i][0]?.toUpperCase() + sentence[i].slice(1);
+    }
+    const updatedWord = sentence.join(" ");
+    return toLower ? updatedWord?.toLowerCase() : updatedWord;
+  }
+  return "";
+};
