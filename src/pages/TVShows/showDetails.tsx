@@ -7,6 +7,7 @@ import {
   Typography,
   Stack,
   IconButton,
+  Skeleton,
 } from "@mui/material";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import { Button as CustomBtn, Img, Text } from "components";
@@ -19,7 +20,7 @@ import { useReactQuery } from "hooks/useReactQuery";
 import PaginationComp from "components/Shared/Pagination/Pagination";
 import { TAlertMsgProp } from "types/shared.type";
 import { useMutation } from "@tanstack/react-query";
-import { DeleteShowAPIFn } from "api/shows";
+import { DeleteShowAEpisodePIFn } from "api/shows";
 import { AxiosError } from "axios";
 import { queryClient } from "App";
 import { useNavigate, useParams } from "react-router-dom";
@@ -152,8 +153,6 @@ const TVShowDetailsPage: React.FC = () => {
     return null;
   }, [data]) as tvShowProps;
 
-  console.log("tvShowDetails:", tvShowDetails);
-
   const { isLoading, data: tvShowEpisodes }: { isLoading: boolean; data: any } =
     useReactQuery(
       ["tvShowEpisodes", showSlug],
@@ -162,7 +161,7 @@ const TVShowDetailsPage: React.FC = () => {
 
   const { mutateAsync: deleteTVShowMutate, isLoading: isDeletingTVShow } =
     useMutation({
-      mutationFn: DeleteShowAPIFn,
+      mutationFn: DeleteShowAEpisodePIFn,
       onError: (error: AxiosError) => error?.response?.data,
     });
 
@@ -197,7 +196,10 @@ const TVShowDetailsPage: React.FC = () => {
           ),
           actions: (
             <div className="flex gap-2 items-center">
-              <Button className="cursor-pointer flex items-center justify-center gap-1">
+              <Button
+                className="cursor-pointer flex items-center justify-center gap-1"
+                onClick={() => handleEdit(el)}
+              >
                 <EditIcon color="#949698" />
               </Button>
               <Button
@@ -219,7 +221,19 @@ const TVShowDetailsPage: React.FC = () => {
     setConfirm(true);
   };
 
-  const removeTVShow = async () => {
+  const handleEdit = (item: any) => {
+    console.log("Item:", item);
+    setEditMode(true);
+    setInitialValues({
+      ...item,
+      video_url: item?.video?.video_url,
+      img_url: item?.banner?.img_url,
+    });
+    setIsOpen(true);
+    setSelected([]);
+  };
+
+  const removeTVShowEpisode = async () => {
     console.log("Item to be removed:", initialValues);
     setSelected([]);
 
@@ -232,12 +246,12 @@ const TVShowDetailsPage: React.FC = () => {
           msg: `TV Show removed`,
         });
         setShowAlert(true);
-        queryClient.invalidateQueries(["tvShows"]);
+        queryClient.invalidateQueries(["tvShowEpisodes", showSlug]);
       })
       .catch(() => {
         setAlertMsg({
           status: "error",
-          msg: "Error removing TV Show",
+          msg: "Error removing TV Show episodes",
         });
         setShowAlert(true);
       });
@@ -248,6 +262,8 @@ const TVShowDetailsPage: React.FC = () => {
   };
 
   const handleClose = () => {
+    setIsOpen(false);
+    setEditMode(false);
     setAlertMsg({
       msg: "",
       status: "success",
@@ -261,6 +277,12 @@ const TVShowDetailsPage: React.FC = () => {
 
   const handleBack = () => {
     navigate("/tv-shows");
+  };
+
+  const handleRowSelected = (selectedList: any[], row: any) => {
+    setSelected(selectedList);
+
+    // if (row.id) navigate(`/tv-shows/${row.id}`);
   };
 
   return (
@@ -294,7 +316,18 @@ const TVShowDetailsPage: React.FC = () => {
                   className="leading-[30.00px] max-w-[613px] md:max-w-full text-gray-900 text-lg"
                   size="txtPlusJakartaSansRomanRegular18Gray900"
                 >
-                  {tvShowDetails?.host}
+                  {tvShowDetails?.host ? (
+                    tvShowDetails?.host
+                  ) : (
+                    <>
+                      <Skeleton
+                        animation="wave"
+                        variant="text"
+                        width={210}
+                        sx={{ fontSize: "1rem" }}
+                      />
+                    </>
+                  )}
                 </Text>
               </div>
 
@@ -310,17 +343,34 @@ const TVShowDetailsPage: React.FC = () => {
                   className="leading-[30.00px] max-w-[613px] md:max-w-full text-gray-900 text-lg"
                   size="txtPlusJakartaSansRomanRegular18Gray900"
                 >
-                  {tvShowDetails?.description}
+                  {tvShowDetails?.description ? (
+                    tvShowDetails?.description
+                  ) : (
+                    <>
+                      <Skeleton animation="wave" width={400} height={40} />
+                      <Skeleton animation="wave" width={400} height={40} />
+                      <Skeleton animation="wave" width={300} height={40} />
+                    </>
+                  )}
                 </Text>
               </div>
             </div>
 
-            <Img
-              className="absolute md:relative inset-y-[0] mt-0 right-[0] rounded-[50%] h-[400px] md:h-[300px] w-[400px] md:w-[300px] md:mx-auto"
-              src={tvShowDetails?.banner?.img_url}
-              placeholder={placeholder}
-              alt="showDetails"
-            />
+            {tvShowDetails?.banner?.img_url ? (
+              <Img
+                className="absolute md:relative inset-y-[0] mt-0 right-[0] rounded-[50%] h-[400px] md:h-[300px] w-[400px] md:w-[300px] md:mx-auto"
+                src={tvShowDetails?.banner?.img_url}
+                placeholder={placeholder}
+                alt="showDetails"
+              />
+            ) : (
+              <Skeleton
+                variant="circular"
+                animation="wave"
+                width={500}
+                height={400}
+              />
+            )}
           </div>
 
           <MuiTable
@@ -340,7 +390,7 @@ const TVShowDetailsPage: React.FC = () => {
               </CustomBtn>
             }
             selected={selected}
-            setSelected={setSelected}
+            setSelected={handleRowSelected}
             handleBulkAction={handleBulkAction}
           />
 
@@ -384,14 +434,11 @@ const TVShowDetailsPage: React.FC = () => {
         >
           <AddEditShowEpisode
             editMode={editMode}
-            title="Add Episode"
+            title={editMode ? "Update Episode" : "Add Episode"}
             setShowAlert={setShowAlert}
             setAlertMsg={setAlertMsg}
             initialValues={initialValues}
-            handleClose={() => {
-              setIsOpen(false);
-              setEditMode(false);
-            }}
+            handleClose={handleClose}
           />
         </MyModal>
       )}
@@ -428,7 +475,7 @@ const TVShowDetailsPage: React.FC = () => {
               <Button
                 color="error"
                 variant="contained"
-                onClick={removeTVShow}
+                onClick={removeTVShowEpisode}
                 className="gap-1"
               >
                 {isDeletingTVShow && (

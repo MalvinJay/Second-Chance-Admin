@@ -18,6 +18,7 @@ import { useForm } from "react-hook-form";
 import { TAlertMsgProp } from "types/shared.type";
 import closeImg from "/images/img_close_blue_gray_900.svg";
 import bannerIconImg from "/images/img_television.svg";
+import { getEmbededYTLink } from "utils";
 
 interface IAddEditShowEpisodeProps {
   editMode: boolean;
@@ -38,6 +39,7 @@ const AddEditShowEpisode = (props: IAddEditShowEpisodeProps) => {
     setShowAlert,
     initialValues,
   } = props;
+
   const {
     register,
     clearErrors,
@@ -47,7 +49,7 @@ const AddEditShowEpisode = (props: IAddEditShowEpisodeProps) => {
     defaultValues: {
       title: initialValues?.title,
       video_url: initialValues?.video_url,
-      banner: initialValues?.banner,
+      banner: initialValues?.banner_img?.img_url,
     },
   });
   const [formValues, setFormValues] = useState({});
@@ -208,6 +210,7 @@ const AddEditShowEpisode = (props: IAddEditShowEpisodeProps) => {
                 )}
               </div>
             </div>
+
             <div className="flex sm:flex-1 flex-col gap-4 items-start justify-start w-full">
               <Text
                 className="text-blue_gray-900 text-xl w-auto"
@@ -225,6 +228,21 @@ const AddEditShowEpisode = (props: IAddEditShowEpisodeProps) => {
                   {...register("video_url", { required: true })}
                   onChange={() => clearErrors("video_url")}
                 />
+
+                {initialValues?.video?.video_url && (
+                  <div className="h-[373px] mt-5 relative w-full md:bg-black-900">
+                    <iframe
+                      id="pageHeader"
+                      // ref={iframeRef}
+                      className="w-full h-full rounded-lg bg-black-900"
+                      src={getEmbededYTLink(initialValues?.video_url)}
+                      title={initialValues?.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                    />
+                  </div>
+                )}
+
                 {errors?.video_url && (
                   <p className="text-sm text-red-600 font-black">
                     Provide video url
@@ -252,7 +270,7 @@ const AddEditShowEpisode = (props: IAddEditShowEpisodeProps) => {
                 handleUpload(e, "tv-shows");
               }}
               uploadType="tv-shows"
-              // defaultValue={initialValues?.banner.img_url}
+              defaultValue={initialValues?.banner_img?.img_url}
               key="banner"
             />
             {errors?.banner && (

@@ -70,3 +70,13 @@ export const PatchShowEpisodeAPIFn = async (payload: patchLiveServicesProps): Pr
         return error?.response;
     }
 };
+export const DeleteShowAEpisodePIFn = async (id: string): Promise<any> => {
+    try {
+        const url = `/episodes/${id}`
+        const response = await AXIOS_INSTANCE.delete(url);
+        return response.data;
+    } catch (error: any) {
+        console.log("Error removing tv show's episode:", error);
+        return error?.response;
+    }
+};

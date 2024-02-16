@@ -288,7 +288,8 @@ const TVShowsPage: React.FC = () => {
               tableHeading={headCells}
               data={filteredPreviousShows ?? []}
               selected={selected}
-              setSelected={setSelected}
+              setSelected={handleRowSelected}
+              handleBulkAction={() => console.log("Bulk action:", selected)}
             />
           </CustomTabPanel>
 
@@ -336,7 +337,7 @@ const TVShowsPage: React.FC = () => {
         >
           <AddEditShow
             editMode={editMode}
-            title="Add TV Shows"
+            title={editMode ? "Edit TV Show" : "Add TV Show"}
             showExtras
             setShowAlert={setShowAlert}
             setAlertMsg={setAlertMsg}
