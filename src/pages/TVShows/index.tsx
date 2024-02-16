@@ -135,7 +135,8 @@ const TVShowsPage: React.FC = () => {
     if (tvShows && "shows" in tvShows && Array.isArray(tvShows.shows)) {
       return tvShows?.shows?.map((el: any) => {
         return {
-          id: el.slug,
+          id: el.id,
+          slug: el.slug,
           name: (
             <div className="flex gap-4 items-center">
               <Img
@@ -158,7 +159,10 @@ const TVShowsPage: React.FC = () => {
           ),
           actions: (
             <div className="flex gap-2 items-center">
-              <Button className="cursor-pointer flex items-center justify-center gap-1">
+              <Button
+                className="cursor-pointer flex items-center justify-center gap-1"
+                onClick={() => handleEdit(el)}
+              >
                 <EditIcon color="#949698" />
               </Button>
               <Button
@@ -189,6 +193,17 @@ const TVShowsPage: React.FC = () => {
       );
     else [];
   }, [tvShows, filteredTvShows]) as any[];
+
+  const handleEdit = (item: any) => {
+    setEditMode(true);
+    setInitialValues({
+      ...item,
+      img_url: item?.banner?.img_url,
+      logo: item.logo.img_url,
+    });
+    setIsOpen(true);
+    setSelected([]);
+  };
 
   const handleDelete = (item: any) => {
     setInitialValues(item);
@@ -231,10 +246,10 @@ const TVShowsPage: React.FC = () => {
     setShowAlert(false);
   };
 
-  const handleRowSelected = (selectedList: any[], row: any) => {
+  const handleRowSelected = (selectedList: any[], row: any, tableCell: any) => {
     setSelected(selectedList);
 
-    if (row.id) navigate(`/tv-shows/${row.id}`);
+    if (row?.id && tableCell !== "actions") navigate(`/tv-shows/${row?.slug}`);
   };
 
   return (
@@ -345,6 +360,7 @@ const TVShowsPage: React.FC = () => {
               setIsOpen(false);
               setEditMode(false);
             }}
+            initialValues={initialValues}
           />
         </MyModal>
       )}

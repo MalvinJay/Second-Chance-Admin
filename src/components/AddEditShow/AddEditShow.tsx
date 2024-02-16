@@ -34,6 +34,7 @@ const AddEditShow = (props: IAddEditShowProps) => {
     setShowAlert,
     initialValues,
   } = props;
+
   const {
     register,
     clearErrors,
@@ -46,9 +47,10 @@ const AddEditShow = (props: IAddEditShowProps) => {
       airing_date: initialValues?.airing_date,
       description: initialValues?.description,
       img_url: initialValues?.img_url,
-      logo: initialValues?.img_url,
+      logo: initialValues?.logo,
     },
   });
+
   const [formValues, setFormValues] = useState({
     logo: {},
     banner: {},
@@ -72,29 +74,17 @@ const AddEditShow = (props: IAddEditShowProps) => {
         ...prev,
         [type]: {
           ...val,
-          img_desc: type,
+          img_desc: "tv-shows",
         },
       };
     });
   };
 
   const onSubmit = (values: any) => {
-    let payload = {
+    const payload = {
       ...values,
+      ...formValues,
       type,
-    };
-
-    payload = {
-      ...payload,
-      logo: {
-        ...formValues.logo,
-        img_desc: "logo",
-      },
-      banner: {
-        ...formValues.logo,
-        ...formValues.banner,
-        img_desc: "banner",
-      },
     };
 
     console.log("Final Payload:", payload);
@@ -322,7 +312,7 @@ const AddEditShow = (props: IAddEditShowProps) => {
                 handleUpload={(e) => {
                   handleUpload(e, "logo");
                 }}
-                uploadType="logo"
+                uploadType="tv-shows"
                 defaultValue={initialValues?.logo}
                 key="logo"
               />
@@ -346,7 +336,7 @@ const AddEditShow = (props: IAddEditShowProps) => {
               handleUpload={(e) => {
                 handleUpload(e, "banner");
               }}
-              uploadType="banner"
+              uploadType="tv-shows"
               defaultValue={initialValues?.img_url}
               key="banner"
             />

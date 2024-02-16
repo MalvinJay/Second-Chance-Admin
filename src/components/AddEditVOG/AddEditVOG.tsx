@@ -11,6 +11,7 @@ import { Text } from "components/Text";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { TAlertMsgProp } from "types/shared.type";
+import { getEmbededYTLink } from "utils";
 
 interface IAddEditShowProps {
   editMode: boolean;
@@ -398,7 +399,7 @@ const AddEditShow = (props: IAddEditShowProps) => {
                 handleUpload={(e) => {
                   handleUpload(e, "logo");
                 }}
-                uploadType="logo"
+                uploadType="tv-shows"
                 defaultValue={initialValues?.logo}
                 key="logo"
               />
@@ -422,7 +423,7 @@ const AddEditShow = (props: IAddEditShowProps) => {
               handleUpload={(e) => {
                 handleUpload(e, "banner");
               }}
-              uploadType="banner"
+              uploadType="tv-shows"
               defaultValue={initialValues?.img_url}
               key="banner"
             />
@@ -468,6 +469,20 @@ const AddEditShow = (props: IAddEditShowProps) => {
                 {...register("video_url", { required: true })}
                 onChange={() => clearErrors("video_url")}
               />
+
+              {initialValues?.video_url && (
+                <div className="h-[373px] mt-5 relative w-full md:bg-black-900">
+                  <iframe
+                    id="pageHeader"
+                    className="w-full h-full rounded-lg bg-black-900"
+                    src={getEmbededYTLink(initialValues?.video_url)}
+                    title={initialValues?.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                </div>
+              )}
+
               {errors?.video_url && (
                 <p className="text-sm text-red-600 font-black">
                   Provide video url

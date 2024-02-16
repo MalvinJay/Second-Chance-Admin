@@ -82,13 +82,13 @@ const BannerUploader = (props: IBannerProps) => {
       <div
         className="cursor-pointer flex flex-col gap-2.5 items-center justify-start w-full"
         onClick={() => {
-          document.getElementById(`upload-item-${uploadType}`).click();
+          document.getElementById(`upload-item-${name}`).click();
         }}
       >
         <input
           name={name}
           style={{ display: "none" }}
-          id={`upload-item-${uploadType}`}
+          id={`upload-item-${name}`}
           type="file"
           accept={ctaTypes}
           {...register(name, { required: true })}

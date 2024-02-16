@@ -193,7 +193,7 @@ const AddEditTestimony = (props: IAddEditTestimonyProps) => {
               handleUpload={(e) => {
                 handleUpload(e, "before");
               }}
-              uploadType="banner"
+              uploadType="news"
               key="before"
             />
 
@@ -206,7 +206,7 @@ const AddEditTestimony = (props: IAddEditTestimonyProps) => {
               handleUpload={(e) => {
                 handleUpload(e, "after");
               }}
-              uploadType="banner"
+              uploadType="news"
               key="after"
             />
           </div>

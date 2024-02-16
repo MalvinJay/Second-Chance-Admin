@@ -13,6 +13,7 @@ const FMStation = React.lazy(() => import("pages/FMStation"));
 const AddTVShows = React.lazy(() => import("pages/AddTVShows"));
 const TVShows = React.lazy(() => import("pages/TVShows"));
 const TVShowsDetails = React.lazy(() => import("pages/TVShows/showDetails"));
+const VOGDetails = React.lazy(() => import("pages/VOGLiveSeries/vogDetails"));
 const AddVOGLiveSeries = React.lazy(() => import("pages/AddVOGLiveSeries"));
 const VOGLiveSeries = React.lazy(() => import("pages/VOGLiveSeries"));
 const AddNewMember = React.lazy(() => import("pages/AddNewMember"));
@@ -37,6 +38,7 @@ const ProjectRoutes = () => {
           <Route path="/" element={<Homepage />} />
           <Route path="/about-us" element={<Aboutus />} />
           <Route path="/vog-live-services" element={<VOGLiveSeries />} />
+          <Route path="/vog-live-services/:id" element={<VOGDetails />} />
           <Route path="/tv-shows" element={<TVShows />} />
           <Route path="/tv-shows/:id" element={<TVShowsDetails />} />
           <Route path="/fm-stations" element={<FMStation />} />

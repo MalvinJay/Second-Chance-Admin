@@ -21,6 +21,7 @@ import { useMutation } from "@tanstack/react-query";
 import { DeleteLiveServicesAPIFn, PatchLiveServiceAPIFn } from "api/shows";
 import { AxiosError } from "axios";
 import { queryClient } from "App";
+import { useNavigate } from "react-router-dom";
 
 interface IvogLiveServices {
   pagination: any;
@@ -48,6 +49,7 @@ interface IVogLiveServicesData {
 }
 
 const VOGLiveSeriesPage: React.FC = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [confirm, setConfirm] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
@@ -124,7 +126,7 @@ const VOGLiveSeriesPage: React.FC = () => {
     setInitialValues({
       ...item,
       video_url: item?.video?.video_url,
-      img_url: item.thumbnail.img_url,
+      img_url: item?.thumbnail?.img_url,
     });
     setIsOpen(true);
     setSelected([]);
@@ -156,6 +158,14 @@ const VOGLiveSeriesPage: React.FC = () => {
 
   const handleBulkAction = () => {
     console.log("Bulk action:", selected);
+  };
+
+  const handleRowSelected = (selectedList: any[], row: any, tableCell: any) => {
+    console.log("row:", row);
+    setSelected(selectedList);
+
+    if (row?.id && tableCell !== "actions")
+      navigate(`/vog-live-services/${row?.id}`);
   };
 
   const filteredVogServices = useMemo(() => {
@@ -231,7 +241,7 @@ const VOGLiveSeriesPage: React.FC = () => {
               </CustomBtn>
             }
             selected={selected}
-            setSelected={setSelected}
+            setSelected={handleRowSelected}
             handleBulkAction={handleBulkAction}
           />
           {(isLoading || filteredVogServices?.length <= 0) && (

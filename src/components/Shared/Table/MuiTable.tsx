@@ -24,7 +24,11 @@ interface ICustomeTable {
   toolbarTitle?: string;
   toolbarActions?: React.ReactNode;
   selected?: readonly number[];
-  setSelected?: (e: readonly number[], row: any) => void;
+  setSelected?: (
+    list: readonly number[],
+    id: string | number,
+    tableCell?: any
+  ) => void;
   handleBulkAction?: () => void;
 }
 
@@ -253,23 +257,23 @@ export default function MuiTable(props: ICustomeTable) {
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       const newSelected = data.map((n) => n.id);
-      setSelected(newSelected, null);
+      setSelected(newSelected, null, null);
       return;
     }
-    setSelected([], null);
+    setSelected([], null, null);
   };
 
   const handleClick = (
     event: React.MouseEvent<unknown>,
-    id: number,
-    row: any
+    row: any,
+    tableCell: any
   ) => {
-    console.log("Trigger row click");
-    const selectedIndex = selected.indexOf(id);
+    console.log("row info:", row);
+    const selectedIndex = selected.indexOf(row.id);
     let newSelected: readonly number[] = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
+      newSelected = newSelected.concat(selected, row.id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -280,7 +284,8 @@ export default function MuiTable(props: ICustomeTable) {
         selected.slice(selectedIndex + 1)
       );
     }
-    setSelected(newSelected, row);
+
+    setSelected(newSelected, row, tableCell);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -347,7 +352,6 @@ export default function MuiTable(props: ICustomeTable) {
                 return (
                   <TableRow
                     hover
-                    onClick={(event) => handleClick(event, Number(row.id), row)}
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
@@ -368,8 +372,11 @@ export default function MuiTable(props: ICustomeTable) {
 
                     {Object.keys(row).map((el, _index) => (
                       <React.Fragment key={_index}>
-                        {el !== "id" && (
-                          <TableCell className="text-left text-blue_gray-900 text-xs w-auto font-normal font-plusjakartasans">
+                        {!["id", "slug"].includes(el) && (
+                          <TableCell
+                            className="text-left text-blue_gray-900 text-xs w-auto font-normal font-plusjakartasans"
+                            onClick={(event) => handleClick(event, row, el)}
+                          >
                             {row[el]}
                           </TableCell>
                         )}

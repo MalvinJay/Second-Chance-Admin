@@ -281,8 +281,6 @@ const TVShowDetailsPage: React.FC = () => {
 
   const handleRowSelected = (selectedList: any[], row: any) => {
     setSelected(selectedList);
-
-    // if (row.id) navigate(`/tv-shows/${row.id}`);
   };
 
   return (
@@ -294,6 +292,13 @@ const TVShowDetailsPage: React.FC = () => {
           </IconButton>
 
           {tvShowDetails?.name}
+
+          <Img
+            className="rounded-[50%] h-[50px] md:h-[50px] w-[50px] md:w-[50px] md:mx-auto"
+            src={tvShowDetails?.logo?.img_url}
+            placeholder={placeholder}
+            alt="showDetails"
+          />
         </div>
       }
       showAlert={showAlert}
