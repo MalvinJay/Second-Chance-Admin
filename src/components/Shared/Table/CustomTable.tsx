@@ -52,7 +52,7 @@ const CustomTable = (props: ICustomeTable) => {
               {tableHeading.map((item: any, index: number) => (
                 <HeaderCell
                   key={index}
-                  className="text-left text-blue_gray-900_87 text-xs w-auto !font-normal font-plusjakartasans"
+                  className="text-left text-blue_gray-900_87 text-[14px] w-auto !font-normal font-plusjakartasans"
                 >
                   {item.label}
                 </HeaderCell>
@@ -65,7 +65,7 @@ const CustomTable = (props: ICustomeTable) => {
               <Row key={item.id} item={item}>
                 {Object.keys(item).map((el, index) => (
                   <Cell
-                    className="text-left text-blue_gray-900 text-xs w-auto font-normal font-plusjakartasans"
+                    className="text-left text-blue_gray-900 text-[14px] w-auto font-normal font-plusjakartasans"
                     key={index}
                   >
                     {item[el]}

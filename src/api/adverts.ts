@@ -1,34 +1,35 @@
-import { patchLiveServicesProps } from "types/shared.type";
 import AXIOS_INSTANCE from "./axios";
 
 
-export const AddFMStationAPIFn = async (payload: any): Promise<any> => {
+export const AddAdvertsAPIFn = async (payload: any): Promise<any> => {
     try {
-        let url = 'stations/create'
+        let url = 'advertisements/create'
 
         const response = await AXIOS_INSTANCE.post(url, payload);
         return response.data;
     } catch (error: any) {
-        console.log("Error creating article:", error);
+        console.log("Error creating advert:", error);
         return error?.response;
     }
 };
 
-export const EditFMStationAPIFn = async (payload: any): Promise<any> => {
+export const EditAdvertsAPIFn = async (payload: any): Promise<any> => {
     try {
-        let url = `stations/${payload.id}`
+        if (!payload.id) return;
+
+        let url = `advertisements/${payload.id}`
 
         const response = await AXIOS_INSTANCE.put(url, payload);
         return response.data;
     } catch (error: any) {
-        console.log("Error creating article:", error);
+        console.log("Error creating advert:", error);
         return error?.response;
     }
 };
 
-export const DeleteFMStationAPIFn = async (id: string): Promise<any> => {
+export const DeleteAdvertAPIFn = async (id: string): Promise<any> => {
     try {
-        const response = await AXIOS_INSTANCE.delete(`/stations/${id}`);
+        const response = await AXIOS_INSTANCE.delete(`/advertisements/${id}`);
         return response.data;
     } catch (error: any) {
         console.log("Error removing fm station:", error);

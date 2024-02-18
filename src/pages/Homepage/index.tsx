@@ -21,6 +21,7 @@ import EmptyList from "components/Shared/EmptyList/EmptyList";
 import { Slider } from "components/Carousel";
 import TestimonyItem from "components/Testimonies/TestimonyItem";
 import AddEditTestimony from "components/Testimonies/AddTestimoty";
+import AddAdvertisement from "components/Advertisement/AddAdvertisement";
 import placeholder from "../../assets/images/placeholder.png";
 
 // Upcoming shows
@@ -126,6 +127,7 @@ const HomepagePage: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [show, setShow] = useState(false);
   const [showTest, setshowTest] = useState(false);
+  const [showAds, setshowAds] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [alertMsg, setAlertMsg] = useState<TAlertMsgProp>({
@@ -219,6 +221,17 @@ const HomepagePage: React.FC = () => {
     filters
   );
 
+  // Advertisement
+  const {
+    isLoading: isLoadingAds,
+    data: adverts,
+  }: { isLoading: boolean; data: any } = useReactQuery(
+    ["advertisements"],
+    `/advertisements?per_page=50`
+  );
+
+  if (adverts) console.log("adverts:", adverts);
+
   const filteredRoyalNews = useMemo(() => {
     if (
       royalNews &&
@@ -253,10 +266,20 @@ const HomepagePage: React.FC = () => {
     return [];
   }, [categoriesData]);
 
+  const filteredads = useMemo(() => {
+    if (adverts) {
+      return [];
+    }
+
+    return [];
+  }, [adverts]);
+
   const handleClose = () => {
     setShow(false);
     setshowTest(false);
     setShowAlert(false);
+    setshowAds(false);
+    setEditMode(false);
     setAlertMsg({
       msg: "",
       status: "success",
@@ -342,6 +365,7 @@ const HomepagePage: React.FC = () => {
                   <Button
                     className="cursor-pointer font-semibold min-w-[121px] text-center text-sm"
                     color="deep_purple_A200_19"
+                    onClick={() => setshowAds(true)}
                   >
                     + Add New
                   </Button>
@@ -520,6 +544,23 @@ const HomepagePage: React.FC = () => {
           <AddEditTestimony
             editMode={editMode}
             title={`${!editMode ? "Add Testimony" : "Update Testimony"}`}
+            handleClose={handleClose}
+            initialValues={initialValues}
+            setShowAlert={setShowAlert}
+            setAlertMsg={setAlertMsg}
+          />
+        </MyModal>
+      )}
+
+      {showAds && (
+        <MyModal
+          style="w-full max-w-3xl"
+          isOpen={showAds}
+          closeModal={() => setshowAds(false)}
+        >
+          <AddAdvertisement
+            editMode={editMode}
+            title={`${!editMode ? "Add Advert" : "Update Advert"}`}
             handleClose={handleClose}
             initialValues={initialValues}
             setShowAlert={setShowAlert}
