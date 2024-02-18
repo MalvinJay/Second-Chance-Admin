@@ -2,6 +2,7 @@ import { Button } from "components/Button";
 import { DeleteIcon, EditIcon } from "components/Icons/Icons";
 import { Img } from "components/Img";
 import { Text } from "components/Text";
+import placeholder from "../../assets/images/placeholder.png";
 
 interface IArticleItemProps {
   banner: string;
@@ -12,16 +13,17 @@ interface IArticleItemProps {
 const ArticleItem = (props: IArticleItemProps) => {
   const { banner, title, description } = props;
   return (
-    <div className="relative group flex flex-col items-center justify-start w-full">
+    <div className="relative group flex flex-col items-center justify-start w-full min-h-[290px] !h-[290px]">
       <div className="h-[162px] relative w-full">
         <Img
           className="h-[162px] m-auto object-cover rounded-t-lg w-full"
           src={banner}
+          placeholder={placeholder}
           alt="banner"
         />
       </div>
 
-      <div className="px-4 py-5 border border-gray-900_19 !border-t-0 rounded-b-lg flex flex-col gap-2 items-start justify-start w-auto sm:w-full">
+      <div className="px-4 py-5 border border-gray-900_19 !border-t-0 rounded-b-lg flex flex-col gap-2 items-start justify-start h-full w-full overflow-hidden">
         <Text
           className="text-gray-900 text-xl w-auto"
           size="txtPlusJakartaSansRomanBold20"

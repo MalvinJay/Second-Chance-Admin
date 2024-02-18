@@ -21,6 +21,7 @@ import EmptyList from "components/Shared/EmptyList/EmptyList";
 import { Slider } from "components/Carousel";
 import TestimonyItem from "components/Testimonies/TestimonyItem";
 import AddEditTestimony from "components/Testimonies/AddTestimoty";
+import placeholder from "../../assets/images/placeholder.png";
 
 // Upcoming shows
 const upcomingColumns = [
@@ -219,28 +220,23 @@ const HomepagePage: React.FC = () => {
   );
 
   const filteredRoyalNews = useMemo(() => {
-    // if (
-    //   royalNews &&
-    //   "articles" in royalNews &&
-    //   Array.isArray(royalNews.articles)
-    // ) {
-    //   return royalNews.articles;
-    // }
-
-    return [
-      // {
-      //   banner: "images/img_rectangle51.png",
-      //   title: "News title will be here",
-      //   description:
-      //     "Lorem ipsum dolor sit amet consectetur. Donec egestas ut accumsan nisi",
-      // },
-      // {
-      //   banner: "images/img_rectangle50.png",
-      //   title: "News title will be here",
-      //   description:
-      //     "Lorem ipsum dolor sit amet consectetur. Donec egestas ut accumsan nisi",
-      // },
-    ];
+    if (
+      royalNews &&
+      "articles" in royalNews &&
+      Array.isArray(royalNews.articles)
+    ) {
+      return royalNews.articles.map((el) => {
+        return {
+          banner: el?.feature_img?.img_url,
+          placeholder: placeholder,
+          title: el.headline,
+          description: el?.content,
+          comments: el.id ?? 0,
+          views: el?.id,
+        };
+      });
+    }
+    return [];
   }, [royalNews, isLoading]) as any[];
 
   const {
