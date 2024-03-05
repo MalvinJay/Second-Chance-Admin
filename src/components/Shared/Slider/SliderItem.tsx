@@ -2,6 +2,7 @@ import { Button } from "components/Button";
 import { DeleteIcon, EditIcon } from "components/Icons/Icons";
 import { Img } from "components/Img";
 import { Text } from "components/Text";
+import placeholder from "/images/placeholder.png";
 
 interface ISliderItemProps {
   className?: string;
@@ -9,16 +10,18 @@ interface ISliderItemProps {
   banner: string;
   description: string;
   cta: string;
+  cta_link: string;
 }
 
 const SliderItem = (props: ISliderItemProps) => {
-  const { title, banner, description, cta, className } = props;
+  const { title, banner, description, cta, cta_link, className } = props;
   return (
     <div className={`group h-[292px] relative ${className}`}>
       <Img
         className="h-[292px] m-auto object-cover rounded-lg w-full"
         src={banner}
-        alt="rectangleFortyTwo"
+        placeholder={placeholder}
+        alt="ads"
       />
       <div className="absolute flex flex-col gap-6 h-max inset-y-[0] items-start justify-start left-[7%] my-auto w-auto">
         <div className="flex flex-col gap-2 items-start justify-start w-auto">
@@ -35,12 +38,15 @@ const SliderItem = (props: ISliderItemProps) => {
             {description}
           </Text>
         </div>
-        <Button
-          className="cursor-pointer font-semibold leading-[normal] min-w-[93px] text-[10px] text-center"
-          color="gray_900"
-        >
-          {cta}
-        </Button>
+
+        <a href={cta_link} target="_blank">
+          <Button
+            className="cursor-pointer font-semibold leading-[normal] min-w-[93px] text-[10px] text-center"
+            color="gray_900"
+          >
+            {cta}
+          </Button>
+        </a>
       </div>
 
       {/* Actions */}

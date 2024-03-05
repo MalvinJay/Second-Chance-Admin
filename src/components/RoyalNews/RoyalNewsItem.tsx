@@ -34,7 +34,7 @@ const RoyalNewsItem = (props: IRoyalNewsItemProps) => {
           </Button>
         </div>
       </div>
-      <div className="flex flex-col gap-2 items-start justify-start w-auto">
+      <div className="flex flex-col gap-2 items-start justify-start w-full">
         <div className="flex flex-col gap-2 items-start justify-start w-auto">
           <Text
             className="text-base text-gray-900 w-auto"

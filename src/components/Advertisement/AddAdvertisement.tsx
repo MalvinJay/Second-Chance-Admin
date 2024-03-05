@@ -52,7 +52,10 @@ const AddAdvertisement = (props: IAddAdvertisementProps) => {
     setFormValues((prev) => {
       return {
         ...prev,
-        [type]: val,
+        [type]: {
+          ...val,
+          img_desc: "banner",
+        },
       };
     });
   };
@@ -73,7 +76,7 @@ const AddAdvertisement = (props: IAddAdvertisementProps) => {
       .then(
         (res) => {
           const { code } = res;
-          if (res && code && [200, 201].includes(code)) {
+          if (res) {
             handleClose();
             setAlertMsg({
               status: "success",
@@ -166,13 +169,13 @@ const AddAdvertisement = (props: IAddAdvertisementProps) => {
             </Text>
 
             <BannerUploader
-              name="banners"
+              name="banner"
               icon="images/img_television.svg"
               title="Upload Ad Banners"
               uploadText="Drag and drop or click here to browse files"
               ctaTypes=".jpeg, .png, .jpg"
               handleUpload={(e) => {
-                handleUpload(e, "banners");
+                handleUpload(e, "banner");
               }}
               uploadType="advertisements"
               key="banners"
@@ -205,7 +208,7 @@ const AddAdvertisement = (props: IAddAdvertisementProps) => {
                 className="text-sm text-center text-white-A700"
                 size="txtPlusJakartaSansRomanSemiBold14"
               >
-                {editMode ? "Update" : "Save"} Advert
+                {editMode ? "Update" : "Add"} Advert
               </Text>
             </Button>
           </div>

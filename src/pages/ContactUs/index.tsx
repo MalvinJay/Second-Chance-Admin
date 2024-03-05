@@ -19,7 +19,7 @@ const ContactUsPage: React.FC = () => {
             className="text-[22px] text-gray-900 sm:text-lg md:text-xl"
             size="txtPlusJakartaSansRomanSemiBold22Gray900"
           >
-            Your informations
+            Your information
           </Text>
           <div className="flex flex-col items-center justify-start">
             <Button
@@ -44,7 +44,7 @@ const ContactUsPage: React.FC = () => {
               className="md:h-auto p-0 placeholder:text-blue_gray-900_99 sm:h-auto text-left text-sm w-full"
               wrapClassName="border border-gray-900_26 border-solid w-full"
               type="email"
-              size="2xl"
+              size="sm"
             ></Input>
           </div>
 
@@ -55,70 +55,41 @@ const ContactUsPage: React.FC = () => {
             >
               Contact Number
             </Text>
-            <div className="bg-white-A700 border border-gray-900_26 border-solid flex flex-row gap-6 items-center justify-start p-4 rounded-md w-[487px] sm:w-full">
-              {/* <div className="bg-white-A700 border border-gray-900_19 border-solid md:h-5 h-9 px-2 py-1 relative rounded-[3px] w-[89px]">
-                <Img
-                  className="absolute h-5 inset-[0] justify-center m-auto object-cover rounded-[3px] w-[35px]"
-                  src="images/img_rectangle2179.png"
-                  alt="rectangle2179"
-                /> 
-                <SelectBox
-                  className="absolute bottom-[11%] inset-x-[0] mx-auto text-blue_gray-900_99 text-left text-sm w-[83%] sm:w-full"
-                  placeholderClassName="text-blue_gray-900_99"
-                  indicator={
-                    <Img
-                      className="h-4 mr-[0] w-4 right-[9%] absolute"
-                      src="images/img_arrowdown.svg"
-                      alt="arrow_down"
-                    />
-                  }
-                  isMulti={false}
-                  name="groupThirtyFive"
-                  options={optionsList}
-                  isSearchable={false}
-                  placeholder="+1"
-                />
-              </div> */}
-              <Autocomplete
-                id="country-select-demo"
-                sx={{ width: 150 }}
-                options={countries}
-                autoHighlight
-                getOptionLabel={(option) => option.label}
-                renderOption={(props, option) => (
-                  <Box
-                    component="li"
-                    sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                    {...props}
-                  >
-                    <img
-                      loading="lazy"
-                      width="20"
-                      srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
-                      src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-                      alt=""
-                    />
-                    {option.label} ({option.code}) +{option.phone}
-                  </Box>
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="country"
-                    inputProps={{
-                      ...params.inputProps,
-                      autoComplete: "new-password",
-                    }}
+            <Autocomplete
+              id="country-select-demo"
+              sx={{ width: 150 }}
+              options={countries}
+              className="!w-full"
+              autoHighlight
+              getOptionLabel={(option) => option.label}
+              renderOption={(props, option) => (
+                <Box
+                  component="li"
+                  sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                  {...props}
+                >
+                  <img
+                    loading="lazy"
+                    width="20"
+                    srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+                    src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                    alt=""
                   />
-                )}
-              />
-              {/* <Text
-                className="text-blue_gray-900_99 text-sm w-auto"
-                size="txtPlusJakartaSansRomanRegular14Bluegray90099"
-              >
-                +12457849649
-              </Text> */}
-            </div>
+                  {option.label} ({option.code}) +{option.phone}
+                </Box>
+              )}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  className="bg-white-A700 border border-gray-900_26 border-solid flex flex-row gap-6 items-center justify-start p-4 rounded-md w-full"
+                  label="country"
+                  inputProps={{
+                    ...params.inputProps,
+                    autoComplete: "new-password",
+                  }}
+                />
+              )}
+            />
           </div>
         </div>
         <div className="flex flex-col gap-4 items-start justify-start mt-6 w-[85%] md:w-full">
@@ -140,7 +111,7 @@ const ContactUsPage: React.FC = () => {
                 alt="settings"
               />
             }
-            size="lg"
+            size="sm"
           ></Input>
         </div>
       </div>

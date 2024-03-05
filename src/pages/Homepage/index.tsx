@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import AliceCarousel from "react-alice-carousel";
 import { TAlertMsgProp } from "types/shared.type";
 
-import { Button, Img, Text } from "components";
+import { Button as CustButton, Img, Text } from "components";
 import { useReactQuery } from "hooks/useReactQuery";
 import Layout from "components/Layout/Layout";
 import CustomTable from "components/Shared/Table/CustomTable";
@@ -23,6 +23,7 @@ import TestimonyItem from "components/Testimonies/TestimonyItem";
 import AddEditTestimony from "components/Testimonies/AddTestimoty";
 import AddAdvertisement from "components/Advertisement/AddAdvertisement";
 import placeholder from "../../assets/images/placeholder.png";
+import { Typography, Stack, CircularProgress, Button } from "@mui/material";
 
 // Upcoming shows
 const upcomingColumns = [
@@ -67,52 +68,8 @@ const previousColumns = [
   { label: "Actions", renderCell: (item) => item.actions },
 ];
 
-// Advertisements
-const advertisements = [
-  // {
-  //   title: "This space is for an advertisement",
-  //   banner: "images/img_rectangle42.png",
-  //   description:
-  //     "Lorem ipsum dolor sit amet consectetur. Donec egestas ut accumsan nisi",
-  //   cta: "Explore Now",
-  //   className: "sm:w-1/2 w-[427px]",
-  // },
-  // {
-  //   title: "This space is for an advertisement",
-  //   banner: "images/img_rectangle42_292x427.png",
-  //   description:
-  //     "Lorem ipsum dolor sit amet consectetur. Donec egestas ut accumsan nisi",
-  //   cta: "Explore Now",
-  //   className: "sm:w-1/2 w-[427px]",
-  // },
-  // {
-  //   title: "This space is for an advertisement",
-  //   banner: "images/img_rectangle42_294x426.png",
-  //   description:
-  //     "Lorem ipsum dolor sit amet consectetur. Donec egestas ut accumsan nisi",
-  //   cta: "Explore Now",
-  //   className: "sm:w-1/2 w-[427px]",
-  // },
-];
-
 // Online Testimonies show
 const testimonies = [
-  // {
-  //   name: "Henry Ayensu",
-  //   testimony:
-  //     "Lorem ipsum dolor sit amet consectetur. Turpis mi ut bibendum vitae integer a neque non. Turpis ut tempus sed diam id faucibus neque in quam. Tincidunt bibendum metus eros pretium lectus quis in",
-  //   photo: "images/img_rectangle2161_37x43.png",
-  //   position: "CEO, Creative House Agency",
-  //   isActive: false,
-  // },
-  // {
-  //   name: "Henry Ayensu",
-  //   testimony:
-  //     "Lorem ipsum dolor sit amet consectetur. Turpis mi ut bibendum vitae integer a neque non. Turpis ut tempus sed diam id faucibus neque in quam. Tincidunt bibendum metus eros pretium lectus quis in",
-  //   photo: "images/img_rectangle2161_37x43.png",
-  //   position: "CEO, Creative House Agency",
-  //   isActive: false,
-  // },
   // {
   //   name: "Henry Ayensu",
   //   testimony:
@@ -130,6 +87,7 @@ const HomepagePage: React.FC = () => {
   const [showAds, setshowAds] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [confirm, setConfirm] = useState(false);
   const [alertMsg, setAlertMsg] = useState<TAlertMsgProp>({
     msg: "",
     status: "success",
@@ -159,7 +117,7 @@ const HomepagePage: React.FC = () => {
               <span>{el.name}</span>
             </div>
           ),
-          hostedBy: "Stephen Adom",
+          hostedBy: "",
           date_time: `${new Date(el.airing_date)?.toDateString().slice(4)} | ${
             el.airing_time
           }`,
@@ -170,15 +128,15 @@ const HomepagePage: React.FC = () => {
           ),
           actions: (
             <div className="flex gap-2 items-center">
-              <Button className="cursor-pointer flex items-center justify-center gap-1">
+              <CustButton className="cursor-pointer flex items-center justify-center gap-1">
                 <EditIcon color="#949698" />
-              </Button>
-              <Button
+              </CustButton>
+              <CustButton
                 className="cursor-pointer flex items-center justify-center gap-1"
                 onClick={() => handleDelete(el)}
               >
                 <DeleteIcon color="#949698" />
-              </Button>
+              </CustButton>
             </div>
           ),
         };
@@ -230,7 +188,16 @@ const HomepagePage: React.FC = () => {
     `/advertisements?per_page=50`
   );
 
-  if (adverts) console.log("adverts:", adverts);
+  const filteredAds = useMemo(() => {
+    if (
+      adverts &&
+      adverts.advertisements &&
+      Array.isArray(adverts.advertisements)
+    ) {
+      return adverts.advertisements;
+    }
+    return [];
+  }, [adverts]) as any[];
 
   const filteredRoyalNews = useMemo(() => {
     if (
@@ -266,14 +233,6 @@ const HomepagePage: React.FC = () => {
     return [];
   }, [categoriesData]);
 
-  const filteredads = useMemo(() => {
-    if (adverts) {
-      return [];
-    }
-
-    return [];
-  }, [adverts]);
-
   const handleClose = () => {
     setShow(false);
     setshowTest(false);
@@ -289,6 +248,28 @@ const HomepagePage: React.FC = () => {
   const handleDelete = (item: any) => {
     setInitialValues(item);
     // setConfirm(true);
+  };
+
+  const RemoveItem = () => {
+    // removeFmStationMutate(initialValues?.id)
+    //   .then((res) => {
+    //     console.log("res:", res);
+    //     setConfirm(false);
+    //     setInitialValues(null);
+    //     setAlertMsg({
+    //       status: "success",
+    //       msg: `FM Station service removed`,
+    //     });
+    //     setShowAlert(true);
+    //     queryClient.invalidateQueries(["fm-stations"]);
+    //   })
+    //   .catch(() => {
+    //     setAlertMsg({
+    //       status: "error",
+    //       msg: "Error updating FM Station",
+    //     });
+    //     setShowAlert(true);
+    //   });
   };
 
   return (
@@ -312,13 +293,13 @@ const HomepagePage: React.FC = () => {
               >
                 Upcoming Shows
               </Text>
-              <Button
+              <CustButton
                 className="cursor-pointer font-semibold min-w-[129px] text-center text-sm"
                 color="deep_purple_A200_19"
                 onClick={() => setIsOpen(true)}
               >
                 + Add Show
-              </Button>
+              </CustButton>
             </div>
 
             <CustomTable
@@ -362,29 +343,50 @@ const HomepagePage: React.FC = () => {
                 </Text>
 
                 <div className="flex flex-row gap-4 items-start justify-start w-auto">
-                  <Button
+                  <CustButton
                     className="cursor-pointer font-semibold min-w-[121px] text-center text-sm"
                     color="deep_purple_A200_19"
                     onClick={() => setshowAds(true)}
                   >
                     + Add New
-                  </Button>
-                  <Button
+                  </CustButton>
+                  <CustButton
                     className="cursor-pointer font-semibold min-w-[130px] text-center text-sm"
                     color="deep_purple_A200_19"
                   >
                     Edit Section
-                  </Button>
+                  </CustButton>
                 </div>
               </div>
 
               <div className="flex items-center gap-6 w-full overflow-auto">
-                {advertisements.map((item, index) => (
-                  <SliderItem key={index} {...item} />
-                ))}
+                <Slider
+                  ref={sliderRef}
+                  autoPlay
+                  autoPlayInterval={4000}
+                  responsive={{
+                    0: { items: 1 },
+                    550: { items: 2 },
+                    1050: { items: 3 },
+                  }}
+                  onSlideChanged={(e) => {
+                    // setsliderState(e?.item);
+                  }}
+                  className="max-w-7xl md:mt-0 mx-auto md:px-5 w-full"
+                  items={filteredAds.map((item: any, index: number) => (
+                    <SliderItem
+                      key={index}
+                      title={item.title}
+                      banner={item.banner}
+                      description={item.description}
+                      cta_link={item.call_to_action}
+                      cta="Explore Now"
+                    />
+                  ))}
+                />
               </div>
 
-              <EmptyList list={advertisements} isLoading={isLoading} />
+              <EmptyList list={filteredAds} isLoading={isLoading} />
             </div>
           </div>
         </div>
@@ -566,6 +568,51 @@ const HomepagePage: React.FC = () => {
             setShowAlert={setShowAlert}
             setAlertMsg={setAlertMsg}
           />
+        </MyModal>
+      )}
+
+      {confirm && (
+        <MyModal
+          style="w-full max-w-lg"
+          isOpen={confirm}
+          closeModal={() => setConfirm(false)}
+        >
+          <div className="bg-white-A700 flex flex-col items-center justify-end p-6 md:px-5 rounded-[10px] shadow-bs w-full">
+            <Typography variant="h5" align="left">
+              Confirm Delete
+            </Typography>
+            <br />
+            <Typography variant="body1">
+              Do you want to delete this item?
+            </Typography>
+            <br />
+
+            <Stack
+              direction={"row"}
+              justifyContent={"flex-end"}
+              gap={2}
+              className="text-blue_gray-900"
+            >
+              <Button
+                color="primary"
+                variant="outlined"
+                onClick={() => setConfirm(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                color="error"
+                variant="contained"
+                onClick={RemoveItem}
+                className="gap-1"
+              >
+                {/* {isDeletingEntity && (
+                  <CircularProgress color="inherit" size={24} />
+                )} */}
+                Confirm
+              </Button>
+            </Stack>
+          </div>
         </MyModal>
       )}
     </Layout>
