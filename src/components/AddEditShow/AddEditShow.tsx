@@ -7,6 +7,7 @@ import BannerUploader from "components/BannerUploader/BannerUploader";
 import { Button } from "components/Button";
 import { Img } from "components/Img";
 import { Input } from "components/Input";
+import { TextArea } from "components/TextArea";
 import { Text } from "components/Text";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -276,7 +277,7 @@ const AddEditShow = (props: IAddEditShowProps) => {
                 About The Show
               </Text>
               <div className="w-full">
-                <Input
+                {/* <Input
                   name="description"
                   placeholder="Enter about here.."
                   className="p-0 placeholder:text-blue_gray-900_99 text-left text-sm w-full"
@@ -284,7 +285,19 @@ const AddEditShow = (props: IAddEditShowProps) => {
                   type="textarea"
                   {...register("description", { required: true })}
                   onChange={() => clearErrors("description")}
+                /> */}
+
+                <TextArea
+                  name="description"
+                  placeholder="Enter about here.."
+                  // className="p-0 placeholder:text-blue_gray-900_99 text-left text-sm w-full"
+                  className="bg-gray-50 border border-gray-900_19 border-solid pb-[35px] pl-4 sm:pr-5 pr-[35px] pt-[18px] rounded-md placeholder:text-gray-900_7f text-gray-900 text-left text-base w-full"
+                  // wrapClassName="border border-gray-900_26 border-solid w-full"
+                  rows={4}
+                  {...register("description", { required: true })}
+                  onChange={() => clearErrors("description")}
                 />
+
                 {errors?.description && (
                   <p className="text-sm text-red-600 font-black">
                     Provide details about the show

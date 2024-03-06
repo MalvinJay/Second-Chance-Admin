@@ -22,7 +22,7 @@ export const EditAdvertsAPIFn = async (payload: any): Promise<any> => {
         const response = await AXIOS_INSTANCE.put(url, payload);
         return response.data;
     } catch (error: any) {
-        console.log("Error creating advert:", error);
+        console.log("Error editing advert:", error);
         return error?.response;
     }
 };
@@ -32,7 +32,7 @@ export const DeleteAdvertAPIFn = async (id: string): Promise<any> => {
         const response = await AXIOS_INSTANCE.delete(`/advertisements/${id}`);
         return response.data;
     } catch (error: any) {
-        console.log("Error removing fm station:", error);
+        console.log("Error removing ad:", error);
         return error?.response;
     }
 };

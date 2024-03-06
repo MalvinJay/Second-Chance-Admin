@@ -3,6 +3,7 @@
 import { useMemo, useRef, useState } from "react";
 import AliceCarousel from "react-alice-carousel";
 import { TAlertMsgProp } from "types/shared.type";
+import { queryClient } from "App";
 
 import { Button as CustButton, Img, Text } from "components";
 import { useReactQuery } from "hooks/useReactQuery";
@@ -24,6 +25,9 @@ import AddEditTestimony from "components/Testimonies/AddTestimoty";
 import AddAdvertisement from "components/Advertisement/AddAdvertisement";
 import placeholder from "../../assets/images/placeholder.png";
 import { Typography, Stack, CircularProgress, Button } from "@mui/material";
+import { useMutation } from "@tanstack/react-query";
+import { DeleteAdvertAPIFn } from "api/adverts";
+import { AxiosError } from "axios";
 
 // Upcoming shows
 const upcomingColumns = [
@@ -81,6 +85,9 @@ const testimonies = [
 ];
 
 const HomepagePage: React.FC = () => {
+  const [actionType, setactionType] = useState<
+    "ads" | "shows" | "testimonies" | null
+  >(null);
   const [isOpen, setIsOpen] = useState(false);
   const [show, setShow] = useState(false);
   const [showTest, setshowTest] = useState(false);
@@ -117,7 +124,7 @@ const HomepagePage: React.FC = () => {
               <span>{el.name}</span>
             </div>
           ),
-          hostedBy: "",
+          hostedBy: el.host,
           date_time: `${new Date(el.airing_date)?.toDateString().slice(4)} | ${
             el.airing_time
           }`,
@@ -227,11 +234,24 @@ const HomepagePage: React.FC = () => {
     "/categories"
   );
 
+  const { mutateAsync: removeAdsMutate, isLoading: isDeletingAd } = useMutation(
+    {
+      mutationFn: DeleteAdvertAPIFn,
+      onError: (error: AxiosError) => error?.response?.data,
+    }
+  );
+
   const categories = useMemo(() => {
     if (categoriesData && "categories" in categoriesData)
       return categoriesData?.categories;
     return [];
   }, [categoriesData]);
+
+  const isDeletingEntity = useMemo(() => {
+    if (isDeletingAd) return true;
+    // else if ()
+    else return false;
+  }, [isDeletingAd]);
 
   const handleClose = () => {
     setShow(false);
@@ -247,29 +267,37 @@ const HomepagePage: React.FC = () => {
 
   const handleDelete = (item: any) => {
     setInitialValues(item);
-    // setConfirm(true);
+    setConfirm(true);
   };
 
-  const RemoveItem = () => {
-    // removeFmStationMutate(initialValues?.id)
-    //   .then((res) => {
-    //     console.log("res:", res);
-    //     setConfirm(false);
-    //     setInitialValues(null);
-    //     setAlertMsg({
-    //       status: "success",
-    //       msg: `FM Station service removed`,
-    //     });
-    //     setShowAlert(true);
-    //     queryClient.invalidateQueries(["fm-stations"]);
-    //   })
-    //   .catch(() => {
-    //     setAlertMsg({
-    //       status: "error",
-    //       msg: "Error updating FM Station",
-    //     });
-    //     setShowAlert(true);
-    //   });
+  const handleEditAds = (item: any) => {
+    setEditMode(true);
+    setInitialValues(item);
+    setshowAds(true);
+  };
+
+  const removeAd = () => {
+    setactionType(null);
+    console.log("initialValues:", initialValues);
+
+    removeAdsMutate(initialValues?.id)
+      .then(() => {
+        setConfirm(false);
+        setInitialValues(null);
+        setAlertMsg({
+          status: "success",
+          msg: `Advertisement removed`,
+        });
+        setShowAlert(true);
+        queryClient.invalidateQueries(["advertisements"]);
+      })
+      .catch(() => {
+        setAlertMsg({
+          status: "error",
+          msg: "Error updating Advertisement",
+        });
+        setShowAlert(true);
+      });
   };
 
   return (
@@ -348,14 +376,14 @@ const HomepagePage: React.FC = () => {
                     color="deep_purple_A200_19"
                     onClick={() => setshowAds(true)}
                   >
-                    + Add New
+                    + Add Advert
                   </CustButton>
-                  <CustButton
+                  {/* <CustButton
                     className="cursor-pointer font-semibold min-w-[130px] text-center text-sm"
                     color="deep_purple_A200_19"
                   >
                     Edit Section
-                  </CustButton>
+                  </CustButton> */}
                 </div>
               </div>
 
@@ -363,6 +391,7 @@ const HomepagePage: React.FC = () => {
                 <Slider
                   ref={sliderRef}
                   autoPlay
+                  centerMode={false}
                   autoPlayInterval={4000}
                   responsive={{
                     0: { items: 1 },
@@ -377,10 +406,15 @@ const HomepagePage: React.FC = () => {
                     <SliderItem
                       key={index}
                       title={item.title}
-                      banner={item.banner}
+                      banner={item?.banner?.img_url}
                       description={item.description}
                       cta_link={item.call_to_action}
                       cta="Explore Now"
+                      handleEdit={() => handleEditAds(item)}
+                      handleDelete={() => {
+                        setactionType("ads");
+                        handleDelete(item);
+                      }}
                     />
                   ))}
                 />
@@ -507,7 +541,8 @@ const HomepagePage: React.FC = () => {
         >
           <AddEditShow
             editMode={editMode}
-            title={`${!editMode ? "Add Tv Show" : "Update Tv Show"} `}
+            title={`${!editMode ? "Add TV Show" : "Update Tv Show"} `}
+            showExtras
             setShowAlert={setShowAlert}
             setAlertMsg={setAlertMsg}
             handleClose={() => {
@@ -603,12 +638,21 @@ const HomepagePage: React.FC = () => {
               <Button
                 color="error"
                 variant="contained"
-                onClick={RemoveItem}
+                onClick={() => {
+                  switch (actionType) {
+                    case "ads":
+                      removeAd();
+                      break;
+
+                    default:
+                      break;
+                  }
+                }}
                 className="gap-1"
               >
-                {/* {isDeletingEntity && (
+                {isDeletingEntity && (
                   <CircularProgress color="inherit" size={24} />
-                )} */}
+                )}
                 Confirm
               </Button>
             </Stack>

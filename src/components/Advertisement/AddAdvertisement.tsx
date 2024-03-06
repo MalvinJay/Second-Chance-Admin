@@ -2,14 +2,13 @@ import { CircularProgress } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "App";
 import { AxiosError } from "axios";
-import { AddAdvertsAPIFn } from "api/adverts";
+import { AddAdvertsAPIFn, EditAdvertsAPIFn } from "api/adverts";
 import BannerUploader from "components/BannerUploader/BannerUploader";
 import { Button } from "components/Button";
 import { Img } from "components/Img";
 import { Input } from "components/Input";
 import { Text } from "components/Text";
 
-import { TextArea } from "components/TextArea";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { TAlertMsgProp } from "types/shared.type";
@@ -38,11 +37,12 @@ const AddAdvertisement = (props: IAddAdvertisementProps) => {
     register,
     clearErrors,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm({
     defaultValues: {
       call_to_action: initialValues?.call_to_action,
-      banner: initialValues?.banner?.file_name,
+      banner: initialValues?.banner?.img_url,
     },
   });
 
@@ -54,7 +54,7 @@ const AddAdvertisement = (props: IAddAdvertisementProps) => {
         ...prev,
         [type]: {
           ...val,
-          img_desc: "banner",
+          img_desc: "advertisements",
         },
       };
     });
@@ -65,6 +65,12 @@ const AddAdvertisement = (props: IAddAdvertisementProps) => {
     onError: (error: AxiosError) => error?.response?.data,
   });
 
+  const { mutateAsync: patchAdvertMutate, isLoading: isPatchingAdvert } =
+    useMutation({
+      mutationFn: EditAdvertsAPIFn,
+      onError: (error: AxiosError) => error?.response?.data,
+    });
+
   const onSubmit = async (values: any) => {
     let payload = {
       id: initialValues?.id || values?.id,
@@ -72,7 +78,7 @@ const AddAdvertisement = (props: IAddAdvertisementProps) => {
       ...formValues,
     };
 
-    AddAdvertMutate(payload)
+    (editMode ? patchAdvertMutate(payload) : AddAdvertMutate(payload))
       .then(
         (res) => {
           const { code } = res;
@@ -179,6 +185,7 @@ const AddAdvertisement = (props: IAddAdvertisementProps) => {
               }}
               uploadType="advertisements"
               key="banners"
+              defaultValue={getValues("banner")}
             />
           </div>
 
@@ -203,7 +210,9 @@ const AddAdvertisement = (props: IAddAdvertisementProps) => {
               color="purple_A200_purple_500"
               type="submit"
             >
-              {isLoading && <CircularProgress color="inherit" size={24} />}
+              {(isLoading || isPatchingAdvert) && (
+                <CircularProgress color="inherit" size={24} />
+              )}
               <Text
                 className="text-sm text-center text-white-A700"
                 size="txtPlusJakartaSansRomanSemiBold14"

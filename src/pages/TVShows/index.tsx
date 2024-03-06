@@ -352,7 +352,7 @@ const TVShowsPage: React.FC = () => {
         >
           <AddEditShow
             editMode={editMode}
-            title={editMode ? "Edit TV Show" : "Add TV Show"}
+            title={editMode ? "Update TV Show" : "Add TV Show"}
             showExtras
             setShowAlert={setShowAlert}
             setAlertMsg={setAlertMsg}

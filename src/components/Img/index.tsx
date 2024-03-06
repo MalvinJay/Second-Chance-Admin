@@ -17,6 +17,7 @@ const Img: React.FC<React.PropsWithChildren<ImgProps>> = ({
   ...restProps
 }) => {
   const onError = ({ target }) => {
+    console.log("Error loading image url:", src);
     return (target.src = restProps.placeholder);
   };
 

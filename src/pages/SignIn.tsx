@@ -185,6 +185,7 @@ export default function SignIn() {
                 disabled={loading}
                 style={{
                   backgroundColor: "#1565c0",
+                  color: "#FFF",
                 }}
               >
                 Sign In

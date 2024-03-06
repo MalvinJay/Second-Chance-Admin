@@ -11,10 +11,21 @@ interface ISliderItemProps {
   description: string;
   cta: string;
   cta_link: string;
+  handleEdit: () => void;
+  handleDelete: () => void;
 }
 
 const SliderItem = (props: ISliderItemProps) => {
-  const { title, banner, description, cta, cta_link, className } = props;
+  const {
+    title,
+    banner,
+    description,
+    cta,
+    cta_link,
+    className,
+    handleEdit,
+    handleDelete,
+  } = props;
   return (
     <div className={`group h-[292px] relative ${className}`}>
       <Img
@@ -51,11 +62,17 @@ const SliderItem = (props: ISliderItemProps) => {
 
       {/* Actions */}
       <div className="hidden group-hover:flex absolute right-4 top-5 items-center gap-4 transition duration-300">
-        <Button className="w-[44px] h-[44px] bg-purple-A200 rounded-full flex justify-center items-center">
+        <Button
+          className="w-[44px] h-[44px] bg-purple-A200 rounded-full flex justify-center items-center"
+          onClick={() => handleEdit()}
+        >
           <EditIcon />
         </Button>
 
-        <Button className="w-[44px] h-[44px] bg-purple-A200 rounded-full flex justify-center items-center">
+        <Button
+          className="w-[44px] h-[44px] bg-purple-A200 rounded-full flex justify-center items-center"
+          onClick={() => handleDelete()}
+        >
           <DeleteIcon />
         </Button>
       </div>

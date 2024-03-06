@@ -11,7 +11,7 @@ export const fetcher = (url: string, params = {}) => {
     AXIOS_INSTANCE
       .get(queryUrl.toString() ?? url)
       .then(
-        (res) => resolve(res.data.data),
+        (res) => resolve(res?.data?.data ?? null),
         (err) => reject(err)
       )
       .catch((error) => reject(error));
