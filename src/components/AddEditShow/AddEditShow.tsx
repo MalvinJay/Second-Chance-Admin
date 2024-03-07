@@ -75,7 +75,7 @@ const AddEditShow = (props: IAddEditShowProps) => {
         ...prev,
         [type]: {
           ...val,
-          img_desc: "tv-shows",
+          img_desc: type,
         },
       };
     });
