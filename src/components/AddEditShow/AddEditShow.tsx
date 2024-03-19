@@ -12,6 +12,7 @@ import { Text } from "components/Text";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { TAlertMsgProp } from "types/shared.type";
+import { present } from "utils";
 
 interface IAddEditShowProps {
   editMode: boolean;
@@ -48,7 +49,7 @@ const AddEditShow = (props: IAddEditShowProps) => {
       airing_date: initialValues?.airing_date,
       description: initialValues?.description,
       img_url: initialValues?.img_url,
-      logo: initialValues?.logo,
+      logo_url: initialValues?.logo_url,
     },
   });
 
@@ -82,11 +83,18 @@ const AddEditShow = (props: IAddEditShowProps) => {
   };
 
   const onSubmit = (values: any) => {
+    console.log("form values:", values);
+
     const payload = {
       ...values,
       ...formValues,
       type,
     };
+
+    if (editMode) {
+      if (!present(payload.banner)) payload.banner = initialValues.banner;
+      if (!present(payload.logo)) payload.logo = initialValues.logo;
+    }
 
     console.log("Final Payload:", payload);
 
@@ -317,7 +325,7 @@ const AddEditShow = (props: IAddEditShowProps) => {
               </Text>
 
               <BannerUploader
-                name="logo"
+                name="logo_url"
                 icon="images/img_television.svg"
                 title="Upload Logo image"
                 uploadText="Drag and drop or click here to browse files"
@@ -326,7 +334,7 @@ const AddEditShow = (props: IAddEditShowProps) => {
                   handleUpload(e, "logo");
                 }}
                 uploadType="tv-shows"
-                defaultValue={initialValues?.logo}
+                defaultValue={initialValues?.logo_url}
                 key="logo"
               />
             </div>
@@ -353,9 +361,10 @@ const AddEditShow = (props: IAddEditShowProps) => {
               defaultValue={initialValues?.img_url}
               key="banner"
             />
+
             {errors?.img_url && (
               <p className="text-sm text-red-600 font-black">
-                Provide show thumbnail image
+                Provide thumbnail image
               </p>
             )}
           </div>

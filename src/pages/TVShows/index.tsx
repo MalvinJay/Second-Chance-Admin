@@ -199,7 +199,7 @@ const TVShowsPage: React.FC = () => {
     setInitialValues({
       ...item,
       img_url: item?.banner?.img_url,
-      logo: item.logo.img_url,
+      logo_url: item?.logo?.img_url,
     });
     setIsOpen(true);
     setSelected([]);
